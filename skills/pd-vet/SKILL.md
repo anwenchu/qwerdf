@@ -1,16 +1,16 @@
 ---
 name: pd-vet
 description: >-
-  个人产品想法验证工作流，把一句话 idea、竞品 URL、截图、市场观察或粗略产品想法拆成用户问题、竞品参考、MVP 假设和验证问题，并给出进入 PRD、继续调研或暂停建议；不接入外部变更生命周期。Use when the user mentions $pd-vet、pd-vet、想法验证、idea验证、产品想法验证、创业想法验证、从想法开始、验证产品机会。
+  产品想法验证工作流，把一句话 idea、竞品 URL、截图、市场观察或粗略产品想法拆成用户问题、竞品参考、MVP 假设和验证问题，并给出进入 PRD、继续调研或暂停建议；不接入外部变更生命周期。Use when the user mentions $pd-vet、pd-vet、想法验证、idea验证、产品想法验证、创业想法验证、从想法开始、验证产品机会。
 ---
 
 # $pd-vet — 想法验证
 
-个人辅助 Skill：把早期 idea 转成可判断是否值得写 PRD 的产品机会判断。
+Codex Product Delivery Skill：把早期 idea 转成可判断是否值得写 PRD 的产品机会判断。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Product Delivery Artifact Contracts](../qwerdf-common/artifact-contracts.md) 中 `idea-brief.md`、`user-problem.md`、`competitor-notes.md`、`mvp-hypothesis.md`、`validation-questions.md` 的模板。
 3. 读取用户提供的一句话 idea、竞品 URL、截图、市场观察、用户反馈或产品背景。
 4. 如果用户未指定输出目录，使用 `pd-work/<name>/`。

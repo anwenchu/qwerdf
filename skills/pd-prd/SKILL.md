@@ -1,16 +1,16 @@
 ---
 name: pd-prd
 description: >-
-  个人 PRD 生成工作流，把已验证 idea、用户问题、MVP 假设、竞品参考、访谈记录或粗略需求整理成正式 PRD、需求清单、用户故事、验收标准和开放问题；不接入外部变更生命周期。Use when the user mentions $pd-prd、pd-prd、生成PRD、写PRD、产品需求文档、从想法生成PRD、从验证结果生成PRD。
+   PRD 生成工作流，把已验证 idea、用户问题、MVP 假设、竞品参考、访谈记录或粗略需求整理成正式 PRD、需求清单、用户故事、验收标准和开放问题；不接入外部变更生命周期。Use when the user mentions $pd-prd、pd-prd、生成PRD、写PRD、产品需求文档、从想法生成PRD、从验证结果生成PRD。
 ---
 
 # $pd-prd — PRD 生成
 
-个人辅助 Skill：把已验证的产品机会和需求材料整理成可进入产品设计输入和页面蓝图阶段的 PRD。
+Codex Product Delivery Skill：把已验证的产品机会和需求材料整理成可进入产品设计输入和页面蓝图阶段的 PRD。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Product Delivery Artifact Contracts](../qwerdf-common/artifact-contracts.md) 中 `prd.md`、`requirements.md`、`user-stories.md`、`acceptance-criteria.md`、`open-questions.md` 的模板。
 3. 优先读取输出目录中的 `idea-brief.md`、`user-problem.md`、`competitor-notes.md`、`mvp-hypothesis.md`、`validation-questions.md`。
 4. 读取用户提供的访谈记录、竞品 URL、截图、产品背景、需求草稿或已有 spec。

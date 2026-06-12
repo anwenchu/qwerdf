@@ -1,16 +1,16 @@
 ---
 name: pd-sync
 description: >-
-  个人前后端联调工作流，基于前端实现、后端实现、api-contract 和 integration-map 检查接口、字段、状态码、错误结构、权限、分页、状态页、mock 与真实接口一致性；发现契约问题时生成 plan-revision，不直接修代码。Use when the user mentions $pd-sync、pd-sync、前后端联调、接口联调、API联调、mock切真实接口。
+  前后端联调工作流，基于前端实现、后端实现、api-contract 和 integration-map 检查接口、字段、状态码、错误结构、权限、分页、状态页、mock 与真实接口一致性；发现契约问题时生成 plan-revision，不直接修代码。Use when the user mentions $pd-sync、pd-sync、前后端联调、接口联调、API联调、mock切真实接口。
 ---
 
 # $pd-sync — 前后端联调
 
-个人辅助 Skill：验证前后端实现是否符合统一契约。
+Codex Product Delivery Skill：验证前后端实现是否符合统一契约。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `integration-plan.md`、`integration-report.md`、`api-mismatch.md`、`plan-revision.md` 的模板。
 3. 读取 `api-contract.md`、`integration-map.md`、`frontend-state-api.md`、`frontend-implementation-log.md`、`backend-implementation-log.md`。
 4. 识别本地前端、后端启动方式和环境配置。

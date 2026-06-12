@@ -1,8 +1,8 @@
 # qwerdf
 
-个人 Product Delivery Codex skills 仓库。
+开源 Codex Product Delivery Skills 仓库。
 
-本仓库维护一组 `pd-` 前缀的个人辅助 skill，用于把 idea 推进到 PRD、产品设计输入、页面蓝图、Figma 高保真设计、技术设计、前后端并行实现、联调、测试、审查、提交准备和上线文档。它们不接入任何外部变更生命周期，不创建外部变更目录，不修改外部状态文件，默认把个人产物写入当前工作区的 `pd-work/<name>/`。
+本仓库维护一组 `pd-` 前缀的开源 Codex Product Delivery Skills，用于把 idea 推进到 PRD、产品设计输入、页面蓝图、Figma 高保真设计、技术设计、前后端并行实现、联调、测试、审查、提交准备和上线文档。它们不接入任何外部变更生命周期，不创建外部变更目录，不修改外部状态文件，默认把交付产物写入当前工作区的 `pd-work/<name>/`。
 
 ## Workflow
 

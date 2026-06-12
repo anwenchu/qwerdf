@@ -15,6 +15,7 @@ COMMON_DIR = SKILLS_DIR / "qwerdf-common"
 MANIFEST_FILE = SKILLS_DIR / "manifest.txt"
 EVALS_DIR = ROOT / "evals"
 FORBIDDEN_TERMS = [
+    "个" + "人",
     "tb" + "-prd-ui",
     "tb" + "-ui-figma",
     "tb" + "-figma-code",
@@ -165,7 +166,7 @@ def validate_forbidden_terms(errors: list[str]) -> None:
         text = path.read_text(encoding="utf-8")
         for term in FORBIDDEN_TERMS:
             if term in text:
-                fail(errors, f"{path}: forbidden old command name found: {term}")
+                fail(errors, f"{path}: forbidden or outdated term found: {term}")
 
 
 def validate_open_source_files(errors: list[str]) -> None:

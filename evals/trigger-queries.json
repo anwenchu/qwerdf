@@ -95,7 +95,7 @@
     "query": "这个 React 页面报 undefined，直接帮我修 bug 并跑测试，不需要按 pd-work 产出文档。",
     "should_trigger": false,
     "skill": null,
-    "reason": "用户明确要求直接修 bug，不需要个人 Product Delivery artifacts。"
+    "reason": "用户明确要求直接修 bug，不需要Product Delivery artifacts。"
   },
   {
     "id": "near-miss-general-git-status",

@@ -1,16 +1,16 @@
 ---
 name: pd-fe
 description: >-
-  个人前端开发实现工作流，基于 pd-plan 的 frontend-design、api-contract、integration-map 和 task-slices，每次只实现一个 frontend 或 shared-frontend 任务切片，并做最小前端验证。Use when the user mentions $pd-fe、pd-fe、前端开发、前端实现、实现前端 slice、按技术方案写前端。
+  前端开发实现工作流，基于 pd-plan 的 frontend-design、api-contract、integration-map 和 task-slices，每次只实现一个 frontend 或 shared-frontend 任务切片，并做最小前端验证。Use when the user mentions $pd-fe、pd-fe、前端开发、前端实现、实现前端 slice、按技术方案写前端。
 ---
 
 # $pd-fe — 前端开发实现
 
-个人辅助 Skill：按技术设计执行一个前端 task slice。
+Codex Product Delivery Skill：按技术设计执行一个前端 task slice。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中所有 `frontend-*` 模板。
 3. 读取 `frontend-design.md`、`frontend-component-map.md`、`frontend-route-map.md`、`frontend-state-api.md`、`api-contract.md`、`integration-map.md`、`task-slices.md`、`figma-handoff.md`。
 4. 识别前端项目结构：`package.json`、路由、页面目录、组件目录、状态管理、API client、样式体系、测试命令。

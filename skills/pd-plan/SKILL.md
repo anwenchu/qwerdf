@@ -1,16 +1,16 @@
 ---
 name: pd-plan
 description: >-
-  个人技术设计工作流，基于 PRD、产品设计输入、UI 蓝图、Figma handoff 和现有代码库产出前端设计、后端设计、API 契约、数据模型、前后端一致性映射、任务切片和风险方案。Use when the user mentions $pd-plan、pd-plan、技术设计、技术方案、前后端设计、接口契约、任务切片。
+  技术设计工作流，基于 PRD、产品设计输入、UI 蓝图、Figma handoff 和现有代码库产出前端设计、后端设计、API 契约、数据模型、前后端一致性映射、任务切片和风险方案。Use when the user mentions $pd-plan、pd-plan、技术设计、技术方案、前后端设计、接口契约、任务切片。
 ---
 
 # $pd-plan — 技术设计
 
-个人辅助 Skill：把产品和设计产物串成前后端一致、可并行开发的工程方案。
+Codex Product Delivery Skill：把产品和设计产物串成前后端一致、可并行开发的工程方案。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `tech-plan.md`、`frontend-design.md`、`frontend-component-map.md`、`frontend-route-map.md`、`frontend-state-api.md`、`backend-design.md`、`api-contract.md`、`data-model.md`、`integration-map.md`、`task-slices.md`、`risk-plan.md` 的模板。
 3. 读取 `prd.md`、`requirements.md`、`product-brief.md`、`ui-screens.md`、`ui-components.md`、`figma-handoff.md`。
 4. 扫描现有代码库的前端、后端、API client、路由、数据模型、权限和测试结构。

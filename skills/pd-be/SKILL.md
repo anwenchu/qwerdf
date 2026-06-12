@@ -1,16 +1,16 @@
 ---
 name: pd-be
 description: >-
-  个人后端开发实现工作流，基于 pd-plan 的 backend-design、api-contract、data-model、integration-map 和 task-slices，每次只实现一个 backend 或 shared-backend 任务切片，并做最小后端验证。Use when the user mentions $pd-be、pd-be、后端开发、后端实现、实现后端 slice、按技术方案写后端。
+  后端开发实现工作流，基于 pd-plan 的 backend-design、api-contract、data-model、integration-map 和 task-slices，每次只实现一个 backend 或 shared-backend 任务切片，并做最小后端验证。Use when the user mentions $pd-be、pd-be、后端开发、后端实现、实现后端 slice、按技术方案写后端。
 ---
 
 # $pd-be — 后端开发实现
 
-个人辅助 Skill：按技术设计执行一个后端 task slice。
+Codex Product Delivery Skill：按技术设计执行一个后端 task slice。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中所有 `backend-*` 模板。
 3. 读取 `backend-design.md`、`api-contract.md`、`data-model.md`、`integration-map.md`、`task-slices.md`。
 4. 识别后端项目结构：服务入口、路由 / controller、service、repository、数据模型、权限、错误码、测试命令。

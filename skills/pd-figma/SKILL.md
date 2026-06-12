@@ -1,16 +1,16 @@
 ---
 name: pd-figma
 description: >-
-  个人产品设计输入和 UI 页面蓝图到 Figma 工作流，先基于 product-brief、ui-flows、ui-pages、ui-screens、ui-components 生成 3 个 UI 方向并等待用户选择，再写入或整理 Figma 设计交付；不接入外部变更生命周期。Use when the user mentions $pd-figma、pd-figma、Figma设计、UI转Figma、生成Figma设计、页面蓝图转Figma、把页面蓝图写到 Figma。
+  产品设计输入和 UI 页面蓝图到 Figma 工作流，先基于 product-brief、ui-flows、ui-pages、ui-screens、ui-components 生成 3 个 UI 方向并等待用户选择，再写入或整理 Figma 设计交付；不接入外部变更生命周期。Use when the user mentions $pd-figma、pd-figma、Figma设计、UI转Figma、生成Figma设计、页面蓝图转Figma、把页面蓝图写到 Figma。
 ---
 
 # $pd-figma — Figma 设计交付
 
-个人辅助 Skill：把产品设计输入和 UI 页面蓝图转成可评审、可交付给前端的 Figma 设计。
+Codex Product Delivery Skill：把产品设计输入和 UI 页面蓝图转成可评审、可交付给前端的 Figma 设计。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Product Delivery Artifact Contracts](../qwerdf-common/artifact-contracts.md) 中 `ui-directions.md` 和 `figma-handoff.md` 的模板。
 3. 读取输出目录中的 `product-brief.md`、`ui-flows.md`、`ui-pages.md`、`ui-screens.md`、`ui-components.md`。
 4. 如果用户未指定目录，默认查找 `pd-work/<name>/`。

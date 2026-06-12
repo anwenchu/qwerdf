@@ -54,7 +54,6 @@ GENERIC_STOP_WORDS = {
     "from",
     "based",
     "skill",
-    "个人",
     "工作流",
     "基于",
     "输出",

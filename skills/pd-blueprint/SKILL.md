@@ -1,16 +1,16 @@
 ---
 name: pd-blueprint
 description: >-
-  个人 PRD 到产品设计输入和 UI 页面蓝图工作流，把 PRD、竞品 URL、截图、产品想法或已有 spec 拆成 product-brief、用户流程、页面地图、页面规格和组件清单；不接入外部变更生命周期。Use when the user mentions $pd-blueprint、pd-blueprint、产品蓝图、产品设计输入、PRD转UI、页面蓝图、UI蓝图、从 PRD 生成页面设计输入、从竞品参考整理页面结构。
+   PRD 到产品设计输入和 UI 页面蓝图工作流，把 PRD、竞品 URL、截图、产品想法或已有 spec 拆成 product-brief、用户流程、页面地图、页面规格和组件清单；不接入外部变更生命周期。Use when the user mentions $pd-blueprint、pd-blueprint、产品蓝图、产品设计输入、PRD转UI、页面蓝图、UI蓝图、从 PRD 生成页面设计输入、从竞品参考整理页面结构。
 ---
 
 # $pd-blueprint — 产品设计输入与页面蓝图
 
-个人辅助 Skill：把 PRD、竞品参考或产品想法转成可进入 UI 方向探索、Figma 设计和前端实现的设计输入。
+Codex Product Delivery Skill：把 PRD、竞品参考或产品想法转成可进入 UI 方向探索、Figma 设计和前端实现的设计输入。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Product Delivery Artifact Contracts](../qwerdf-common/artifact-contracts.md) 中 `product-brief.md`、`ui-flows.md`、`ui-pages.md`、`ui-screens.md`、`ui-components.md` 的模板。
 3. 优先读取输出目录中的 `prd.md`、`requirements.md`、`user-stories.md`、`acceptance-criteria.md`、`open-questions.md`。
 4. 读取用户提供的 PRD、竞品 URL、截图、产品说明、设计偏好或已有 spec。

@@ -1,16 +1,16 @@
 ---
 name: pd-release
 description: >-
-  个人上线文档工作流，基于 PRD、技术方案、实现记录、联调报告、测试报告、Code Review 和提交说明生成通用 Markdown 上线计划、上线检查清单、回滚方案和 release notes；不接平台、不执行部署。Use when the user mentions $pd-release、pd-release、上线文档、发布计划、上线计划、回滚方案、release notes。
+  上线文档工作流，基于 PRD、技术方案、实现记录、联调报告、测试报告、Code Review 和提交说明生成通用 Markdown 上线计划、上线检查清单、回滚方案和 release notes；不接平台、不执行部署。Use when the user mentions $pd-release、pd-release、上线文档、发布计划、上线计划、回滚方案、release notes。
 ---
 
 # $pd-release — 上线文档
 
-个人辅助 Skill：生成上线前材料，不执行真实部署。
+Codex Product Delivery Skill：生成上线前材料，不执行真实部署。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `release-plan.md`、`release-checklist.md`、`rollback-plan.md`、`release-notes.md` 的模板。
 3. 必须读取 `test-report.md` 和 `code-review.md`。
 4. 读取 PRD、技术方案、实现记录、联调报告和提交说明。

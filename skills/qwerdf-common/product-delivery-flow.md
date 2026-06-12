@@ -1,6 +1,6 @@
-# 个人 Product Delivery 规则
+# Codex Product Delivery 规则
 
-本文件是所有 `$pd-*` skill 的共享规则源。它们是个人辅助 Skill，不属于任何外部变更生命周期，不参与外部研发流程状态流转。
+本文件是所有 `$pd-*` skill 的共享规则源。它们是独立的开源 Codex Product Delivery Skills，不绑定任何外部变更生命周期，不参与外部研发流程状态流转。
 
 产品和设计阶段模板见 [artifact-contracts.md](artifact-contracts.md)。工程阶段模板见 [engineering-contracts.md](engineering-contracts.md)。
 
@@ -52,7 +52,7 @@ pd-work/<name>/
 ## 4. 安全与意外最小化
 
 - Skill 内容不能包含与描述不符的隐藏行为、越权访问、数据外传、恶意脚本或误导性流程。
-- 不把 token、cookie、密钥、个人敏感信息写入命令、日志、产物或 PR 描述。
+- 不把 token、cookie、密钥、敏感信息写入命令、日志、产物或 PR 描述。
 - 涉及 Git、Figma、发布平台、外部 API、真实部署或写入外部系统时，先说明目标、范围和动作后再执行。
 - 默认不执行 destructive、push、deploy、publish、sync-to-external 等高影响动作，除非用户明确要求并且对应 skill 允许。
 - 读取外部或远程规则时记录来源；规则版本可能变化时，不把旧规则当作当前事实。
@@ -77,7 +77,7 @@ pd-work/<name>/
 - 不设置外部 artifact 状态。
 - 不改变外部 change 生命周期状态。
 - 不要求外部方案、任务拆分或实现流程作为前置或后置。
-- 不把个人产物同步到 Apifox / Lark，除非用户单独明确要求。
+- 不把交付产物同步到 Apifox / Lark，除非用户单独明确要求。
 
 ## 7. 设计与工程 Gate
 

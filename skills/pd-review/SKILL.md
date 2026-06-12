@@ -1,16 +1,16 @@
 ---
 name: pd-review
 description: >-
-  个人 Code Review 工作流，基于 git diff、PRD、技术方案、前后端契约、联调报告和测试报告做结构化审查，按 P0/P1/P2/P3 输出需求一致性、方案一致性、契约一致性、错误处理、状态覆盖、安全、可维护性和测试缺口。Use when the user mentions $pd-review、pd-review、Code Review、代码审查、审查改动、review 当前实现。
+   Code Review 工作流，基于 git diff、PRD、技术方案、前后端契约、联调报告和测试报告做结构化审查，按 P0/P1/P2/P3 输出需求一致性、方案一致性、契约一致性、错误处理、状态覆盖、安全、可维护性和测试缺口。Use when the user mentions $pd-review、pd-review、Code Review、代码审查、审查改动、review 当前实现。
 ---
 
 # $pd-review — Code Review
 
-个人辅助 Skill：在提交前审查实现质量和交付风险。
+Codex Product Delivery Skill：在提交前审查实现质量和交付风险。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `code-review.md` 的模板。
 3. 读取 PRD、技术方案、API 契约、联调报告、测试报告、前后端实现记录和当前 git diff。
 4. 如果用户未指定目录，默认使用 `pd-work/<name>/`。

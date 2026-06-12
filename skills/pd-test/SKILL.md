@@ -1,16 +1,16 @@
 ---
 name: pd-test
 description: >-
-  个人测试验证工作流，基于 PRD、技术方案、前后端实现和联调结果制定并执行 unit、integration、e2e、visual/UI regression、regression、manual acceptance 测试，输出测试计划、用例、报告和回归说明。Use when the user mentions $pd-test、pd-test、测试验证、生成测试计划、执行测试、回归测试、验收测试。
+  测试验证工作流，基于 PRD、技术方案、前后端实现和联调结果制定并执行 unit、integration、e2e、visual/UI regression、regression、manual acceptance 测试，输出测试计划、用例、报告和回归说明。Use when the user mentions $pd-test、pd-test、测试验证、生成测试计划、执行测试、回归测试、验收测试。
 ---
 
 # $pd-test — 测试验证
 
-个人辅助 Skill：按风险选择并执行足够的测试验证。
+Codex Product Delivery Skill：按风险选择并执行足够的测试验证。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `test-plan.md`、`test-cases.md`、`test-report.md`、`regression-notes.md` 的模板。
 3. 读取 `prd.md`、`acceptance-criteria.md`、`tech-plan.md`、`integration-report.md`、`frontend-acceptance.md` 和实现记录。
 4. 识别项目已有测试框架和 `package.json` / 构建工具 / 测试命令。

@@ -1,6 +1,6 @@
 # Product Delivery Artifact Contracts
 
-本文件定义个人 Product Delivery skill 共享的产物模板。Skill 执行时只读取本任务需要的模板。
+本文件定义Codex Product Delivery skill 共享的产物模板。Skill 执行时只读取本任务需要的模板。
 
 ## `idea-brief.md`
 

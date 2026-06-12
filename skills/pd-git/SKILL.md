@@ -1,16 +1,16 @@
 ---
 name: pd-git
 description: >-
-  个人 Git 提交与 PR/MR 准备工作流，基于当前 git diff、实现记录、测试报告和 Code Review 生成 commit summary、commit message 和 PR/MR description；用户明确要求时可执行 git add、git commit，默认不 push。Use when the user mentions $pd-git、pd-git、提交代码、准备提交、生成PR描述、生成MR描述、commit message。
+   Git 提交与 PR/MR 准备工作流，基于当前 git diff、实现记录、测试报告和 Code Review 生成 commit summary、commit message 和 PR/MR description；用户明确要求时可执行 git add、git commit，默认不 push。Use when the user mentions $pd-git、pd-git、提交代码、准备提交、生成PR描述、生成MR描述、commit message。
 ---
 
 # $pd-git — 提交与 PR/MR 准备
 
-个人辅助 Skill：整理提交范围和 PR/MR 文案。
+Codex Product Delivery Skill：整理提交范围和 PR/MR 文案。
 
 ## 读取
 
-1. 读取 [个人 Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
+1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `commit-summary.md` 和 `pr-description.md` 的模板。
 3. 读取实现记录、联调报告、测试报告、Code Review 和当前 git diff。
 4. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
