@@ -54,6 +54,33 @@
     }
   },
   {
+    "id": "pd-blueprint-reference-scope-lock",
+    "skill": "pd-blueprint",
+    "prompt": "基于 Apex Capital 的 PRD 和 Toobit 截图参考生成产品设计输入与页面蓝图。Toobit 参考图只允许借鉴深色交易视觉、行情密度和下单区交互，不允许把 USDC-M、Events、Copy Trading 或 Toobit 的导航业务带进 Apex。",
+    "setup_files": {
+      "prd.md": "# PRD\n产品：Apex Capital。\n目标：自营交易挑战和 BTC/ETH U 本位合约交易体验。\n核心场景：用户查看挑战账户、查看 BTCUSDT / ETHUSDT 行情、下单、查看持仓和风险。\n功能范围：自营挑战、BTCUSDT、ETHUSDT、订单面板、持仓、风险提示。\n非目标范围：不做 USDC-M，不做活动页，不做跟单，不做 Toobit 交易所导航。\n",
+      "requirements.md": "# 需求清单\n| ID | 需求 | 优先级 | 来源 | 验收标准 |\n| --- | --- | --- | --- | --- |\n| R1 | 自营挑战账户顶部摘要 | P0 | PRD | 只展示 Apex 挑战语境 |\n| R2 | BTCUSDT / ETHUSDT 合约交易 | P0 | PRD | 不展示未支持资产 |\n",
+      "reference-notes.md": "# 参考图说明\n来源：Toobit 截图。\n可借鉴：深色交易界面、行情列表密度、买卖下单区结构、风险色彩反馈。\n不得带入：USDC-M、Events、Copy Trading、Toobit 品牌导航、未支持资产和活动入口。\n"
+    },
+    "expected_files": [
+      "product-brief.md",
+      "ui-flows.md",
+      "ui-pages.md",
+      "ui-screens.md",
+      "ui-components.md"
+    ],
+    "all_contains": {
+      "product-brief.md": ["产品事实源", "参考使用边界", "USDC-M", "Copy Trading", "不得带入"],
+      "ui-pages.md": ["Apex Capital", "自营挑战", "BTCUSDT", "ETHUSDT"],
+      "ui-screens.md": ["default", "loading", "empty", "error", "permission"]
+    },
+    "forbidden_contains": {
+      "ui-pages.md": ["USDC-M", "Events", "Copy Trading", "Toobit"],
+      "ui-screens.md": ["USDC-M", "Events", "Copy Trading", "Toobit"],
+      "ui-components.md": ["USDC-M", "Events", "Copy Trading", "Toobit"]
+    }
+  },
+  {
     "id": "pd-figma-ui-directions-only",
     "skill": "pd-figma",
     "prompt": "基于页面蓝图先生成 3 个 UI 方向。不要写入真实 Figma，因为我还没有选择方向。",

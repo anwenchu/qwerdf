@@ -172,6 +172,15 @@ python3 scripts/preflight_triggers.py --strict --write-default-reports
 
 触发 preflight 不是模型路由评估，不代表真实 Codex skill 选择效果；真实质量以执行 benchmark 的产物、检查命令和评分结果为准。
 
+`evals/benchmark-cases.json` 的核心断言字段：
+
+- `expected_files`：必须生成且非空的文件。
+- `all_contains` / `required_contains`：目标文件必须包含的片段。
+- `any_contains`：目标文件至少包含其中一个片段。
+- `forbidden_contains`：目标文件不得包含的片段，用于防止把参考产品的业务模块、导航、资产类型或文案带入本产品。
+- `forbidden_files`：不得生成的文件。
+- `check_commands`：在 case 输出目录中执行的真实校验命令。
+
 真实 benchmark 必须运行外部 agent 命令。runner 不会伪造模型输出；dry-run 只预览命令、prompt 和目录结构：
 
 ```bash
@@ -283,6 +292,8 @@ evals/runs/<timestamp>/
 - 不接 GitHub Release、GitLab、GitOps、Lark 等发布平台。
 - 不执行真实部署；未来如需部署，另行设计 `$pd-deploy`。
 - 竞品只提炼模式，不照抄视觉、文案或受保护资产。
+- 设计参考只能提供视觉风格、信息密度、布局节奏、组件形态和交互细节；产品范围、页面、导航、资产类型、业务模块和关键文案必须来自 PRD、product-brief、UI 蓝图或用户明确确认。
+- 参考材料与产品文档冲突时，以产品文档为准；冲突内容必须写入“不应照搬 / 参考使用边界”，不得下推到 Figma、技术设计或实现。
 
 ## Structure
 

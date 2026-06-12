@@ -313,6 +313,33 @@ def contains_checks(
     return checks
 
 
+def forbidden_contains_checks(
+    *,
+    case: dict[str, object],
+    output_dir: Path,
+) -> list[dict[str, object]]:
+    checks: list[dict[str, object]] = []
+    rules = case.get("forbidden_contains", {})
+    if not isinstance(rules, dict):
+        return checks
+
+    for relative, snippets in rules.items():
+        path = output_dir / safe_relative_path(str(relative))
+        text = path.read_text(encoding="utf-8") if path.exists() else ""
+        if not isinstance(snippets, list):
+            continue
+        for snippet in snippets:
+            passed = str(snippet) not in text
+            checks.append(
+                {
+                    "text": f"{relative} does not contain {snippet!r}",
+                    "passed": passed,
+                    "evidence": str(path),
+                }
+            )
+    return checks
+
+
 def grade_output(
     case: dict[str, object],
     output_dir: Path,
@@ -342,6 +369,7 @@ def grade_output(
     checks.extend(contains_checks(case=case, output_dir=output_dir, key="all_contains", mode="all"))
     checks.extend(contains_checks(case=case, output_dir=output_dir, key="required_contains", mode="all"))
     checks.extend(contains_checks(case=case, output_dir=output_dir, key="any_contains", mode="any"))
+    checks.extend(forbidden_contains_checks(case=case, output_dir=output_dir))
 
     forbidden_files = case.get("forbidden_files", [])
     for relative in forbidden_files if isinstance(forbidden_files, list) else []:

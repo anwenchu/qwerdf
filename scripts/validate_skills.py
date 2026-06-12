@@ -176,6 +176,46 @@ def validate_open_source_files(errors: list[str]) -> None:
             fail(errors, f"{path}: missing or empty")
 
 
+def validate_reference_guardrails(errors: list[str]) -> None:
+    required_tokens_by_file = {
+        COMMON_DIR / "product-delivery-flow.md": [
+            "产品事实与参考使用 Gate",
+            "产品事实源优先级",
+            "参考禁区",
+            "Figma / 截图是表现层参考",
+        ],
+        COMMON_DIR / "artifact-contracts.md": [
+            "产品事实源",
+            "参考使用边界",
+            "产品事实锁定",
+            "产品范围校验",
+        ],
+        SKILLS_DIR / "pd-blueprint" / "SKILL.md": [
+            "产品事实锁",
+            "参考拆解",
+            "不能从参考图直接搬运",
+        ],
+        SKILLS_DIR / "pd-figma" / "SKILL.md": [
+            "产品事实锁定",
+            "参考使用边界",
+            "没有新增范围外页面",
+        ],
+        SKILLS_DIR / "pd-plan" / "SKILL.md": [
+            "Figma handoff 是表现层输入",
+            "范围外页面",
+        ],
+        SKILLS_DIR / "pd-review" / "SKILL.md": [
+            "产品范围漂移检查",
+            "不能用“参考图里有”作为产品范围证据",
+        ],
+    }
+    for path, tokens in required_tokens_by_file.items():
+        text = path.read_text(encoding="utf-8") if path.exists() else ""
+        for token in tokens:
+            if token not in text:
+                fail(errors, f"{path}: missing reference guardrail token {token!r}")
+
+
 def validate_manifest(skill_names: list[str], errors: list[str]) -> None:
     if not MANIFEST_FILE.exists():
         fail(errors, f"{MANIFEST_FILE}: missing")
@@ -325,7 +365,7 @@ def validate_benchmark_cases(skill_names: list[str], errors: list[str]) -> None:
                 elif not (ROOT / str(source)).is_dir():
                     fail(errors, f"{cases_file}: item {index} fixture dir not found: {source}")
 
-        for key in ("required_contains", "all_contains", "any_contains"):
+        for key in ("required_contains", "all_contains", "any_contains", "forbidden_contains"):
             rules = item.get(key, {})
             if rules is not None and not isinstance(rules, dict):
                 fail(errors, f"{cases_file}: item {index} {key} must be an object when present")
@@ -359,6 +399,7 @@ def validate_benchmark_runner_contract(errors: list[str]) -> None:
         "真实执行",
         "rep-01",
         "command.json",
+        "forbidden_contains",
         "last-message.txt",
         "checks/",
     ):
@@ -467,6 +508,7 @@ def main() -> int:
         validate_skill(skill, errors)
 
     validate_open_source_files(errors)
+    validate_reference_guardrails(errors)
     validate_links(errors)
     validate_forbidden_terms(errors)
     validate_trigger_evals(skill_names, errors)
