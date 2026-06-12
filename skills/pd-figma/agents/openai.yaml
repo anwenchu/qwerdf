@@ -1,0 +1,4 @@
+interface:
+  display_name: "pd-figma"
+  short_description: "把产品设计输入和页面蓝图转成 Figma 设计"
+  default_prompt: "用 $pd-figma 基于产品设计输入和页面蓝图生成 Figma 设计。"

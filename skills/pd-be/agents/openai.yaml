@@ -1,0 +1,4 @@
+interface:
+  display_name: "pd-be"
+  short_description: "按任务切片实现后端"
+  default_prompt: "用 $pd-be 基于技术设计实现一个后端任务切片并验证。"

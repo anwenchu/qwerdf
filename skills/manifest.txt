@@ -1,0 +1,13 @@
+# Ordered qwerdf skill names. Scripts read this file as the single source of truth.
+pd-vet
+pd-prd
+pd-blueprint
+pd-figma
+pd-plan
+pd-fe
+pd-be
+pd-sync
+pd-test
+pd-review
+pd-git
+pd-release

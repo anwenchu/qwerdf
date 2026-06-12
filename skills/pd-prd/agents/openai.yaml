@@ -1,0 +1,4 @@
+interface:
+  display_name: "pd-prd"
+  short_description: "把验证后的产品想法整理成 PRD"
+  default_prompt: "用 $pd-prd 基于想法验证结果生成 PRD。"

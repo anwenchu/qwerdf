@@ -1,0 +1,4 @@
+interface:
+  display_name: "pd-review"
+  short_description: "按 P0-P3 做结构化 Code Review"
+  default_prompt: "用 $pd-review 基于当前改动、技术方案和测试结果做 Code Review。"

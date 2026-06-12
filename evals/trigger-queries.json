@@ -1,0 +1,142 @@
+[
+  {
+    "id": "pd-vet-idea-from-observation",
+    "query": "我有个粗略想法：给跨境电商卖家做一个广告异常提醒工具，先帮我验证这个产品机会值不值得继续。",
+    "should_trigger": true,
+    "skill": "pd-vet",
+    "reason": "早期产品机会判断，需要拆用户问题、竞品、MVP 假设和验证问题。"
+  },
+  {
+    "id": "pd-prd-from-vetted-idea",
+    "query": "基于 pd-work/ad-alert 里的想法验证材料，帮我写正式 PRD、需求清单、用户故事和验收标准。",
+    "should_trigger": true,
+    "skill": "pd-prd",
+    "reason": "从已验证 idea 进入 PRD 生成阶段。"
+  },
+  {
+    "id": "pd-blueprint-from-prd",
+    "query": "把这个 PRD 拆成产品设计输入和页面蓝图，重点列出页面、用户流程、状态和组件清单。",
+    "should_trigger": true,
+    "skill": "pd-blueprint",
+    "reason": "PRD 到产品设计输入和 UI 蓝图。"
+  },
+  {
+    "id": "pd-figma-from-blueprint",
+    "query": "用 $pd-figma 基于 product-brief、ui-pages 和 ui-screens 先给我三个 UI 方向，等我选完再写到 Figma。",
+    "should_trigger": true,
+    "skill": "pd-figma",
+    "reason": "页面蓝图到 UI 方向和 Figma 交付。"
+  },
+  {
+    "id": "pd-plan-from-prd-and-figma",
+    "query": "现在 PRD、页面蓝图和 figma-handoff 都有了，请生成前后端技术设计、API 契约、数据模型和 task-slices。",
+    "should_trigger": true,
+    "skill": "pd-plan",
+    "reason": "产品和设计产物进入工程方案阶段。"
+  },
+  {
+    "id": "pd-fe-single-slice",
+    "query": "按 task-slices.md 里的 FE-02 实现前端筛选面板，包括状态、API client 和最小验证。",
+    "should_trigger": true,
+    "skill": "pd-fe",
+    "reason": "执行一个前端任务切片。"
+  },
+  {
+    "id": "pd-be-single-slice",
+    "query": "按技术方案实现 BE-03 后端接口，包含权限校验、错误码、service 逻辑和后端测试。",
+    "should_trigger": true,
+    "skill": "pd-be",
+    "reason": "执行一个后端任务切片。"
+  },
+  {
+    "id": "pd-sync-contract-check",
+    "query": "前后端都做完了，帮我联调 mock 切真实接口，检查字段、状态码、权限和错误结构是否符合 api-contract。",
+    "should_trigger": true,
+    "skill": "pd-sync",
+    "reason": "前后端实现后进行契约联调。"
+  },
+  {
+    "id": "pd-test-risk-based",
+    "query": "根据 PRD、验收标准、技术方案和联调报告制定测试计划，并执行能跑的单测、集成测试和浏览器验证。",
+    "should_trigger": true,
+    "skill": "pd-test",
+    "reason": "按风险选择并执行测试验证。"
+  },
+  {
+    "id": "pd-review-before-submit",
+    "query": "review 当前改动，重点看需求一致性、API 契约、权限、安全、状态覆盖和测试缺口。",
+    "should_trigger": true,
+    "skill": "pd-review",
+    "reason": "提交前结构化 Code Review。"
+  },
+  {
+    "id": "pd-git-pr-description",
+    "query": "根据 git diff、实现记录、测试报告和 code-review 帮我准备 commit summary 和 PR 描述，先不要 push。",
+    "should_trigger": true,
+    "skill": "pd-git",
+    "reason": "提交和 PR/MR 文案准备。"
+  },
+  {
+    "id": "pd-release-docs",
+    "query": "基于 PRD、技术方案、联调报告、测试报告和 code-review 生成上线计划、检查清单、回滚方案和 release notes。",
+    "should_trigger": true,
+    "skill": "pd-release",
+    "reason": "生成上线前 Markdown 材料。"
+  },
+  {
+    "id": "near-miss-generic-copywriting",
+    "query": "帮我把这段中文介绍改得更自然一点，不需要产品验证、PRD 或工程方案。",
+    "should_trigger": false,
+    "skill": null,
+    "reason": "纯文案润色，不属于 Product Delivery 链路。"
+  },
+  {
+    "id": "near-miss-direct-bugfix",
+    "query": "这个 React 页面报 undefined，直接帮我修 bug 并跑测试，不需要按 pd-work 产出文档。",
+    "should_trigger": false,
+    "skill": null,
+    "reason": "用户明确要求直接修 bug，不需要个人 Product Delivery artifacts。"
+  },
+  {
+    "id": "near-miss-general-git-status",
+    "query": "帮我看一下当前 git status 是什么，不需要生成 commit summary 或 PR 描述。",
+    "should_trigger": false,
+    "skill": null,
+    "reason": "简单 git 状态查询，不应触发 pd-git。"
+  },
+  {
+    "id": "near-miss-figma-only-inspection",
+    "query": "打开这个 Figma 文件帮我看某个按钮的颜色值，不要生成 UI 方向或设计交付。",
+    "should_trigger": false,
+    "skill": null,
+    "reason": "Figma 单点检查，不是 pd-figma 的产品设计交付。"
+  },
+  {
+    "id": "near-miss-platform-deploy",
+    "query": "把这个项目部署到 Vercel 并给我线上链接。",
+    "should_trigger": false,
+    "skill": null,
+    "reason": "真实部署不属于 pd-release，且当前边界明确不部署。"
+  },
+  {
+    "id": "near-miss-api-doc-only",
+    "query": "只帮我把这个接口整理成 OpenAPI 文档，不需要 PRD、联调、测试或上线材料。",
+    "should_trigger": false,
+    "skill": null,
+    "reason": "单一 API 文档任务，不应误触发完整交付链路。"
+  },
+  {
+    "id": "near-miss-code-review-unrelated",
+    "query": "请从代码风格角度简单看一下这个函数命名，不需要按 P0/P1/P2/P3 输出审查报告。",
+    "should_trigger": false,
+    "skill": null,
+    "reason": "轻量代码风格问题，不是 pd-review 的交付风险审查。"
+  },
+  {
+    "id": "near-miss-market-research-only",
+    "query": "帮我查一下这个行业最近有哪些公司，不需要判断 MVP、用户痛点或进入 PRD。",
+    "should_trigger": false,
+    "skill": null,
+    "reason": "泛市场调研，不包含产品机会验证决策。"
+  }
+]

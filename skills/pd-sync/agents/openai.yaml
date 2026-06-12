@@ -1,0 +1,4 @@
+interface:
+  display_name: "pd-sync"
+  short_description: "做前后端联调并记录契约差异"
+  default_prompt: "用 $pd-sync 基于前后端实现和 API 契约做联调验证。"

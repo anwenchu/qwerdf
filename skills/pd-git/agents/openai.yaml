@@ -1,0 +1,4 @@
+interface:
+  display_name: "pd-git"
+  short_description: "准备 commit 和 PR/MR 文案"
+  default_prompt: "用 $pd-git 基于当前改动、测试报告和 Review 结果准备提交说明。"

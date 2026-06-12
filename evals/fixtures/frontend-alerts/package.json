@@ -1,0 +1,8 @@
+{
+  "name": "frontend-alerts-fixture",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node test_alert_filters.mjs"
+  }
+}

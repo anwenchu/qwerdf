@@ -1,0 +1,4 @@
+interface:
+  display_name: "pd-release"
+  short_description: "生成上线计划、清单和回滚方案"
+  default_prompt: "用 $pd-release 基于测试和 Review 结果生成上线文档。"

@@ -1,0 +1,4 @@
+interface:
+  display_name: "pd-plan"
+  short_description: "生成前后端一致的技术设计"
+  default_prompt: "用 $pd-plan 基于 PRD、设计产物和代码库生成前后端一致的技术设计。"

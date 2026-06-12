@@ -1,0 +1,259 @@
+[
+  {
+    "id": "pd-vet-minimal-product-opportunity",
+    "skill": "pd-vet",
+    "prompt": "验证一个产品想法：给跨境电商卖家做广告异常提醒工具，用户是每天看广告花费和 ROI 的运营。判断是否进入 PRD。",
+    "expected_files": [
+      "idea-brief.md",
+      "user-problem.md",
+      "competitor-notes.md",
+      "mvp-hypothesis.md",
+      "validation-questions.md"
+    ],
+    "any_contains": {
+      "idea-brief.md": ["进入 PRD", "继续调研", "暂停"]
+    }
+  },
+  {
+    "id": "pd-prd-from-vet-artifacts",
+    "skill": "pd-prd",
+    "prompt": "基于已有想法验证产物生成 PRD、需求清单、用户故事、验收标准和开放问题。",
+    "setup_files": {
+      "idea-brief.md": "# 想法简报\n目标：广告异常提醒。\n用户：跨境电商运营。\n判断：进入 PRD。\n",
+      "user-problem.md": "# 用户问题\n运营需要及时发现广告花费异常和 ROI 下跌。\n",
+      "mvp-hypothesis.md": "# MVP 假设\n必须有：异常规则、提醒列表、处理状态。\n"
+    },
+    "expected_files": [
+      "prd.md",
+      "requirements.md",
+      "user-stories.md",
+      "acceptance-criteria.md",
+      "open-questions.md"
+    ],
+    "all_contains": {
+      "prd.md": ["背景", "目标", "验收标准"]
+    }
+  },
+  {
+    "id": "pd-blueprint-from-prd",
+    "skill": "pd-blueprint",
+    "prompt": "把 PRD 拆成产品设计输入、用户流程、页面地图、页面规格和组件清单。",
+    "setup_files": {
+      "prd.md": "# PRD\n目标：广告异常提醒。\n核心场景：运营查看异常、确认原因、标记处理。\n",
+      "acceptance-criteria.md": "# 验收标准\n- [ ] default\n- [ ] loading\n- [ ] empty\n- [ ] error\n- [ ] permission\n"
+    },
+    "expected_files": [
+      "product-brief.md",
+      "ui-flows.md",
+      "ui-pages.md",
+      "ui-screens.md",
+      "ui-components.md"
+    ],
+    "all_contains": {
+      "ui-screens.md": ["default", "loading", "empty", "error", "permission"]
+    }
+  },
+  {
+    "id": "pd-figma-ui-directions-only",
+    "skill": "pd-figma",
+    "prompt": "基于页面蓝图先生成 3 个 UI 方向。不要写入真实 Figma，因为我还没有选择方向。",
+    "setup_files": {
+      "product-brief.md": "# 产品设计输入\n目标：广告异常提醒。\n用户：跨境电商运营。\n",
+      "ui-pages.md": "# UI 页面地图\n页面：异常列表、异常详情、规则设置。\n",
+      "ui-screens.md": "# UI 页面规格\n页面：异常列表\n状态：default/loading/empty/error/permission\n",
+      "ui-components.md": "# UI 组件清单\n组件：表格、筛选器、状态 badge、抽屉。\n"
+    },
+    "expected_files": [
+      "ui-directions.md"
+    ],
+    "forbidden_files": [
+      "figma-write.log"
+    ],
+    "all_contains": {
+      "ui-directions.md": ["方向 A", "方向 B", "方向 C", "推荐方向"]
+    }
+  },
+  {
+    "id": "pd-plan-from-design",
+    "skill": "pd-plan",
+    "prompt": "基于 PRD、页面蓝图和 figma-handoff 生成技术设计、前后端映射、API 契约和任务切片。",
+    "setup_files": {
+      "prd.md": "# PRD\n广告异常提醒。\n",
+      "product-brief.md": "# 产品设计输入\n运营发现异常并处理。\n",
+      "ui-screens.md": "# UI 页面规格\n异常列表、详情、规则设置。\n",
+      "ui-components.md": "# UI 组件清单\n筛选器、表格、抽屉。\n",
+      "figma-handoff.md": "# Figma 交付说明\n页面：异常列表、详情、规则设置。\n"
+    },
+    "expected_files": [
+      "tech-plan.md",
+      "frontend-design.md",
+      "frontend-component-map.md",
+      "frontend-route-map.md",
+      "frontend-state-api.md",
+      "backend-design.md",
+      "api-contract.md",
+      "data-model.md",
+      "integration-map.md",
+      "task-slices.md",
+      "risk-plan.md"
+    ],
+    "all_contains": {
+      "task-slices.md": ["frontend", "backend", "contract"]
+    }
+  },
+  {
+    "id": "pd-fe-single-slice-reporting",
+    "skill": "pd-fe",
+    "prompt": "执行 FE-01 前端 slice。请在 fixtures/frontend-alerts 中实现告警筛选逻辑，让 node 测试通过，并按 skill 写实现记录、变更文件、开发说明和前端验收。",
+    "fixture_dirs": {
+      "evals/fixtures/frontend-alerts": "fixtures/frontend-alerts"
+    },
+    "setup_files": {
+      "frontend-design.md": "# 前端技术设计\n页面：异常列表。\n",
+      "frontend-component-map.md": "# 前端组件映射\n筛选器 -> FilterPanel。\n",
+      "frontend-route-map.md": "# 前端路由映射\n异常列表 /alerts。\n",
+      "frontend-state-api.md": "# 前端状态与 API\n页面状态：default/loading/empty/error/permission。\n",
+      "api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
+      "task-slices.md": "# 任务切片\n| FE-01 | P1 | frontend | pending | parallel-safe | | | 异常列表 | npm test |\n"
+    },
+    "expected_files": [
+      "fixtures/frontend-alerts/src/alertFilters.mjs",
+      "frontend-implementation-log.md",
+      "frontend-changed-files.md",
+      "frontend-dev-notes.md",
+      "frontend-acceptance.md"
+    ],
+    "all_contains": {
+      "frontend-implementation-log.md": ["FE-01", "验证"],
+      "fixtures/frontend-alerts/src/alertFilters.mjs": ["filterCriticalAlerts", "severity"]
+    },
+    "check_commands": [
+      "node fixtures/frontend-alerts/test_alert_filters.mjs"
+    ]
+  },
+  {
+    "id": "pd-be-single-slice-reporting",
+    "skill": "pd-be",
+    "prompt": "执行 BE-01 后端 slice。请在 fixtures/backend-alerts 中实现后端告警查询逻辑，让 Python 测试通过，并按 skill 写实现记录、变更文件和后端开发说明。",
+    "fixture_dirs": {
+      "evals/fixtures/backend-alerts": "fixtures/backend-alerts"
+    },
+    "setup_files": {
+      "backend-design.md": "# 后端技术设计\n接口：GET /api/alerts。\n",
+      "api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "data-model.md": "# 数据模型\nAlert。\n",
+      "integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
+      "task-slices.md": "# 任务切片\n| BE-01 | P1 | backend | pending | parallel-safe | | | 查询异常列表 | mvn test |\n"
+    },
+    "expected_files": [
+      "fixtures/backend-alerts/app/alerts.py",
+      "backend-implementation-log.md",
+      "backend-changed-files.md",
+      "backend-dev-notes.md"
+    ],
+    "all_contains": {
+      "backend-implementation-log.md": ["BE-01", "验证"],
+      "fixtures/backend-alerts/app/alerts.py": ["list_open_alerts", "permission"]
+    },
+    "check_commands": [
+      "python3 fixtures/backend-alerts/test_alerts.py"
+    ]
+  },
+  {
+    "id": "pd-sync-contract-report",
+    "skill": "pd-sync",
+    "prompt": "做联调报告。环境可以不可用，但必须记录未执行原因、契约检查项和下一步。",
+    "setup_files": {
+      "api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
+      "frontend-implementation-log.md": "# 前端实现记录\nFE-01 done。\n",
+      "backend-implementation-log.md": "# 后端实现记录\nBE-01 done。\n"
+    },
+    "expected_files": [
+      "integration-plan.md",
+      "integration-report.md"
+    ],
+    "all_contains": {
+      "integration-report.md": ["环境", "未执行"]
+    }
+  },
+  {
+    "id": "pd-test-risk-report",
+    "skill": "pd-test",
+    "prompt": "制定并执行可行的最小测试。如果无法执行真实测试，必须写明未执行项、原因和风险。",
+    "setup_files": {
+      "prd.md": "# PRD\n广告异常提醒。\n",
+      "acceptance-criteria.md": "# 验收标准\n- [ ] 异常列表可打开\n",
+      "tech-plan.md": "# 技术方案\n前后端分离。\n",
+      "integration-report.md": "# 联调报告\n环境未启动。\n"
+    },
+    "expected_files": [
+      "test-plan.md",
+      "test-cases.md",
+      "test-report.md",
+      "regression-notes.md"
+    ],
+    "all_contains": {
+      "test-report.md": ["未执行", "风险"]
+    }
+  },
+  {
+    "id": "pd-review-structured-findings",
+    "skill": "pd-review",
+    "prompt": "基于这些产物做提交前审查。没有真实 git diff 时，也要说明证据不足并输出残余风险。",
+    "setup_files": {
+      "prd.md": "# PRD\n广告异常提醒。\n",
+      "tech-plan.md": "# 技术方案\n前后端分离。\n",
+      "api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "integration-report.md": "# 联调报告\n未执行。\n",
+      "test-report.md": "# 测试报告\n未执行。\n"
+    },
+    "expected_files": [
+      "code-review.md"
+    ],
+    "all_contains": {
+      "code-review.md": ["残余风险", "测试缺口"]
+    }
+  },
+  {
+    "id": "pd-git-docs-only",
+    "skill": "pd-git",
+    "prompt": "准备 commit-summary 和 PR 描述。不要真的 git add、commit 或 push。",
+    "setup_files": {
+      "frontend-implementation-log.md": "# 前端实现记录\nFE-01 done。\n",
+      "test-report.md": "# 测试报告\n通过：无。未执行：浏览器验证。\n",
+      "code-review.md": "# Code Review\n结论：无 P0/P1，残余风险：浏览器未跑。\n"
+    },
+    "expected_files": [
+      "commit-summary.md",
+      "pr-description.md"
+    ],
+    "all_contains": {
+      "commit-summary.md": ["Planned files", "Tests"],
+      "pr-description.md": ["What changed", "Validation", "Risks"]
+    }
+  },
+  {
+    "id": "pd-release-docs-only",
+    "skill": "pd-release",
+    "prompt": "生成上线计划、检查清单、回滚方案和 release notes。不执行部署。",
+    "setup_files": {
+      "prd.md": "# PRD\n广告异常提醒。\n",
+      "tech-plan.md": "# 技术方案\n前后端分离。\n",
+      "integration-report.md": "# 联调报告\n通过。\n",
+      "test-report.md": "# 测试报告\n通过。\n",
+      "code-review.md": "# Code Review\n无 P0/P1。\n",
+      "commit-summary.md": "# Commit Summary\ncommit message: feat: add alert workflow\n"
+    },
+    "expected_files": [
+      "release-plan.md",
+      "release-checklist.md",
+      "rollback-plan.md",
+      "release-notes.md"
+    ],
+    "all_contains": {
+      "rollback-plan.md": ["回滚触发条件", "回滚步骤"]
+    }
+  }
+]

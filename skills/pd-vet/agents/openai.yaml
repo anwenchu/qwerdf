@@ -1,0 +1,4 @@
+interface:
+  display_name: "pd-vet"
+  short_description: "验证产品想法并整理 MVP 假设"
+  default_prompt: "用 $pd-vet 基于当前产品想法做想法验证并整理 MVP 假设。"
