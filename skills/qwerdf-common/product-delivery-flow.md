@@ -117,13 +117,16 @@ pd-work/<name>/
 - `$pd-fe` 和 `$pd-be` 必须基于同一份 `tech/task-slices.md`、`tech/api-contract.md` 和 `tech/integration-map.md`。
 - `$pd-fe` 必须基于同一份 `ui/ui-design-system.md`、`ui/figma-handoff.md` 和 `tech/frontend/frontend-design.md`；设计系统缺失、冲突或未转成前端约束时，先回到 `$pd-figma` 或 `$pd-plan`。
 - `$pd-plan` 必须产出 `tech/backend/sql-execution-plan.md`：涉及 DDL、DML、数据修复、初始化数据、权限 / 配置数据、索引、迁移或回填时逐条列出；不涉及时也必须明确写“无 SQL 执行项 / 不涉及”。
-- `$pd-fe` 和 `$pd-be` 每次只能执行一个 task slice。
+- `$pd-fe` 和 `$pd-be` 每次只能执行一个 task slice；例外是来自 `$pd-sync`、`$pd-test` 或 `$pd-review` 的单个明确实现缺陷修复，且必须能映射到已有契约和已有实现 slice。
 - 并行执行时，`$pd-fe` 和 `$pd-be` 只能更新自己负责的 slice 状态。
 - `contract` 类型任务只能由 `$pd-plan` 处理，不能由 `$pd-fe` 或 `$pd-be` 单方面修改。
 - `$pd-plan` 交付给 `$pd-fe` / `$pd-be` 前，必须把自己创建的 `contract` slice 处理到 `done`，或停止交付并说明缺少的产品 / 设计 / 契约输入；不得把 `pending` / `blocked` 的 `contract` slice 作为实现阶段前置条件交给 `$pd-fe` / `$pd-be`。
 - 所有本次相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 完成前，不进入 `$pd-sync` 之后的阶段；缺失实现只允许回到 `$pd-fe` / `$pd-be`。
 - `$pd-fe` / `$pd-be` 完成后，下一步只能是继续实现剩余 slice，或在前后端相关 slice 都完成后进入 `$pd-sync`；不得建议直接 `$pd-git`、提交或 PR。
-- `$pd-sync` 发现契约不一致时，不得直接修代码，必须先生成 `sync/plan-revision.md` 并回到 `$pd-plan`；发现实现问题时回到 `$pd-fe` / `$pd-be`。
+- `$pd-sync` 必须对每个阻断问题输出修复路由：`contract-mismatch` 回 `$pd-plan`，`implementation-defect` 回 `$pd-fe` / `$pd-be` 的缺陷修复模式，`slice-missing` 回 `$pd-plan` 补齐或修正 task slice，`environment-blocked` 留在 `$pd-sync` / 环境准备。
+- `$pd-sync` 发现契约不一致时，不得直接修代码，必须生成 `sync/api-mismatch.md` 和 `sync/plan-revision.md` 并回到 `$pd-plan`。
+- `$pd-sync` 发现契约正确但实现缺失或运行结果错误时，不得生成方案修订来掩盖实现缺陷；必须在 `sync/integration-report.md` 写明契约证据、实现证据、归属 slice 和下一步 `$pd-fe` / `$pd-be`。
+- `$pd-sync` 发现契约正确但 `tech/task-slices.md` 没有任何前端 / 后端 slice 覆盖该实现时，视为 `slice-missing`，必须回 `$pd-plan` 修正切片；不得直接要求 `$pd-fe` / `$pd-be` 新造未计划任务。
 - `$pd-sync` 没有明确通过，或未明确标记“不适用并说明原因”时，不进入 `$pd-test` 之后的阶段。
 - `$pd-test` 必须读取 `$pd-sync` 的 `sync/integration-report.md`；联调未通过或缺失时，不得把测试结论写成“通过”，不得进入 `$pd-review` 或 `$pd-git`。
 - `$pd-test` 必须读取 `tech/backend/sql-execution-plan.md`；存在 SQL 执行项时，必须在 `test/test-report.md` 记录测试环境执行状态、验证证据和未执行风险。
@@ -210,6 +213,8 @@ blocks
 - 不要把工程初始化、目录创建、依赖安装、Spring Boot / Vite 脚手架、`.env.example`、数据库迁移文件、mock server / API client 等需要改代码或文件的实现动作写成 `contract` slice。按实际归属拆成 `frontend`、`backend`、`shared-frontend` 或 `shared-backend`。
 - 如果某个实现动作依赖共享契约，使用“两段式”切片：一个 `contract` slice 标记为 `done` 以确认契约，一个或多个实现 slice 保持 `pending` 由 `$pd-fe` / `$pd-be` 执行。
 - `$pd-fe` / `$pd-be` 选择 slice 时，只能执行自身类型且所有 `blocked-by` 已为 `done` 的 slice；若发现唯一阻塞是未完成 `contract` slice，应报告 `$pd-plan` handoff 问题，而不是自行修改契约。
+- 缺陷修复例外：当 `$pd-sync` / `$pd-test` / `$pd-review` 的 finding 明确标记为 `implementation-defect`，并给出契约证据、实现证据和归属的已完成 `frontend` / `backend` / `shared-*` slice 时，`$pd-fe` / `$pd-be` 可以临时重开该 slice 或记录同 slice 修复，不需要先回 `$pd-plan` 新增 pending slice。
+- 如果 finding 没有归属 slice、归属为 `slice-missing`，或需要新增 / 修改 API 契约、数据模型、状态枚举、权限规则、页面路由或任务范围，必须回 `$pd-plan`；实现 skill 不得自行扩展范围。
 
 ## 9. Review 严重级别
 

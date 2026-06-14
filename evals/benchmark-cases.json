@@ -338,6 +338,42 @@
     }
   },
   {
+    "id": "pd-sync-implementation-defect-routing",
+    "skill": "pd-sync",
+    "prompt": "联调人工确认审批接口。契约中已有 POST /api/v1/confirmations/{id}/approve，task-slices 中 FE-010 和 BE-010 都是 done，但真实后端目前只有 GET /api/v1/confirmations，POST 调用返回 500 / NoResourceFoundException。请生成联调报告并判断下一步，不要把实现漏接口误判成需要新增契约。",
+    "setup_files": {
+      "tech/api-contract.md": "# API 契约\nPOST /api/v1/confirmations/{id}/approve\nPOST /api/v1/confirmations/{id}/reject\nPOST /api/v1/confirmations/{id}/cancel\nGET /api/v1/confirmations\n",
+      "tech/integration-map.md": "# 前后端一致性映射\n人工确认页 approve 动作 -> POST /api/v1/confirmations/{id}/approve。\n",
+      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-010 | P1 | frontend | done | parallel-safe | - | SYNC-003 | 人工确认审批按钮和 API client | npm test |\n| BE-010 | P1 | backend | done | parallel-safe | - | SYNC-003 | 人工确认 approve/reject/cancel 接口 | mvn test |\n| SYNC-003 | P1 | sync | blocked | stage-gate | FE-010, BE-010 | - | 人工确认审批真实 API 联调 | POST approve 返回 2xx |\n",
+      "tech/frontend/frontend-implementation-log.md": "# 前端实现记录\nFE-010 done。\n",
+      "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-010 done。\n",
+      "runtime-evidence.md": "# 运行证据\nPOST /api/v1/confirmations/123/approve -> 500 INTERNAL_SERVER_ERROR\n后端日志：NoResourceFoundException\nConfirmationController 当前只有 GET /api/v1/confirmations。\n"
+    },
+    "expected_files": [
+      "sync/integration-plan.md",
+      "sync/integration-report.md"
+    ],
+    "forbidden_files": [
+      "sync/plan-revision.md"
+    ],
+    "all_contains": {
+      "sync/integration-report.md": [
+        "实现前置状态",
+        "修复路由",
+        "implementation-defect",
+        "BE-010",
+        "$pd-be",
+        "契约证据",
+        "实现证据"
+      ]
+    },
+    "forbidden_contains": {
+      "sync/integration-report.md": [
+        "slice-missing"
+      ]
+    }
+  },
+  {
     "id": "pd-test-risk-report",
     "skill": "pd-test",
     "prompt": "制定并执行可行的最小测试。如果无法执行真实测试，必须写明未执行项、原因和风险。",
