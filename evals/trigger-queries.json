@@ -15,28 +15,28 @@
   },
   {
     "id": "pd-blueprint-from-prd",
-    "query": "把这个 PRD 拆成产品设计输入和页面蓝图，重点列出页面、用户流程、状态和组件清单。",
+    "query": "把这个 PRD 拆成产品设计输入、UI 设计系统和页面蓝图，重点列出页面、用户流程、状态和组件清单。",
     "should_trigger": true,
     "skill": "pd-blueprint",
     "reason": "PRD 到产品设计输入和 UI 蓝图。"
   },
   {
     "id": "pd-figma-from-blueprint",
-    "query": "用 $pd-figma 基于 product-brief、ui-pages 和 ui-screens 先给我三个 UI 方向，等我选完再写到 Figma。",
+    "query": "用 $pd-figma 基于 product/product-brief.md、ui/ui-design-system.md、ui/ui-pages.md 和 ui/ui-screens.md 先给我三个 UI 方向，等我选完再写到 Figma。",
     "should_trigger": true,
     "skill": "pd-figma",
     "reason": "页面蓝图到 UI 方向和 Figma 交付。"
   },
   {
     "id": "pd-plan-from-prd-and-figma",
-    "query": "现在 PRD、页面蓝图和 figma-handoff 都有了，请生成前后端技术设计、API 契约、数据模型和 task-slices。",
+    "query": "现在 PRD、UI 设计系统、页面蓝图和 ui/figma-handoff.md 都有了，请生成前后端技术设计、API 契约、数据模型和 tech/task-slices.md。",
     "should_trigger": true,
     "skill": "pd-plan",
     "reason": "产品和设计产物进入工程方案阶段。"
   },
   {
     "id": "pd-fe-single-slice",
-    "query": "按 task-slices.md 里的 FE-02 实现前端筛选面板，包括状态、API client 和最小验证。",
+    "query": "按 tech/task-slices.md 里的 FE-02 实现前端筛选面板，包括状态、API client 和最小验证。",
     "should_trigger": true,
     "skill": "pd-fe",
     "reason": "执行一个前端任务切片。"
@@ -64,14 +64,14 @@
   },
   {
     "id": "pd-review-before-submit",
-    "query": "review 当前改动，重点看需求一致性、API 契约、权限、安全、状态覆盖和测试缺口。",
+    "query": "review 当前改动，重点看需求一致性、API 契约、权限、安全、UI 设计质量、状态覆盖和测试缺口。",
     "should_trigger": true,
     "skill": "pd-review",
     "reason": "提交前结构化 Code Review。"
   },
   {
     "id": "pd-git-pr-description",
-    "query": "根据 git diff、实现记录、测试报告和 code-review 帮我准备 commit summary 和 PR 描述，先不要 push。",
+    "query": "根据 git diff、实现记录、sync/integration-report.md、test/test-report.md 和 test/code-review.md 帮我准备 commit summary 和 PR 描述，先不要 push。",
     "should_trigger": true,
     "skill": "pd-git",
     "reason": "提交和 PR/MR 文案准备。"

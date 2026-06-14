@@ -1,7 +1,7 @@
 ---
 name: pd-test
 description: >-
-  测试验证工作流，基于 PRD、技术方案、前后端实现和联调结果制定并执行 unit、integration、e2e、visual/UI regression、regression、manual acceptance 测试，输出测试计划、用例、报告和回归说明。Use when the user mentions $pd-test、pd-test、测试验证、生成测试计划、执行测试、回归测试、验收测试。
+  测试验证工作流，基于 PRD、技术方案、SQL 执行计划、前后端实现和联调结果制定并执行 unit、integration、e2e、visual/UI regression、regression、manual acceptance 测试，输出测试计划、用例、报告和回归说明；涉及 SQL / migration 时记录测试环境执行验证。Use when the user mentions $pd-test、pd-test、测试验证、生成测试计划、执行测试、回归测试、验收测试、SQL执行验证。
 ---
 
 # $pd-test — 测试验证
@@ -11,10 +11,11 @@ Codex Product Delivery Skill：按风险选择并执行足够的测试验证。
 ## 读取
 
 1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
-2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `test-plan.md`、`test-cases.md`、`test-report.md`、`regression-notes.md` 的模板。
-3. 读取 `prd.md`、`acceptance-criteria.md`、`tech-plan.md`、`integration-report.md`、`frontend-acceptance.md` 和实现记录。
+2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `test/test-plan.md`、`test/test-cases.md`、`test/test-report.md`、`test/regression-notes.md` 的模板。
+3. 读取 `product/prd.md`、`product/acceptance-criteria.md`、`tech/tech-plan.md`、`tech/backend/sql-execution-plan.md`、`sync/integration-report.md`、`tech/frontend/frontend-acceptance.md` 和实现记录。
 4. 识别项目已有测试框架和 `package.json` / 构建工具 / 测试命令。
-5. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
+5. 如当前目录是 git 仓库，读取 `.gitignore`、`git status --short` 和必要时的 ignored / untracked 状态。
+6. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
 
 ## 边界
 
@@ -22,6 +23,10 @@ Codex Product Delivery Skill：按风险选择并执行足够的测试验证。
 - 不引入新测试框架，除非用户明确要求。
 - 不大范围修复业务代码；发现问题时记录并回到 `$pd-fe` 或 `$pd-be`。
 - 未执行的测试必须单独列出原因和风险，不得合并写成通过。
+- 不执行 `git add`、`git commit` 或修改 `.gitignore`，除非用户明确要求；默认只记录 gitignore / 工作区风险。
+- `sync/integration-report.md` 缺失、联调未通过或未明确“不适用并说明原因”时，不得把测试结论写成通过，不得建议进入 `$pd-review` 或 `$pd-git`。
+- `tech/backend/sql-execution-plan.md` 缺失时，不得忽略 SQL 风险；必须在 `test/test-report.md` 标为证据缺口并建议回到 `$pd-plan`。
+- 存在 SQL 执行项但未在测试环境执行或未验证时，不得把相关测试结论写成完全通过；必须记录未执行原因、风险和后续处理。
 
 ## 测试决策树
 
@@ -41,12 +46,16 @@ Codex Product Delivery Skill：按风险选择并执行足够的测试验证。
 
 ## 流程
 
-1. 生成 `test-plan.md`，按风险选择 unit、integration、e2e、visual/UI regression、regression、manual acceptance。
-2. 生成 `test-cases.md`。
-3. 执行项目可用的最小测试、构建或浏览器验证。
-4. 写入 `test-report.md`，记录命令、结果和证据。
-5. 失败、跳过或无法执行的验证必须写入 `test-report.md` 的未执行 / 未覆盖部分。
-6. 写入 `regression-notes.md`，说明覆盖范围、未覆盖范围和残余风险。
+1. 先检查 `sync/integration-report.md`：联调必须通过，或明确“不适用”且说明原因；否则只生成测试阻断说明，并提示回到 `$pd-sync` / `$pd-fe` / `$pd-be` / `$pd-plan`。
+2. 读取 `tech/backend/sql-execution-plan.md`：无 SQL 时记录“不涉及”；有 SQL 时把每条 SQL ID 纳入 `test/test-plan.md` 和 `test/test-report.md` 的验证范围。
+3. 生成 `test/test-plan.md`，按风险选择 unit、integration、e2e、visual/UI regression、regression、manual acceptance，并包含 SQL 执行验证。
+4. 生成 `test/test-cases.md`。
+5. 执行项目可用的最小测试、构建、SQL / migration 测试环境执行或浏览器验证。
+6. 执行测试前后采集 `git status --short`；如测试、构建或浏览器验证产生新文件，判断它们是应提交产物、应忽略产物还是无关噪声。
+7. 对照 `.gitignore` 和 `git ls-files --others --exclude-standard` 检查未跟踪但未忽略的构建产物、缓存、截图、日志、报告或临时文件；发现应忽略但未忽略的文件时写入风险，不把它们算作测试通过证据。
+8. 写入 `test/test-report.md`，记录命令、结果、证据、联调前置状态、SQL 执行验证和 Git / ignore 检查：新增或变化文件、应提交候选、应排除候选、可能漏提交和可能多提交。
+9. 失败、跳过或无法执行的验证必须写入 `test/test-report.md` 的未执行 / 未覆盖部分。
+10. 写入 `test/regression-notes.md`，说明覆盖范围、未覆盖范围和残余风险。
 
 ## 输出摘要
 
@@ -54,10 +63,10 @@ Codex Product Delivery Skill：按风险选择并执行足够的测试验证。
 测试验证完成: <name>
 目录: <output-dir>
 文件:
-  - test-plan.md
-  - test-cases.md
-  - test-report.md
-  - regression-notes.md
+  - test/test-plan.md
+  - test/test-cases.md
+  - test/test-report.md
+  - test/regression-notes.md
 结论: <通过 / 未通过 / 有残余风险>
-下一步: 用 $pd-review 做 Code Review
+下一步: <通过则用 $pd-review；否则回到 $pd-sync / $pd-fe / $pd-be / $pd-plan>
 ```

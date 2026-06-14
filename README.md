@@ -34,14 +34,14 @@ $pd-vet -> $pd-prd -> $pd-blueprint -> $pd-figma -> $pd-plan -> $pd-fe + $pd-be 
 
 - `$pd-vet`：把一句话 idea、竞品 URL、截图或市场观察拆成问题、用户、竞品、MVP 假设和验证问题。
 - `$pd-prd`：把已验证 idea、用户问题、MVP 假设和竞品参考整理成正式 PRD 与验收口径。
-- `$pd-blueprint`：把 PRD、竞品 URL、截图、产品想法或已有 spec 拆成产品设计输入和 UI 页面蓝图。
-- `$pd-figma`：基于产品设计输入和页面蓝图先生成 3 个 UI 方向，用户选择后再写入或整理 Figma 设计交付。
-- `$pd-plan`：把 PRD、UI 蓝图、Figma handoff 和现有代码库串成前后端一致的技术设计，并输出前端组件、路由、状态/API 映射。
-- `$pd-fe`：按 `task-slices.md` 执行一个前端 slice，实现页面、组件、状态、API client 和前端验收。
-- `$pd-be`：按 `task-slices.md` 执行一个后端 slice，实现接口、服务逻辑、数据模型、权限和后端测试。
+- `$pd-blueprint`：把 PRD、竞品 URL、截图、产品想法或已有 spec 拆成产品设计输入、UI 设计系统和 UI 页面蓝图。
+- `$pd-figma`：基于产品设计输入、UI 设计系统和页面蓝图先生成 3 个 UI 方向，用户选择后再写入或整理 Figma 设计交付。
+- `$pd-plan`：把 PRD、UI 设计系统、UI 蓝图、Figma handoff 和现有代码库串成前后端一致的技术设计，并输出前端组件、路由、状态/API 映射。
+- `$pd-fe`：按 `tech/task-slices.md` 执行一个前端 slice，实现页面、组件、状态、API client 和前端 UI 质量验收。
+- `$pd-be`：按 `tech/task-slices.md` 执行一个后端 slice，实现接口、服务逻辑、数据模型、权限和后端测试。
 - `$pd-sync`：做前后端联调，记录接口、状态、权限、mock/真实接口差异；发现契约问题时回到 `$pd-plan`。
 - `$pd-test`：制定并执行测试验证，区分 unit、integration、e2e、visual/UI regression、regression、manual acceptance。
-- `$pd-review`：做结构化 Code Review，按 `P0/P1/P2/P3` 输出风险和测试缺口。
+- `$pd-review`：做结构化 Code Review 和 UI Review，按 `P0/P1/P2/P3` 输出风险、UI 质量问题和测试缺口。
 - `$pd-git`：准备 commit/PR 文案；用户明确要求时可执行 `git add`、`git commit`，默认不 push。
 - `$pd-release`：生成通用 Markdown 上线计划、检查清单、回滚方案和 release notes，不执行部署。
 
@@ -51,59 +51,69 @@ $pd-vet -> $pd-prd -> $pd-blueprint -> $pd-figma -> $pd-plan -> $pd-fe + $pd-be 
 
 ```text
 pd-work/<name>/
-  idea-brief.md
-  user-problem.md
-  competitor-notes.md
-  mvp-hypothesis.md
-  validation-questions.md
-  prd.md
-  requirements.md
-  user-stories.md
-  acceptance-criteria.md
-  open-questions.md
-  product-brief.md
-  ui-flows.md
-  ui-pages.md
-  ui-screens.md
-  ui-components.md
-  ui-directions.md
-  figma-handoff.md
-  tech-plan.md
-  frontend-design.md
-  frontend-component-map.md
-  frontend-route-map.md
-  frontend-state-api.md
-  backend-design.md
-  api-contract.md
-  data-model.md
-  integration-map.md
-  task-slices.md
-  risk-plan.md
-  frontend-implementation-log.md
-  frontend-changed-files.md
-  frontend-dev-notes.md
-  frontend-acceptance.md
-  backend-implementation-log.md
-  backend-changed-files.md
-  backend-dev-notes.md
-  integration-plan.md
-  integration-report.md
-  api-mismatch.md
-  plan-revision.md
-  test-plan.md
-  test-cases.md
-  test-report.md
-  regression-notes.md
-  code-review.md
-  commit-summary.md
-  pr-description.md
-  release-plan.md
-  release-checklist.md
-  rollback-plan.md
-  release-notes.md
+  product/
+    idea-brief.md
+    user-problem.md
+    competitor-notes.md
+    mvp-hypothesis.md
+    validation-questions.md
+    prd.md
+    requirements.md
+    user-stories.md
+    acceptance-criteria.md
+    open-questions.md
+    product-brief.md
+  ui/
+    ui-design-system.md
+    ui-flows.md
+    ui-pages.md
+    ui-screens.md
+    ui-components.md
+    ui-directions.md
+    figma-handoff.md
+  tech/
+    tech-plan.md
+    api-contract.md
+    integration-map.md
+    task-slices.md
+    risk-plan.md
+    frontend/
+      frontend-design.md
+      frontend-component-map.md
+      frontend-route-map.md
+      frontend-state-api.md
+      frontend-implementation-log.md
+      frontend-changed-files.md
+      frontend-dev-notes.md
+      frontend-acceptance.md
+    backend/
+      backend-design.md
+      data-model.md
+      sql-execution-plan.md
+      backend-implementation-log.md
+      backend-changed-files.md
+      backend-dev-notes.md
+  sync/
+    integration-plan.md
+    integration-report.md
+    api-mismatch.md
+    plan-revision.md
+  test/
+    test-plan.md
+    test-cases.md
+    test-report.md
+    regression-notes.md
+    code-review.md
+  release/
+    commit-summary.md
+    pr-description.md
+    release-plan.md
+    release-checklist.md
+    rollback-plan.md
+    release-notes.md
 ```
 
-`<name>` 优先使用用户给出的项目名或产品名；没有明确名称时，由 skill 推导简短 kebab-case 名称。
+`<name>` 优先使用用户给出的项目名或产品名；没有明确名称时，由 skill 推导简短 kebab-case 名称。新产物必须写入上述分目录；旧平铺文件只作为 legacy fallback 读取。
 
 ## Install
 
@@ -281,6 +291,7 @@ evals/runs/<timestamp>/
 - `vercel-labs/agent-skills/skills/vercel-optimize/SKILL.md`：采用证据优先、确定性 gate、候选范围收窄、建议绑定文件和版本的审查方式。
 - `vercel-labs/agent-skills/skills/deploy-to-vercel/SKILL.md`：采用先采集项目状态、再选择动作路径、默认避免高影响动作的安全流程；本仓库只借鉴状态采集，不执行部署。
 - `vercel-labs/agent-skills/skills/web-design-guidelines/SKILL.md`：采用先读取最新规则，再按文件范围输出定位 findings 的审查模式。
+- `nextlevelbuilder/ui-ux-pro-max-skill`：借鉴 data / scripts / templates 分层、按需加载 UI/UX 知识、Design System Generator、MASTER design system + page override、以及 UI 质量 checklist 的组织方式；本仓库只吸收结构和可验证规则，不复制外部风格库、营销话术或平台模板。
 
 ## Boundaries
 
@@ -294,6 +305,10 @@ evals/runs/<timestamp>/
 - 竞品只提炼模式，不照抄视觉、文案或受保护资产。
 - 设计参考只能提供视觉风格、信息密度、布局节奏、组件形态和交互细节；产品范围、页面、导航、资产类型、业务模块和关键文案必须来自 PRD、product-brief、UI 蓝图或用户明确确认。
 - 参考材料与产品文档冲突时，以产品文档为准；冲突内容必须写入“不应照搬 / 参考使用边界”，不得下推到 Figma、技术设计或实现。
+- `ui/ui-design-system.md` 是 UI 设计系统事实源；`MASTER` 定义全局规则，页面级差异写入 `Page Overrides`。`$pd-blueprint` 生成草案，`$pd-figma` 确认和补齐，`$pd-plan` / `$pd-fe` / `$pd-review` 只读取、执行和验证。
+- SaaS、CRM、管理后台和操作台默认采用克制、密集、可扫描、效率优先的界面方向；不得把 landing page hero、过度卡片化或装饰性视觉带入操作型产品，除非 PRD 明确要求。
+- 提交和 PR 准备必须晚于联调、测试和 Code Review；`$pd-sync` 未通过、`$pd-test` 未通过或 `$pd-review` 有 P0/P1 时，不得进入 `$pd-git` 执行提交。
+- 提交前必须检查 `.gitignore`、ignored / untracked 状态和 planned files，确认没有漏提交相关文件，也没有多提交缓存、日志、截图、构建产物、临时报告或历史 benchmark run。
 
 ## Structure
 
@@ -303,6 +318,10 @@ skills/
     artifact-contracts.md
     engineering-contracts.md
     product-delivery-flow.md
+    ui-design-system.md
+    ui-quality-checklist.md
+    ui-patterns.md
+    ui-review-rules.md
   manifest.txt
   pd-vet/
     SKILL.md

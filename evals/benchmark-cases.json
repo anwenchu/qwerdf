@@ -4,14 +4,18 @@
     "skill": "pd-vet",
     "prompt": "验证一个产品想法：给跨境电商卖家做广告异常提醒工具，用户是每天看广告花费和 ROI 的运营。判断是否进入 PRD。",
     "expected_files": [
-      "idea-brief.md",
-      "user-problem.md",
-      "competitor-notes.md",
-      "mvp-hypothesis.md",
-      "validation-questions.md"
+      "product/idea-brief.md",
+      "product/user-problem.md",
+      "product/competitor-notes.md",
+      "product/mvp-hypothesis.md",
+      "product/validation-questions.md"
     ],
     "any_contains": {
-      "idea-brief.md": ["进入 PRD", "继续调研", "暂停"]
+      "product/idea-brief.md": [
+        "进入 PRD",
+        "继续调研",
+        "暂停"
+      ]
     }
   },
   {
@@ -19,19 +23,23 @@
     "skill": "pd-prd",
     "prompt": "基于已有想法验证产物生成 PRD、需求清单、用户故事、验收标准和开放问题。",
     "setup_files": {
-      "idea-brief.md": "# 想法简报\n目标：广告异常提醒。\n用户：跨境电商运营。\n判断：进入 PRD。\n",
-      "user-problem.md": "# 用户问题\n运营需要及时发现广告花费异常和 ROI 下跌。\n",
-      "mvp-hypothesis.md": "# MVP 假设\n必须有：异常规则、提醒列表、处理状态。\n"
+      "product/idea-brief.md": "# 想法简报\n目标：广告异常提醒。\n用户：跨境电商运营。\n判断：进入 PRD。\n",
+      "product/user-problem.md": "# 用户问题\n运营需要及时发现广告花费异常和 ROI 下跌。\n",
+      "product/mvp-hypothesis.md": "# MVP 假设\n必须有：异常规则、提醒列表、处理状态。\n"
     },
     "expected_files": [
-      "prd.md",
-      "requirements.md",
-      "user-stories.md",
-      "acceptance-criteria.md",
-      "open-questions.md"
+      "product/prd.md",
+      "product/requirements.md",
+      "product/user-stories.md",
+      "product/acceptance-criteria.md",
+      "product/open-questions.md"
     ],
     "all_contains": {
-      "prd.md": ["背景", "目标", "验收标准"]
+      "product/prd.md": [
+        "背景",
+        "目标",
+        "验收标准"
+      ]
     }
   },
   {
@@ -39,18 +47,30 @@
     "skill": "pd-blueprint",
     "prompt": "把 PRD 拆成产品设计输入、用户流程、页面地图、页面规格和组件清单。",
     "setup_files": {
-      "prd.md": "# PRD\n目标：广告异常提醒。\n核心场景：运营查看异常、确认原因、标记处理。\n",
-      "acceptance-criteria.md": "# 验收标准\n- [ ] default\n- [ ] loading\n- [ ] empty\n- [ ] error\n- [ ] permission\n"
+      "product/prd.md": "# PRD\n目标：广告异常提醒。\n核心场景：运营查看异常、确认原因、标记处理。\n",
+      "product/acceptance-criteria.md": "# 验收标准\n- [ ] default\n- [ ] loading\n- [ ] empty\n- [ ] error\n- [ ] permission\n"
     },
     "expected_files": [
-      "product-brief.md",
-      "ui-flows.md",
-      "ui-pages.md",
-      "ui-screens.md",
-      "ui-components.md"
+      "product/product-brief.md",
+      "ui/ui-design-system.md",
+      "ui/ui-flows.md",
+      "ui/ui-pages.md",
+      "ui/ui-screens.md",
+      "ui/ui-components.md"
     ],
     "all_contains": {
-      "ui-screens.md": ["default", "loading", "empty", "error", "permission"]
+      "ui/ui-design-system.md": [
+        "MASTER",
+        "Page Overrides",
+        "信息密度"
+      ],
+      "ui/ui-screens.md": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "permission"
+      ]
     }
   },
   {
@@ -58,26 +78,64 @@
     "skill": "pd-blueprint",
     "prompt": "基于 Apex Capital 的 PRD 和 Toobit 截图参考生成产品设计输入与页面蓝图。Toobit 参考图只允许借鉴深色交易视觉、行情密度和下单区交互，不允许把 USDC-M、Events、Copy Trading 或 Toobit 的导航业务带进 Apex。",
     "setup_files": {
-      "prd.md": "# PRD\n产品：Apex Capital。\n目标：自营交易挑战和 BTC/ETH U 本位合约交易体验。\n核心场景：用户查看挑战账户、查看 BTCUSDT / ETHUSDT 行情、下单、查看持仓和风险。\n功能范围：自营挑战、BTCUSDT、ETHUSDT、订单面板、持仓、风险提示。\n非目标范围：不做 USDC-M，不做活动页，不做跟单，不做 Toobit 交易所导航。\n",
-      "requirements.md": "# 需求清单\n| ID | 需求 | 优先级 | 来源 | 验收标准 |\n| --- | --- | --- | --- | --- |\n| R1 | 自营挑战账户顶部摘要 | P0 | PRD | 只展示 Apex 挑战语境 |\n| R2 | BTCUSDT / ETHUSDT 合约交易 | P0 | PRD | 不展示未支持资产 |\n",
+      "product/prd.md": "# PRD\n产品：Apex Capital。\n目标：自营交易挑战和 BTC/ETH U 本位合约交易体验。\n核心场景：用户查看挑战账户、查看 BTCUSDT / ETHUSDT 行情、下单、查看持仓和风险。\n功能范围：自营挑战、BTCUSDT、ETHUSDT、订单面板、持仓、风险提示。\n非目标范围：不做 USDC-M，不做活动页，不做跟单，不做 Toobit 交易所导航。\n",
+      "product/requirements.md": "# 需求清单\n| ID | 需求 | 优先级 | 来源 | 验收标准 |\n| --- | --- | --- | --- | --- |\n| R1 | 自营挑战账户顶部摘要 | P0 | PRD | 只展示 Apex 挑战语境 |\n| R2 | BTCUSDT / ETHUSDT 合约交易 | P0 | PRD | 不展示未支持资产 |\n",
       "reference-notes.md": "# 参考图说明\n来源：Toobit 截图。\n可借鉴：深色交易界面、行情列表密度、买卖下单区结构、风险色彩反馈。\n不得带入：USDC-M、Events、Copy Trading、Toobit 品牌导航、未支持资产和活动入口。\n"
     },
     "expected_files": [
-      "product-brief.md",
-      "ui-flows.md",
-      "ui-pages.md",
-      "ui-screens.md",
-      "ui-components.md"
+      "product/product-brief.md",
+      "ui/ui-design-system.md",
+      "ui/ui-flows.md",
+      "ui/ui-pages.md",
+      "ui/ui-screens.md",
+      "ui/ui-components.md"
     ],
     "all_contains": {
-      "product-brief.md": ["产品事实源", "参考使用边界", "USDC-M", "Copy Trading", "不得带入"],
-      "ui-pages.md": ["Apex Capital", "自营挑战", "BTCUSDT", "ETHUSDT"],
-      "ui-screens.md": ["default", "loading", "empty", "error", "permission"]
+      "product/product-brief.md": [
+        "产品事实源",
+        "参考使用边界",
+        "USDC-M",
+        "Copy Trading",
+        "不得带入"
+      ],
+      "ui/ui-design-system.md": [
+        "MASTER",
+        "Page Overrides",
+        "不得带入"
+      ],
+      "ui/ui-pages.md": [
+        "Apex Capital",
+        "自营挑战",
+        "BTCUSDT",
+        "ETHUSDT"
+      ],
+      "ui/ui-screens.md": [
+        "default",
+        "loading",
+        "empty",
+        "error",
+        "permission"
+      ]
     },
     "forbidden_contains": {
-      "ui-pages.md": ["USDC-M", "Events", "Copy Trading", "Toobit"],
-      "ui-screens.md": ["USDC-M", "Events", "Copy Trading", "Toobit"],
-      "ui-components.md": ["USDC-M", "Events", "Copy Trading", "Toobit"]
+      "ui/ui-pages.md": [
+        "USDC-M",
+        "Events",
+        "Copy Trading",
+        "Toobit"
+      ],
+      "ui/ui-screens.md": [
+        "USDC-M",
+        "Events",
+        "Copy Trading",
+        "Toobit"
+      ],
+      "ui/ui-components.md": [
+        "USDC-M",
+        "Events",
+        "Copy Trading",
+        "Toobit"
+      ]
     }
   },
   {
@@ -85,19 +143,57 @@
     "skill": "pd-figma",
     "prompt": "基于页面蓝图先生成 3 个 UI 方向。不要写入真实 Figma，因为我还没有选择方向。",
     "setup_files": {
-      "product-brief.md": "# 产品设计输入\n目标：广告异常提醒。\n用户：跨境电商运营。\n",
-      "ui-pages.md": "# UI 页面地图\n页面：异常列表、异常详情、规则设置。\n",
-      "ui-screens.md": "# UI 页面规格\n页面：异常列表\n状态：default/loading/empty/error/permission\n",
-      "ui-components.md": "# UI 组件清单\n组件：表格、筛选器、状态 badge、抽屉。\n"
+      "product/product-brief.md": "# 产品设计输入\n目标：广告异常提醒。\n用户：跨境电商运营。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n视觉气质：克制、可扫描\n## Page Overrides\n无。\n",
+      "ui/ui-pages.md": "# UI 页面地图\n页面：异常列表、异常详情、规则设置。\n",
+      "ui/ui-screens.md": "# UI 页面规格\n页面：异常列表\n状态：default/loading/empty/error/permission\n",
+      "ui/ui-components.md": "# UI 组件清单\n组件：表格、筛选器、状态 badge、抽屉。\n"
     },
     "expected_files": [
-      "ui-directions.md"
+      "ui/ui-directions.md"
     ],
     "forbidden_files": [
       "figma-write.log"
     ],
     "all_contains": {
-      "ui-directions.md": ["方向 A", "方向 B", "方向 C", "推荐方向"]
+      "ui/ui-directions.md": [
+        "方向 A",
+        "方向 B",
+        "方向 C",
+        "推荐方向",
+        "设计系统事实源"
+      ]
+    }
+  },
+  {
+    "id": "pd-figma-design-system-missing",
+    "skill": "pd-figma",
+    "prompt": "基于产品设计输入和页面蓝图补齐 UI 设计系统草案，并生成 3 个 UI 方向。不要写入真实 Figma。",
+    "setup_files": {
+      "product/product-brief.md": "# 产品设计输入\n目标：广告异常提醒。\n用户：跨境电商运营。\nUI 方向输入：SaaS 管理后台，高信息密度，克制、可扫描。\n",
+      "ui/ui-pages.md": "# UI 页面地图\n页面：异常列表、异常详情、规则设置。\n",
+      "ui/ui-screens.md": "# UI 页面规格\n页面：异常列表\n页面模式：表格 / 筛选列表\n状态：default/loading/empty/error/permission\n",
+      "ui/ui-components.md": "# UI 组件清单\n组件：表格、筛选器、状态 badge、抽屉。\n"
+    },
+    "expected_files": [
+      "ui/ui-design-system.md",
+      "ui/ui-directions.md"
+    ],
+    "forbidden_files": [
+      "figma-write.log"
+    ],
+    "all_contains": {
+      "ui/ui-design-system.md": [
+        "MASTER",
+        "Page Overrides",
+        "信息密度"
+      ],
+      "ui/ui-directions.md": [
+        "方向 A",
+        "方向 B",
+        "方向 C",
+        "设计系统事实源"
+      ]
     }
   },
   {
@@ -105,27 +201,38 @@
     "skill": "pd-plan",
     "prompt": "基于 PRD、页面蓝图和 figma-handoff 生成技术设计、前后端映射、API 契约和任务切片。",
     "setup_files": {
-      "prd.md": "# PRD\n广告异常提醒。\n",
-      "product-brief.md": "# 产品设计输入\n运营发现异常并处理。\n",
-      "ui-screens.md": "# UI 页面规格\n异常列表、详情、规则设置。\n",
-      "ui-components.md": "# UI 组件清单\n筛选器、表格、抽屉。\n",
-      "figma-handoff.md": "# Figma 交付说明\n页面：异常列表、详情、规则设置。\n"
+      "product/prd.md": "# PRD\n广告异常提醒。\n",
+      "product/product-brief.md": "# 产品设计输入\n运营发现异常并处理。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n视觉气质：克制、可扫描\n## Page Overrides\n无。\n",
+      "ui/ui-screens.md": "# UI 页面规格\n异常列表、详情、规则设置。\n",
+      "ui/ui-components.md": "# UI 组件清单\n筛选器、表格、抽屉。\n",
+      "ui/figma-handoff.md": "# Figma 交付说明\n页面：异常列表、详情、规则设置。\n"
     },
     "expected_files": [
-      "tech-plan.md",
-      "frontend-design.md",
-      "frontend-component-map.md",
-      "frontend-route-map.md",
-      "frontend-state-api.md",
-      "backend-design.md",
-      "api-contract.md",
-      "data-model.md",
-      "integration-map.md",
-      "task-slices.md",
-      "risk-plan.md"
+      "tech/tech-plan.md",
+      "tech/frontend/frontend-design.md",
+      "tech/frontend/frontend-component-map.md",
+      "tech/frontend/frontend-route-map.md",
+      "tech/frontend/frontend-state-api.md",
+      "tech/backend/backend-design.md",
+      "tech/api-contract.md",
+      "tech/backend/data-model.md",
+      "tech/backend/sql-execution-plan.md",
+      "tech/integration-map.md",
+      "tech/task-slices.md",
+      "tech/risk-plan.md"
     ],
     "all_contains": {
-      "task-slices.md": ["frontend", "backend", "contract"]
+      "tech/frontend/frontend-design.md": [
+        "UI 设计系统约束",
+        "响应式",
+        "可访问性"
+      ],
+      "tech/task-slices.md": [
+        "frontend",
+        "backend",
+        "contract"
+      ]
     }
   },
   {
@@ -136,24 +243,37 @@
       "evals/fixtures/frontend-alerts": "fixtures/frontend-alerts"
     },
     "setup_files": {
-      "frontend-design.md": "# 前端技术设计\n页面：异常列表。\n",
-      "frontend-component-map.md": "# 前端组件映射\n筛选器 -> FilterPanel。\n",
-      "frontend-route-map.md": "# 前端路由映射\n异常列表 /alerts。\n",
-      "frontend-state-api.md": "# 前端状态与 API\n页面状态：default/loading/empty/error/permission。\n",
-      "api-contract.md": "# API 契约\nGET /api/alerts。\n",
-      "integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
-      "task-slices.md": "# 任务切片\n| FE-01 | P1 | frontend | pending | parallel-safe | | | 异常列表 | npm test |\n"
+      "tech/frontend/frontend-design.md": "# 前端技术设计\n页面：异常列表。\n",
+      "tech/frontend/frontend-component-map.md": "# 前端组件映射\n筛选器 -> FilterPanel。\n",
+      "tech/frontend/frontend-route-map.md": "# 前端路由映射\n异常列表 /alerts。\n",
+      "tech/frontend/frontend-state-api.md": "# 前端状态与 API\n页面状态：default/loading/empty/error/permission。\n",
+      "tech/api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "tech/integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n视觉气质：克制、可扫描\n## Page Overrides\n无。\n",
+      "ui/figma-handoff.md": "# Figma 交付说明\n页面：异常列表。\n设计系统：ui/ui-design-system.md。\n",
+      "tech/task-slices.md": "# 任务切片\n| FE-01 | P1 | frontend | pending | parallel-safe | | | 异常列表 | npm test |\n"
     },
     "expected_files": [
       "fixtures/frontend-alerts/src/alertFilters.mjs",
-      "frontend-implementation-log.md",
-      "frontend-changed-files.md",
-      "frontend-dev-notes.md",
-      "frontend-acceptance.md"
+      "tech/frontend/frontend-implementation-log.md",
+      "tech/frontend/frontend-changed-files.md",
+      "tech/frontend/frontend-dev-notes.md",
+      "tech/frontend/frontend-acceptance.md"
     ],
     "all_contains": {
-      "frontend-implementation-log.md": ["FE-01", "验证"],
-      "fixtures/frontend-alerts/src/alertFilters.mjs": ["filterCriticalAlerts", "severity"]
+      "tech/frontend/frontend-implementation-log.md": [
+        "FE-01",
+        "验证"
+      ],
+      "tech/frontend/frontend-acceptance.md": [
+        "设计系统前置",
+        "移动端无横向溢出",
+        "UI 质量验证"
+      ],
+      "fixtures/frontend-alerts/src/alertFilters.mjs": [
+        "filterCriticalAlerts",
+        "severity"
+      ]
     },
     "check_commands": [
       "node fixtures/frontend-alerts/test_alert_filters.mjs"
@@ -167,21 +287,28 @@
       "evals/fixtures/backend-alerts": "fixtures/backend-alerts"
     },
     "setup_files": {
-      "backend-design.md": "# 后端技术设计\n接口：GET /api/alerts。\n",
-      "api-contract.md": "# API 契约\nGET /api/alerts。\n",
-      "data-model.md": "# 数据模型\nAlert。\n",
-      "integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
-      "task-slices.md": "# 任务切片\n| BE-01 | P1 | backend | pending | parallel-safe | | | 查询异常列表 | mvn test |\n"
+      "tech/backend/backend-design.md": "# 后端技术设计\n接口：GET /api/alerts。\n",
+      "tech/api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "tech/backend/data-model.md": "# 数据模型\nAlert。\n",
+      "tech/backend/sql-execution-plan.md": "# SQL 执行计划\nSQL 执行项：无\n说明：无 SQL 执行项 / 不涉及。\n",
+      "tech/integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
+      "tech/task-slices.md": "# 任务切片\n| BE-01 | P1 | backend | pending | parallel-safe | | | 查询异常列表 | mvn test |\n"
     },
     "expected_files": [
       "fixtures/backend-alerts/app/alerts.py",
-      "backend-implementation-log.md",
-      "backend-changed-files.md",
-      "backend-dev-notes.md"
+      "tech/backend/backend-implementation-log.md",
+      "tech/backend/backend-changed-files.md",
+      "tech/backend/backend-dev-notes.md"
     ],
     "all_contains": {
-      "backend-implementation-log.md": ["BE-01", "验证"],
-      "fixtures/backend-alerts/app/alerts.py": ["list_open_alerts", "permission"]
+      "tech/backend/backend-implementation-log.md": [
+        "BE-01",
+        "验证"
+      ],
+      "fixtures/backend-alerts/app/alerts.py": [
+        "list_open_alerts",
+        "permission"
+      ]
     },
     "check_commands": [
       "python3 fixtures/backend-alerts/test_alerts.py"
@@ -192,17 +319,22 @@
     "skill": "pd-sync",
     "prompt": "做联调报告。环境可以不可用，但必须记录未执行原因、契约检查项和下一步。",
     "setup_files": {
-      "api-contract.md": "# API 契约\nGET /api/alerts。\n",
-      "integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
-      "frontend-implementation-log.md": "# 前端实现记录\nFE-01 done。\n",
-      "backend-implementation-log.md": "# 后端实现记录\nBE-01 done。\n"
+      "tech/api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "tech/integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
+      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行 | blocked-by | blocks | 内容 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-01 | P1 | frontend | done | parallel-safe | | | 异常列表 | npm test |\n| BE-01 | P1 | backend | done | parallel-safe | | | 查询异常列表 | python test |\n",
+      "tech/frontend/frontend-implementation-log.md": "# 前端实现记录\nFE-01 done。\n",
+      "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-01 done。\n"
     },
     "expected_files": [
-      "integration-plan.md",
-      "integration-report.md"
+      "sync/integration-plan.md",
+      "sync/integration-report.md"
     ],
     "all_contains": {
-      "integration-report.md": ["环境", "未执行"]
+      "sync/integration-report.md": [
+        "实现前置状态",
+        "环境",
+        "未执行"
+      ]
     }
   },
   {
@@ -210,19 +342,29 @@
     "skill": "pd-test",
     "prompt": "制定并执行可行的最小测试。如果无法执行真实测试，必须写明未执行项、原因和风险。",
     "setup_files": {
-      "prd.md": "# PRD\n广告异常提醒。\n",
-      "acceptance-criteria.md": "# 验收标准\n- [ ] 异常列表可打开\n",
-      "tech-plan.md": "# 技术方案\n前后端分离。\n",
-      "integration-report.md": "# 联调报告\n环境未启动。\n"
+      "product/prd.md": "# PRD\n广告异常提醒。\n",
+      "product/acceptance-criteria.md": "# 验收标准\n- [ ] 异常列表可打开\n",
+      "tech/tech-plan.md": "# 技术方案\n前后端分离。\n",
+      "tech/backend/sql-execution-plan.md": "# SQL 执行计划\nSQL 执行项：无\n说明：无 SQL 执行项 / 不涉及。\n",
+      "sync/integration-report.md": "# 联调报告\n环境未启动。\n",
+      ".gitignore": "node_modules/\ndist/\ncoverage/\n*.log\n"
     },
     "expected_files": [
-      "test-plan.md",
-      "test-cases.md",
-      "test-report.md",
-      "regression-notes.md"
+      "test/test-plan.md",
+      "test/test-cases.md",
+      "test/test-report.md",
+      "test/regression-notes.md"
     ],
     "all_contains": {
-      "test-report.md": ["未执行", "风险"]
+      "test/test-report.md": [
+        "联调前置状态",
+        "SQL 执行验证",
+        "未执行",
+        "风险",
+        "Git / ignore 检查",
+        "可能漏提交",
+        "可能多提交"
+      ]
     }
   },
   {
@@ -230,17 +372,26 @@
     "skill": "pd-review",
     "prompt": "基于这些产物做提交前审查。没有真实 git diff 时，也要说明证据不足并输出残余风险。",
     "setup_files": {
-      "prd.md": "# PRD\n广告异常提醒。\n",
-      "tech-plan.md": "# 技术方案\n前后端分离。\n",
-      "api-contract.md": "# API 契约\nGET /api/alerts。\n",
-      "integration-report.md": "# 联调报告\n未执行。\n",
-      "test-report.md": "# 测试报告\n未执行。\n"
+      "product/prd.md": "# PRD\n广告异常提醒。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n视觉气质：克制、可扫描\n## Page Overrides\n无。\n",
+      "ui/figma-handoff.md": "# Figma 交付说明\n页面：异常列表。\n",
+      "tech/tech-plan.md": "# 技术方案\n前后端分离。\n",
+      "tech/api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "sync/integration-report.md": "# 联调报告\n未执行。\n",
+      "test/test-report.md": "# 测试报告\n未执行。\n"
     },
     "expected_files": [
-      "code-review.md"
+      "test/code-review.md"
     ],
     "all_contains": {
-      "code-review.md": ["残余风险", "测试缺口"]
+      "test/code-review.md": [
+        "前置证据",
+        "Findings",
+        "UI Review 摘要",
+        "代码级检查摘要",
+        "残余风险",
+        "测试缺口"
+      ]
     }
   },
   {
@@ -248,17 +399,32 @@
     "skill": "pd-git",
     "prompt": "准备 commit-summary 和 PR 描述。不要真的 git add、commit 或 push。",
     "setup_files": {
-      "frontend-implementation-log.md": "# 前端实现记录\nFE-01 done。\n",
-      "test-report.md": "# 测试报告\n通过：无。未执行：浏览器验证。\n",
-      "code-review.md": "# Code Review\n结论：无 P0/P1，残余风险：浏览器未跑。\n"
+      "tech/frontend/frontend-implementation-log.md": "# 前端实现记录\nFE-01 done。\n",
+      "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-01 done。\n",
+      "sync/integration-report.md": "# 联调报告\n## 结论\n| Gate | 状态 | 证据 | 下一步 |\n| --- | --- | --- | --- |\n| 前后端联调 | 通过 | 本地接口 / 页面验证 | pd-test |\n",
+      "test/test-report.md": "# 测试报告\n## 联调前置状态\n| Gate | 状态 | 证据 | 处理 |\n| --- | --- | --- | --- |\n| 前后端联调 | 通过 | integration-report.md | 继续 |\n\n通过：unit/build/browser smoke。\n未执行：无。\n",
+      "test/code-review.md": "# Code Review\n结论：无 P0/P1，残余风险：无阻断。\n",
+      ".gitignore": "node_modules/\ndist/\ncoverage/\n*.log\n"
     },
     "expected_files": [
-      "commit-summary.md",
-      "pr-description.md"
+      "release/commit-summary.md",
+      "release/pr-description.md"
     ],
     "all_contains": {
-      "commit-summary.md": ["Planned files", "Tests"],
-      "pr-description.md": ["What changed", "Validation", "Risks"]
+      "release/commit-summary.md": [
+        "Readiness gates",
+        "Gitignore check",
+        "Planned files",
+        "Excluded files",
+        "Possible missing files",
+        "Possible extra files",
+        "Tests"
+      ],
+      "release/pr-description.md": [
+        "What changed",
+        "Validation",
+        "Risks"
+      ]
     }
   },
   {
@@ -266,21 +432,28 @@
     "skill": "pd-release",
     "prompt": "生成上线计划、检查清单、回滚方案和 release notes。不执行部署。",
     "setup_files": {
-      "prd.md": "# PRD\n广告异常提醒。\n",
-      "tech-plan.md": "# 技术方案\n前后端分离。\n",
-      "integration-report.md": "# 联调报告\n通过。\n",
-      "test-report.md": "# 测试报告\n通过。\n",
-      "code-review.md": "# Code Review\n无 P0/P1。\n",
-      "commit-summary.md": "# Commit Summary\ncommit message: feat: add alert workflow\n"
+      "product/prd.md": "# PRD\n广告异常提醒。\n",
+      "tech/tech-plan.md": "# 技术方案\n前后端分离。\n",
+      "tech/backend/sql-execution-plan.md": "# SQL 执行计划\nSQL 执行项：无\n说明：无 SQL 执行项 / 不涉及。\n",
+      "sync/integration-report.md": "# 联调报告\n通过。\n",
+      "test/test-report.md": "# 测试报告\n通过。\n",
+      "test/code-review.md": "# Code Review\n无 P0/P1。\n",
+      "release/commit-summary.md": "# Commit Summary\ncommit message: feat: add alert workflow\n"
     },
     "expected_files": [
-      "release-plan.md",
-      "release-checklist.md",
-      "rollback-plan.md",
-      "release-notes.md"
+      "release/release-plan.md",
+      "release/release-checklist.md",
+      "release/rollback-plan.md",
+      "release/release-notes.md"
     ],
     "all_contains": {
-      "rollback-plan.md": ["回滚触发条件", "回滚步骤"]
+      "release/release-plan.md": [
+        "SQL / 数据变更执行计划"
+      ],
+      "release/rollback-plan.md": [
+        "回滚触发条件",
+        "回滚步骤"
+      ]
     }
   }
 ]

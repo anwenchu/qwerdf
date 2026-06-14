@@ -1,4 +1,4 @@
 interface:
   display_name: "pd-fe"
-  short_description: "按任务切片实现前端"
-  default_prompt: "用 $pd-fe 基于技术设计实现一个前端任务切片并验证。"
+  short_description: "按任务切片实现前端并完成 UI 验收"
+  default_prompt: "用 $pd-fe 基于技术设计和 UI 设计系统实现一个前端任务切片并验证。"

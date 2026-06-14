@@ -2,7 +2,7 @@
 
 本文件定义Codex Product Delivery skill 共享的产物模板。Skill 执行时只读取本任务需要的模板。
 
-## `idea-brief.md`
+## `product/idea-brief.md`
 
 ```markdown
 # 想法简报 — <name>
@@ -32,7 +32,7 @@
 - 理由：
 ```
 
-## `user-problem.md`
+## `product/user-problem.md`
 
 ```markdown
 # 用户问题 — <name>
@@ -51,7 +51,7 @@
 - 问题 3：
 ```
 
-## `competitor-notes.md`
+## `product/competitor-notes.md`
 
 ```markdown
 # 竞品参考 — <name>
@@ -75,7 +75,7 @@
 - 产品范围外的功能 / 页面 / 导航：
 ```
 
-## `mvp-hypothesis.md`
+## `product/mvp-hypothesis.md`
 
 ```markdown
 # MVP 假设 — <name>
@@ -94,7 +94,7 @@
 | --- | --- | --- |
 ```
 
-## `validation-questions.md`
+## `product/validation-questions.md`
 
 ```markdown
 # 验证问题 — <name>
@@ -113,7 +113,7 @@
 - 暂停的条件：
 ```
 
-## `prd.md`
+## `product/prd.md`
 
 ```markdown
 # PRD — <name>
@@ -131,7 +131,7 @@
 ## 开放问题
 ```
 
-## `requirements.md`
+## `product/requirements.md`
 
 ```markdown
 # 需求清单 — <name>
@@ -140,7 +140,7 @@
 | --- | --- | --- | --- | --- |
 ```
 
-## `user-stories.md`
+## `product/user-stories.md`
 
 ```markdown
 # 用户故事 — <name>
@@ -149,7 +149,7 @@
 | --- | --- | --- | --- |
 ```
 
-## `acceptance-criteria.md`
+## `product/acceptance-criteria.md`
 
 ```markdown
 # 验收标准 — <name>
@@ -168,7 +168,7 @@
 - [ ] 
 ```
 
-## `open-questions.md`
+## `product/open-questions.md`
 
 ```markdown
 # 开放问题 — <name>
@@ -177,7 +177,7 @@
 | --- | --- | --- | --- | --- |
 ```
 
-## `product-brief.md`
+## `product/product-brief.md`
 
 ```markdown
 # 产品设计输入 — <name>
@@ -206,6 +206,15 @@
 | 指标 | 口径 | 目标 |
 | --- | --- | --- |
 
+## UI 方向输入
+- 产品类型：
+- 信息密度：
+- 视觉气质：
+- 页面模式：
+- 导航结构：
+- 关键状态：
+- 设计风险：
+
 ## 约束
 - 业务约束：
 - 设计约束：
@@ -229,7 +238,43 @@
 | --- | --- | --- |
 ```
 
-## `ui-flows.md`
+## `ui/ui-design-system.md`
+
+```markdown
+# UI 设计系统 — <name>
+
+## MASTER
+- 产品类型：
+- 用户角色：
+- 核心任务：
+- 信息密度：
+- 视觉气质：
+- 导航结构：
+- 布局规则：
+- 颜色 tokens：
+- 字体层级：
+- 间距规则：
+- 圆角 / 阴影：
+- 组件层级：
+- 交互状态：
+- 响应式规则：
+- 可访问性规则：
+- 禁止带入 / 反模式：
+
+## 组件规则
+| 组件 | 使用场景 | 状态 | 变体 | 禁止用法 |
+| --- | --- | --- | --- | --- |
+
+## 页面模式
+| 页面 | 模式 | 信息密度 | 核心任务 | 主要组件 | 风险 |
+| --- | --- | --- | --- | --- | --- |
+
+## Page Overrides
+| 页面 | Override | 原因 | 影响范围 | 验证方式 |
+| --- | --- | --- | --- | --- |
+```
+
+## `ui/ui-flows.md`
 
 ```markdown
 # UI 用户流程 — <name>
@@ -245,7 +290,7 @@
 - 涉及页面：
 ```
 
-## `ui-pages.md`
+## `ui/ui-pages.md`
 
 ```markdown
 # UI 页面地图 — <name>
@@ -255,11 +300,11 @@
   - <页面>
 
 ## 页面清单
-| 页面 | 类型 | 路由建议 | 用户角色 | 来源流程 |
-| --- | --- | --- | --- | --- |
+| 页面 | 类型 / 模式 | 路由建议 | 用户角色 | 信息密度 | 来源流程 |
+| --- | --- | --- | --- | --- | --- |
 ```
 
-## `ui-screens.md`
+## `ui/ui-screens.md`
 
 ```markdown
 # UI 页面规格 — <name>
@@ -269,9 +314,13 @@
 ### 页面目标
 ### 入口
 ### 用户角色
+### 页面模式 / 信息密度
 ### 页面结构
 ### 核心字段 / 内容模块
 ### 使用组件
+### Design System
+- MASTER 规则：
+- Page override：
 ### 状态
 - default:
 - loading:
@@ -283,7 +332,7 @@
 ### 验收标准
 ```
 
-## `ui-components.md`
+## `ui/ui-components.md`
 
 ```markdown
 # UI 组件清单 — <name>
@@ -301,7 +350,7 @@
 | --- | --- |
 ```
 
-## `ui-directions.md`
+## `ui/ui-directions.md`
 
 ```markdown
 # UI 方向 — <name>
@@ -312,6 +361,14 @@
 - 核心场景：
 - 支持的业务对象 / 资产 / 模块：
 - 明确不做 / 不展示：
+
+## 设计系统事实源
+- 来源：`ui/ui-design-system.md`
+- 产品类型：
+- 信息密度：
+- 视觉气质：
+- 页面模式：
+- MASTER 不可变规则：
 
 ## 参考使用边界
 | 参考来源 | 仅可借鉴 | 不得带入 | 校验结果 |
@@ -339,7 +396,7 @@
 - 需要用户确认：
 ```
 
-## `figma-handoff.md`
+## `ui/figma-handoff.md`
 
 ```markdown
 # Figma 交付说明 — <name>
@@ -356,21 +413,28 @@
 - 冲突 / 待确认：
 
 ## 设计系统
+- MASTER 来源：`ui/ui-design-system.md`
 - 变量：
 - 文本样式：
 - 组件：
+- Page overrides：
+- 与现有 Figma 设计系统差异：
 
 ## 页面清单
-| 页面 | Figma frame | 状态 | 备注 |
-| --- | --- | --- | --- |
+| 页面 | Figma frame | 状态 | Page override | 备注 |
+| --- | --- | --- | --- | --- |
 
 ## 前端实现提示
 - 优先复用组件：
 - 需要新增组件：
 - 响应式规则：
 - 交互注意事项：
+- UI 质量重点：
 
 ## 验收记录
 - 截图检查：
+- 设计系统一致性：
+- 状态覆盖：
+- 移动端检查：
 - 待人工确认：
 ```

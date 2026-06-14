@@ -11,7 +11,7 @@ Codex Product Delivery Skill：把早期 idea 转成可判断是否值得写 PRD
 ## 读取
 
 1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
-2. 读取 [Product Delivery Artifact Contracts](../qwerdf-common/artifact-contracts.md) 中 `idea-brief.md`、`user-problem.md`、`competitor-notes.md`、`mvp-hypothesis.md`、`validation-questions.md` 的模板。
+2. 读取 [Product Delivery Artifact Contracts](../qwerdf-common/artifact-contracts.md) 中 `product/idea-brief.md`、`product/user-problem.md`、`product/competitor-notes.md`、`product/mvp-hypothesis.md`、`product/validation-questions.md` 的模板。
 3. 读取用户提供的一句话 idea、竞品 URL、截图、市场观察、用户反馈或产品背景。
 4. 如果用户未指定输出目录，使用 `pd-work/<name>/`。
 
@@ -26,11 +26,11 @@ Codex Product Delivery Skill：把早期 idea 转成可判断是否值得写 PRD
 ## 流程
 
 1. 先判断 idea 是否有足够上下文；缺少目标用户、痛点或使用场景时，先提问。
-2. 生成 `idea-brief.md`，把原始想法整理成目标、用户、问题、价值和初步判断。
-3. 生成 `user-problem.md`，明确用户画像、当前做法、问题强度和 Jobs To Be Done。
-4. 生成 `competitor-notes.md`，提炼竞品/替代方案的可借鉴模式和不应照搬点。
-5. 生成 `mvp-hypothesis.md`，列出核心假设、MVP 范围和最大风险。
-6. 生成 `validation-questions.md`，给出需要访谈、调研或原型验证的问题。
+2. 生成 `product/idea-brief.md`，把原始想法整理成目标、用户、问题、价值和初步判断。
+3. 生成 `product/user-problem.md`，明确用户画像、当前做法、问题强度和 Jobs To Be Done。
+4. 生成 `product/competitor-notes.md`，提炼竞品/替代方案的可借鉴模式和不应照搬点。
+5. 生成 `product/mvp-hypothesis.md`，列出核心假设、MVP 范围和最大风险。
+6. 生成 `product/validation-questions.md`，给出需要访谈、调研或原型验证的问题。
 7. 输出建议：进入 PRD、继续调研或暂停；说明理由。
 
 ## 输出摘要
@@ -39,11 +39,11 @@ Codex Product Delivery Skill：把早期 idea 转成可判断是否值得写 PRD
 想法验证完成: <name>
 目录: <output-dir>
 文件:
-  - idea-brief.md
-  - user-problem.md
-  - competitor-notes.md
-  - mvp-hypothesis.md
-  - validation-questions.md
+  - product/idea-brief.md
+  - product/user-problem.md
+  - product/competitor-notes.md
+  - product/mvp-hypothesis.md
+  - product/validation-questions.md
 建议: <进入 PRD / 继续调研 / 暂停>
 
 下一步: 用 $pd-prd <name> 基于验证结果生成 PRD

@@ -14,6 +14,61 @@ SKILLS_DIR = ROOT / "skills"
 COMMON_DIR = SKILLS_DIR / "qwerdf-common"
 MANIFEST_FILE = SKILLS_DIR / "manifest.txt"
 EVALS_DIR = ROOT / "evals"
+CANONICAL_ARTIFACT_PREFIXES = ("product/", "ui/", "tech/", "sync/", "test/", "release/")
+ARTIFACT_FILENAMES = {
+    "idea-brief.md",
+    "user-problem.md",
+    "competitor-notes.md",
+    "mvp-hypothesis.md",
+    "validation-questions.md",
+    "prd.md",
+    "requirements.md",
+    "user-stories.md",
+    "acceptance-criteria.md",
+    "open-questions.md",
+    "product-brief.md",
+    "ui-design-system.md",
+    "ui-flows.md",
+    "ui-pages.md",
+    "ui-screens.md",
+    "ui-components.md",
+    "ui-directions.md",
+    "figma-handoff.md",
+    "tech-plan.md",
+    "frontend-design.md",
+    "frontend-component-map.md",
+    "frontend-route-map.md",
+    "frontend-state-api.md",
+    "backend-design.md",
+    "api-contract.md",
+    "data-model.md",
+    "sql-execution-plan.md",
+    "integration-map.md",
+    "task-slices.md",
+    "risk-plan.md",
+    "frontend-implementation-log.md",
+    "frontend-changed-files.md",
+    "frontend-dev-notes.md",
+    "frontend-acceptance.md",
+    "backend-implementation-log.md",
+    "backend-changed-files.md",
+    "backend-dev-notes.md",
+    "integration-plan.md",
+    "integration-report.md",
+    "api-mismatch.md",
+    "plan-revision.md",
+    "test-plan.md",
+    "test-cases.md",
+    "test-report.md",
+    "regression-notes.md",
+    "code-review.md",
+    "commit-summary.md",
+    "pr-description.md",
+    "release-plan.md",
+    "release-checklist.md",
+    "rollback-plan.md",
+    "release-notes.md",
+}
 FORBIDDEN_TERMS = [
     "个" + "人",
     "tb" + "-prd-ui",
@@ -90,6 +145,10 @@ def is_safe_relative_path(value: object) -> bool:
         return False
     path = Path(value)
     return not path.is_absolute() and ".." not in path.parts
+
+
+def is_flat_artifact_path(value: object) -> bool:
+    return isinstance(value, str) and "/" not in value and value in ARTIFACT_FILENAMES
 
 
 def parse_yaml_value(text: str, key: str) -> str | None:
@@ -178,35 +237,217 @@ def validate_open_source_files(errors: list[str]) -> None:
 
 def validate_reference_guardrails(errors: list[str]) -> None:
     required_tokens_by_file = {
+        ROOT / "README.md": [
+            "product/",
+            "ui/",
+            "tech/",
+            "sync/",
+            "test/",
+            "release/",
+            "legacy fallback",
+            "sql-execution-plan.md",
+            "ui-design-system.md",
+            "MASTER",
+            "Page Overrides",
+        ],
         COMMON_DIR / "product-delivery-flow.md": [
+            "product/",
+            "ui/",
+            "tech/",
+            "legacy fallback",
+            "tech/backend/sql-execution-plan.md",
+            "ui/ui-design-system.md",
+            "UI 设计系统与质量 Gate",
+            "Page Overrides",
+            "管理后台",
             "产品事实与参考使用 Gate",
             "产品事实源优先级",
             "参考禁区",
             "Figma / 截图是表现层参考",
+            "$pd-sync` 没有明确通过",
+            "$pd-git` 只能在 commit readiness gate 全部通过后准备提交",
         ],
         COMMON_DIR / "artifact-contracts.md": [
             "产品事实源",
             "参考使用边界",
             "产品事实锁定",
             "产品范围校验",
+            "ui/ui-design-system.md",
+            "MASTER",
+            "Page Overrides",
+            "信息密度",
+        ],
+        COMMON_DIR / "ui-design-system.md": [
+            "ui/ui-design-system.md",
+            "MASTER",
+            "Page Overrides",
+            "产品类型",
+            "管理后台",
+            "设计系统门禁",
+        ],
+        COMMON_DIR / "ui-quality-checklist.md": [
+            "无横向溢出",
+            "文本不重叠",
+            "default",
+            "loading",
+            "empty",
+            "permission",
+            "frontend-acceptance.md",
+        ],
+        COMMON_DIR / "ui-patterns.md": [
+            "SaaS",
+            "管理后台",
+            "数据看板",
+            "表格",
+            "Landing Page",
+        ],
+        COMMON_DIR / "ui-review-rules.md": [
+            "UI Review",
+            "P0",
+            "P1",
+            "设计系统一致性",
+            "响应式",
+            "防误报",
         ],
         SKILLS_DIR / "pd-blueprint" / "SKILL.md": [
             "产品事实锁",
             "参考拆解",
             "不能从参考图直接搬运",
+            "ui/ui-design-system.md",
+            "信息密度",
+            "管理后台",
         ],
         SKILLS_DIR / "pd-figma" / "SKILL.md": [
             "产品事实锁定",
             "参考使用边界",
             "没有新增范围外页面",
+            "ui/ui-design-system.md",
+            "MASTER",
+            "page-level override",
         ],
         SKILLS_DIR / "pd-plan" / "SKILL.md": [
             "Figma handoff 是表现层输入",
             "范围外页面",
+            "tech/backend/sql-execution-plan.md",
+            "无 SQL 执行项",
+            "UI 设计系统约束",
+            "响应式",
+            "可访问性",
+        ],
+        SKILLS_DIR / "pd-fe" / "SKILL.md": [
+            "ui/ui-design-system.md",
+            "ui-quality-checklist.md",
+            "无横向溢出",
+            "文本不重叠",
+            "frontend-acceptance.md",
+        ],
+        SKILLS_DIR / "pd-be" / "SKILL.md": [
+            "tech/backend/sql-execution-plan.md",
+            "SQL / Migration 文件",
+        ],
+        SKILLS_DIR / "pd-test" / "SKILL.md": [
+            ".gitignore",
+            "integration-report.md` 缺失",
+            "可能漏提交",
+            "可能多提交",
+            "tech/backend/sql-execution-plan.md",
+            "SQL 执行验证",
+        ],
+        SKILLS_DIR / "pd-release" / "SKILL.md": [
+            "tech/backend/sql-execution-plan.md",
+            "SQL / 数据变更执行计划",
+            "前置备份",
         ],
         SKILLS_DIR / "pd-review" / "SKILL.md": [
             "产品范围漂移检查",
             "不能用“参考图里有”作为产品范围证据",
+            "渐进式加载",
+            "四阶段",
+            "代码级审查",
+            "UI Review",
+            "ui-review-rules.md",
+            "UI 设计质量审查",
+            "大 Diff 处理",
+            "diff_triage.py",
+            "自动化工具",
+            "修复归属",
+            "验证建议",
+        ],
+        SKILLS_DIR / "pd-review" / "scripts" / "diff_triage.py": [
+            "Diff Triage",
+            "Recommended references",
+            "Risk tags",
+            "frontend-code-review.md",
+            "backend-code-review.md",
+            "security-performance-review.md",
+            "ui-review-rules.md",
+        ],
+        SKILLS_DIR / "pd-review" / "references" / "universal-code-quality.md": [
+            "正确性",
+            "数据一致性",
+            "复用检查",
+            "测试质量",
+            "人工审查",
+        ],
+        SKILLS_DIR / "pd-review" / "references" / "frontend-code-review.md": [
+            "TypeScript",
+            "React",
+            "useEffect",
+            "API 契约",
+            "请求竞态",
+        ],
+        SKILLS_DIR / "pd-review" / "references" / "backend-code-review.md": [
+            "Java / Spring Boot",
+            "事务",
+            "SQL",
+            "DTO 校验",
+            "测试切片",
+        ],
+        SKILLS_DIR / "pd-review" / "references" / "security-performance-review.md": [
+            "IDOR",
+            "XSS",
+            "SSRF",
+            "N+1",
+            "敏感字段",
+        ],
+        COMMON_DIR / "engineering-contracts.md": [
+            "tech/frontend/frontend-design.md",
+            "sync/integration-report.md",
+            "test/test-report.md",
+            "release/commit-summary.md",
+            "Readiness gates",
+            "实现前置状态",
+            "联调前置状态",
+            "SQL 执行计划",
+            "SQL 执行验证",
+            "SQL / 数据变更执行计划",
+            "Git / ignore 检查",
+            "Possible missing files",
+            "Possible extra files",
+            "审查范围",
+            "前置证据",
+            "Diff triage",
+            "Findings",
+            "UI Review 摘要",
+            "代码级检查摘要",
+            "修复归属",
+            "验证方式",
+            "UI 设计系统约束",
+        ],
+        SKILLS_DIR / "pd-sync" / "SKILL.md": [
+            "task-slices.md",
+            "未完成实现 slice",
+            "不得执行联调",
+            "不进入 `$pd-test`",
+        ],
+        SKILLS_DIR / "pd-git" / "SKILL.md": [
+            "Commit readiness gate",
+            "提交范围门禁",
+            "git add -A",
+            "integration-report.md` 明确通过",
+            "possible missing files",
+            "possible extra files",
+            "staged 与 planned 不一致",
         ],
     }
     for path, tokens in required_tokens_by_file.items():
@@ -348,12 +589,26 @@ def validate_benchmark_cases(skill_names: list[str], errors: list[str]) -> None:
             fail(errors, f"{cases_file}: item {index} expected_files must be a non-empty array")
         elif not all(is_safe_relative_path(path) for path in expected_files):
             fail(errors, f"{cases_file}: item {index} expected_files must contain safe relative paths")
+        elif any(is_flat_artifact_path(path) for path in expected_files):
+            fail(errors, f"{cases_file}: item {index} expected_files must use canonical artifact subdirectories")
 
         setup_files = item.get("setup_files", {})
         if setup_files is not None and not isinstance(setup_files, dict):
             fail(errors, f"{cases_file}: item {index} setup_files must be an object when present")
         elif isinstance(setup_files, dict) and not all(is_safe_relative_path(path) for path in setup_files):
             fail(errors, f"{cases_file}: item {index} setup_files contains unsafe path")
+        elif isinstance(setup_files, dict) and any(is_flat_artifact_path(path) for path in setup_files):
+            fail(errors, f"{cases_file}: item {index} setup_files must use canonical artifact subdirectories")
+        elif skill == "pd-git" and isinstance(setup_files, dict):
+            for required in ("sync/integration-report.md", "test/test-report.md", "test/code-review.md"):
+                if required not in setup_files:
+                    fail(errors, f"{cases_file}: item {index} pd-git case must include {required}")
+        elif skill == "pd-release" and isinstance(setup_files, dict):
+            if "tech/backend/sql-execution-plan.md" not in setup_files:
+                fail(errors, f"{cases_file}: item {index} pd-release case must include tech/backend/sql-execution-plan.md")
+        elif skill == "pd-sync" and isinstance(setup_files, dict):
+            if "tech/task-slices.md" not in setup_files:
+                fail(errors, f"{cases_file}: item {index} pd-sync case must include tech/task-slices.md")
 
         fixture_dirs = item.get("fixture_dirs", {})
         if fixture_dirs is not None and not isinstance(fixture_dirs, dict):
@@ -373,6 +628,8 @@ def validate_benchmark_cases(skill_names: list[str], errors: list[str]) -> None:
                 for path, snippets in rules.items():
                     if not is_safe_relative_path(path):
                         fail(errors, f"{cases_file}: item {index} {key} contains unsafe path")
+                    if is_flat_artifact_path(path):
+                        fail(errors, f"{cases_file}: item {index} {key} must use canonical artifact subdirectories")
                     if not isinstance(snippets, list) or not all(isinstance(snippet, str) for snippet in snippets):
                         fail(errors, f"{cases_file}: item {index} {key} values must be string arrays")
 
@@ -381,6 +638,29 @@ def validate_benchmark_cases(skill_names: list[str], errors: list[str]) -> None:
             fail(errors, f"{cases_file}: item {index} check_commands must be an array when present")
         elif isinstance(check_commands, list) and not all(isinstance(command, str) and command.strip() for command in check_commands):
             fail(errors, f"{cases_file}: item {index} check_commands values must be non-empty strings")
+
+        all_contains = item.get("all_contains", {})
+        if skill == "pd-plan":
+            if "tech/backend/sql-execution-plan.md" not in expected_files:
+                fail(errors, f"{cases_file}: item {index} pd-plan case must expect tech/backend/sql-execution-plan.md")
+        if skill == "pd-test" and isinstance(all_contains, dict):
+            test_report_tokens = all_contains.get("test/test-report.md", [])
+            if not isinstance(test_report_tokens, list) or "联调前置状态" not in test_report_tokens:
+                fail(errors, f"{cases_file}: item {index} pd-test case must assert 联调前置状态")
+            if not isinstance(test_report_tokens, list) or "SQL 执行验证" not in test_report_tokens:
+                fail(errors, f"{cases_file}: item {index} pd-test case must assert SQL 执行验证")
+        if skill == "pd-sync" and isinstance(all_contains, dict):
+            integration_report_tokens = all_contains.get("sync/integration-report.md", [])
+            if not isinstance(integration_report_tokens, list) or "实现前置状态" not in integration_report_tokens:
+                fail(errors, f"{cases_file}: item {index} pd-sync case must assert 实现前置状态")
+        if skill == "pd-git" and isinstance(all_contains, dict):
+            commit_tokens = all_contains.get("release/commit-summary.md", [])
+            if not isinstance(commit_tokens, list) or "Readiness gates" not in commit_tokens:
+                fail(errors, f"{cases_file}: item {index} pd-git case must assert Readiness gates")
+        if skill == "pd-review" and isinstance(all_contains, dict):
+            review_tokens = all_contains.get("test/code-review.md", [])
+            if not isinstance(review_tokens, list) or "代码级检查摘要" not in review_tokens:
+                fail(errors, f"{cases_file}: item {index} pd-review case must assert 代码级检查摘要")
 
     for skill, count in cases_by_skill.items():
         if count == 0:
@@ -498,7 +778,15 @@ def main() -> int:
     if not COMMON_DIR.exists():
         fail(errors, f"{COMMON_DIR}: missing")
 
-    for common_file in ("product-delivery-flow.md", "artifact-contracts.md", "engineering-contracts.md"):
+    for common_file in (
+        "product-delivery-flow.md",
+        "artifact-contracts.md",
+        "engineering-contracts.md",
+        "ui-design-system.md",
+        "ui-quality-checklist.md",
+        "ui-patterns.md",
+        "ui-review-rules.md",
+    ):
         if not (COMMON_DIR / common_file).exists():
             fail(errors, f"{COMMON_DIR / common_file}: missing")
 

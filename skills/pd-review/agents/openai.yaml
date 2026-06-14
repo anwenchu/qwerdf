@@ -1,4 +1,4 @@
 interface:
   display_name: "pd-review"
-  short_description: "按 P0-P3 做结构化 Code Review"
-  default_prompt: "用 $pd-review 基于当前改动、技术方案和测试结果做 Code Review。"
+  short_description: "做交付门禁、代码级 Code Review 和 UI Review"
+  default_prompt: "用 $pd-review 基于当前 git diff、UI 设计系统、技术方案、联调报告和测试报告做代码级 Code Review 和 UI Review。"
