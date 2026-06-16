@@ -21,7 +21,7 @@
 
 - path、method、request、response、错误结构、状态码、分页结构和状态枚举必须匹配契约。
 - 权限失败、资源不存在、参数错误和业务冲突应有可区分错误码；不要全部映射为 500 或通用错误。
-- API client / mock / integration-map 中的字段命名和真实后端 DTO 命名必须一致。
+- API client、integration-map 和真实后端 DTO 字段命名必须一致；技术实现禁止使用任何 mock / stub / fake / fixture / simulator。
 
 ## 测试切片
 

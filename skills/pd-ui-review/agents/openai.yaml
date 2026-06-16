@@ -1,0 +1,4 @@
+interface:
+  display_name: "pd-ui-review"
+  short_description: "审查设计稿、截图和页面视觉质量"
+  default_prompt: "用 $pd-ui-review 基于产品事实源、UI 设计系统、Figma handoff、截图或页面 URL 做 UI 视觉质量审查。"

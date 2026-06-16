@@ -23,10 +23,10 @@
 - 组件 props 复杂度过高、多个 boolean 模式组合、隐式 children 协议或重复渲染路径，可能导致可维护性 finding。
 - 性能风险包括重复请求、数据 waterfalls、过度重渲染、无边界 memo、过大 bundle、同步阻塞计算和未清理订阅 / timer。
 
-## API 契约与 Mock
+## API 契约与真实依赖
 
-- 前端状态、字段命名、分页结构、状态枚举、错误码和 mock 数据必须与 `tech/api-contract.md`、`tech/integration-map.md`、真实 API 行为一致。
-- mock-only 分支不能泄漏到生产路径；真实接口切换失败要能在 `sync/integration-report.md` 中被验证。
+- 前端状态、字段命名、分页结构、状态枚举和错误码必须与 `tech/api-contract.md`、`tech/integration-map.md`、真实 API 行为一致。
+- 技术实现禁止使用任何 mock；mock-only 分支、stub、fake、fixture-only 数据流或 simulator 一旦出现，必须作为阻断或缺陷处理，并能在 `sync/integration-report.md` 中被验证。
 
 ## 测试
 

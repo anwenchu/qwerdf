@@ -58,6 +58,11 @@ if [[ ! -f "$skill_manifest" ]]; then
   exit 1
 fi
 
+if [[ ! -d "$common_src" ]]; then
+  echo "Missing common directory: $common_src" >&2
+  exit 1
+fi
+
 skills=()
 while IFS= read -r line; do
   [[ -z "$line" || "$line" == \#* ]] && continue
@@ -73,15 +78,22 @@ echo "Target skills dir: $skills_home"
 echo "Project state dir: $project_state_dir"
 
 if [[ "$copy_mode" -eq 1 ]]; then
-  if [[ ! -d "$common_src" ]]; then
-    echo "Missing common directory: $common_src" >&2
-    exit 1
-  fi
   if [[ -L "$common_dest" ]]; then
     echo "Refusing to overwrite existing common symlink: $common_dest -> $(readlink "$common_dest")" >&2
     exit 1
   fi
   if [[ -e "$common_dest" ]] && ! is_project_copy "$common_dest"; then
+    echo "Refusing to overwrite existing common directory: $common_dest" >&2
+    exit 1
+  fi
+else
+  if [[ -L "$common_dest" ]]; then
+    current="$(readlink "$common_dest")"
+    if [[ "$current" != "$common_src" ]]; then
+      echo "Refusing to overwrite existing common symlink: $common_dest -> $current" >&2
+      exit 1
+    fi
+  elif [[ -e "$common_dest" ]]; then
     echo "Refusing to overwrite existing common directory: $common_dest" >&2
     exit 1
   fi
@@ -146,6 +158,22 @@ if [[ "$copy_mode" -eq 1 ]]; then
       echo "Copied common templates: $common_entry"
     fi
     printf '%s\t%s\t%s\t%s\n' "$common_entry" "copy" "$common_src" "$common_dest" >> "$manifest"
+  fi
+else
+  if [[ "$dry_run" -eq 1 ]]; then
+    if [[ -L "$common_dest" && "$(readlink "$common_dest")" == "$common_src" ]]; then
+      echo "Would keep existing common symlink: $common_entry -> $common_src"
+    else
+      echo "Would symlink common templates: $common_dest -> $common_src"
+    fi
+  else
+    if [[ -L "$common_dest" && "$(readlink "$common_dest")" == "$common_src" ]]; then
+      echo "Already installed common templates: $common_entry -> $common_src"
+    else
+      ln -s "$common_src" "$common_dest"
+      echo "Linked common templates: $common_entry -> $common_src"
+    fi
+    printf '%s\t%s\t%s\t%s\n' "$common_entry" "symlink" "$common_src" "$common_dest" >> "$manifest"
   fi
 fi
 

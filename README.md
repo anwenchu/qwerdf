@@ -9,7 +9,7 @@
 产品设计段：
 
 ```text
-$pd-vet -> $pd-prd -> $pd-blueprint -> $pd-figma
+$pd-vet -> $pd-prd -> $pd-blueprint -> $pd-figma -> $pd-ui-review
 ```
 
 工程实现段：
@@ -27,7 +27,7 @@ $pd-review -> $pd-git -> $pd-release
 完整链路：
 
 ```text
-$pd-vet -> $pd-prd -> $pd-blueprint -> $pd-figma -> $pd-plan -> $pd-fe + $pd-be -> $pd-sync -> $pd-test -> $pd-review -> $pd-git -> $pd-release
+$pd-vet -> $pd-prd -> $pd-blueprint -> $pd-figma -> $pd-ui-review -> $pd-plan -> $pd-fe + $pd-be -> $pd-sync -> $pd-test -> $pd-review -> $pd-git -> $pd-release
 ```
 
 ## Skills
@@ -36,6 +36,7 @@ $pd-vet -> $pd-prd -> $pd-blueprint -> $pd-figma -> $pd-plan -> $pd-fe + $pd-be 
 - `$pd-prd`：把已验证 idea、用户问题、MVP 假设和竞品参考整理成正式 PRD 与验收口径。
 - `$pd-blueprint`：把 PRD、竞品 URL、截图、产品想法或已有 spec 拆成产品设计输入、UI 设计系统和 UI 页面蓝图。
 - `$pd-figma`：基于产品设计输入、UI 设计系统和页面蓝图先生成 3 个 UI 方向，用户选择后再写入或整理 Figma 设计交付。
+- `$pd-ui-review`：独立审查 Figma handoff、Figma frame、页面截图和前端页面视觉质量，输出 `ui/ui-review-report.md` 与 P0/P1/P2/P3 findings。
 - `$pd-plan`：把 PRD、UI 设计系统、UI 蓝图、Figma handoff 和现有代码库串成前后端一致的技术设计，并输出前端组件、路由、状态/API 映射。
 - `$pd-fe`：按 `tech/task-slices.md` 执行一个前端 slice，实现页面、组件、状态、API client 和前端 UI 质量验收。
 - `$pd-be`：按 `tech/task-slices.md` 执行一个后端 slice，实现接口、服务逻辑、数据模型、权限和后端测试。
@@ -71,6 +72,7 @@ pd-work/<name>/
     ui-components.md
     ui-directions.md
     figma-handoff.md
+    ui-review-report.md
   tech/
     tech-plan.md
     api-contract.md
@@ -117,7 +119,7 @@ pd-work/<name>/
 
 ## Install
 
-把 skill 以 symlink 安装到 `${CODEX_HOME:-$HOME/.codex}/skills/`。Codex 需要 skill 出现在 `skills/` 顶层才能被发现；qwerdf 自己的安装记录会独立放在 `${CODEX_HOME:-$HOME/.codex}/skills/.qwerdf/`：
+把 skill 以 symlink 安装到 `${CODEX_HOME:-$HOME/.codex}/skills/`。Codex 需要 skill 出现在 `skills/` 顶层才能被发现；安装脚本会同时安装 `qwerdf-common` 共享规则目录，并把 qwerdf 自己的安装记录放在 `${CODEX_HOME:-$HOME/.codex}/skills/.qwerdf/`：
 
 ```bash
 bash scripts/install.sh
@@ -129,7 +131,7 @@ bash scripts/install.sh
 bash scripts/install.sh --dry-run
 ```
 
-不想使用 symlink 时复制安装。copy 模式会同时复制 `skills/qwerdf-common/`，否则每个 skill 的 `../qwerdf-common/...` 相对链接会断开：
+不想使用 symlink 时复制安装。copy 模式会复制每个 skill 和 `skills/qwerdf-common/`，并用 marker 标记来源，方便后续检查是否过期：
 
 ```bash
 bash scripts/install.sh --copy
@@ -156,6 +158,8 @@ bash scripts/uninstall.sh --dry-run
 
 ```bash
 python3 scripts/validate_skills.py
+python3 scripts/validate_codex_install.py
+python3 scripts/preflight_triggers.py --strict --format summary
 ```
 
 验证内容包括：
@@ -171,6 +175,8 @@ python3 scripts/validate_skills.py
 - trigger evals 至少包含 6 个 should-not-trigger 近似反例。
 - `evals/benchmark-cases.json` 存在，且每个 `$pd-*` skill 至少有一个真实执行 benchmark case。
 - README 中记录的 benchmark 核心产物结构与 runner 的 dry-run 输出保持一致。
+
+`validate_codex_install.py` 会检查 `${CODEX_HOME:-$HOME/.codex}/skills/` 中是否已安装当前仓库的 `pd-*` skills 和 `qwerdf-common`，并区分缺失、指向错误、同名冲突和 copy 安装过期。它验证的是 Codex skills 目录中的文件状态；如果当前 Codex 会话已打开，安装或更新后仍可能需要重启或刷新会话才会出现在 available skills 中。
 
 ## Benchmark
 
@@ -335,6 +341,10 @@ skills/
   pd-figma/
     SKILL.md
     agents/openai.yaml
+  pd-ui-review/
+    SKILL.md
+    agents/openai.yaml
+    references/
   pd-plan/
     SKILL.md
     agents/openai.yaml
@@ -363,6 +373,7 @@ scripts/
   install.sh
   uninstall.sh
   validate_skills.py
+  validate_codex_install.py
   preflight_triggers.py
   run_skill_benchmark.py
 evals/

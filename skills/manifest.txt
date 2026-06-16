@@ -3,6 +3,7 @@ pd-vet
 pd-prd
 pd-blueprint
 pd-figma
+pd-ui-review
 pd-plan
 pd-fe
 pd-be

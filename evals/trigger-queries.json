@@ -28,6 +28,13 @@
     "reason": "页面蓝图到 UI 方向和 Figma 交付。"
   },
   {
+    "id": "pd-ui-review-figma-screenshot",
+    "query": "用 $pd-ui-review 检查这个 Figma 设计稿和页面截图，重点看样式不统一、字体不统一、遮挡、重叠、不整齐、移动端横向溢出、状态缺失、截图证据和同类问题扫描。",
+    "should_trigger": true,
+    "skill": "pd-ui-review",
+    "reason": "独立 UI 设计质量审查，输出 UI Review findings。"
+  },
+  {
     "id": "pd-plan-from-prd-and-figma",
     "query": "现在 PRD、UI 设计系统、页面蓝图和 ui/figma-handoff.md 都有了，请生成前后端技术设计、API 契约、数据模型和 tech/task-slices.md。",
     "should_trigger": true,
@@ -50,10 +57,10 @@
   },
   {
     "id": "pd-sync-contract-check",
-    "query": "前后端都做完了，帮我联调 mock 切真实接口，检查字段、状态码、权限和错误结构是否符合 api-contract。",
+    "query": "前后端都做完了，帮我做真实接口联调和 Mock 禁用检查，检查字段、状态码、权限和错误结构是否符合 api-contract。",
     "should_trigger": true,
     "skill": "pd-sync",
-    "reason": "前后端实现后进行契约联调。"
+    "reason": "前后端实现后进行真实接口契约联调，并确认没有 mock/stub/fake 残留。"
   },
   {
     "id": "pd-test-risk-based",

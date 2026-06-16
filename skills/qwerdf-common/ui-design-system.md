@@ -45,6 +45,14 @@
 - Interaction states：hover、focus、active、disabled、selected、loading、saving、success、error。
 - Responsive / accessibility：移动端布局、键盘焦点、语义、对比度、文本溢出策略、reduced motion。
 
+其中字体、间距和复杂信息展示必须可执行：
+
+- Typography semantic levels：至少定义页面标题、分组标题、正文、辅助说明、表格文本、数字 / 金额、按钮、错误提示、移动端正文；每级包含字号、行高、字重和使用场景。
+- 不得把“按需缩小字体”作为适配策略；字段过多时必须转为布局、换行、截断、tooltip、分组、摘要 / 详情或响应式降级策略。
+- Spacing scale：定义页面边距、移动端安全边距、section gap、组件 padding、表单行距、表格行高、卡片 gap；默认使用 4 / 8 基础尺度或已有系统尺度。
+- Safe area：固定 header、footer、bottom action、toast、floating action、drawer、modal 对内容的避让规则。
+- Complex information patterns：列表、表格、卡片、详情、记录流、数据看板的信息优先级、格式化规则、列宽 / 行高策略、移动端降级方式和溢出处理。
+
 ## 5. Page Overrides
 
 页面级 override 只能记录必要差异：
@@ -58,6 +66,8 @@
 ## 6. 设计系统门禁
 
 - 没有 `ui/ui-design-system.md` 时，`$pd-figma` 必须先创建或补齐，再进入 Figma 写入。
+- `MASTER` 缺少字体语义层级、spacing scale、移动端安全边距、状态规则或复杂信息展示策略时，`$pd-figma` 不能直接写入高保真 frame；必须先补齐或记录回到 `$pd-blueprint` 的阻断。
 - `$pd-plan` 输出前端技术设计时，必须把 `MASTER` 和 page override 转成前端约束：组件复用、状态、响应式、可访问性、表单校验、错误映射和验收方式。
 - `$pd-fe` 实现时必须读取 `ui/ui-design-system.md`；发现设计系统缺失或与 Figma handoff 冲突时，记录阻塞并回到 `$pd-figma` 或 `$pd-plan`。
 - `$pd-review` 对 UI diff 必须检查实现是否漂移：颜色、字体、间距、圆角、组件层级、状态、移动端和可访问性是否偏离设计系统。
+- `$pd-ui-review` 对 Figma frame、截图或本地页面 URL 必须用 `MASTER` / Page Overrides 判断字体、间距、安全区、状态和产品类型是否一致；没有截图证据时不得放行。

@@ -1,7 +1,7 @@
 ---
 name: pd-review
 description: >-
-   Code Review 工作流，基于 git diff、PRD、UI 设计系统、技术方案、前后端契约、联调报告和测试报告做结构化审查，并深入逐文件检查代码正确性、安全、性能、数据一致性、UI 质量、可维护性和测试质量，按 P0/P1/P2/P3 输出带证据、修复归属和验证建议的 findings。Use when the user mentions $pd-review、pd-review、Code Review、代码审查、代码级审查、UI Review、审查改动、review 当前实现。
+   Code Review 工作流，基于 git diff、PRD、UI 设计系统、技术方案、前后端契约、联调报告、测试报告和 ui-review-report 做提交前结构化审查，并深入逐文件检查代码正确性、安全、性能、数据一致性、UI 质量、可维护性和测试质量，按 P0/P1/P2/P3 输出带证据、修复归属和验证建议的 findings。Use when the user mentions $pd-review、pd-review、Code Review、代码审查、代码级审查、提交前审查、审查改动、review 当前实现。
 ---
 
 # $pd-review — Code Review
@@ -12,7 +12,7 @@ Codex Product Delivery Skill：在提交前审查实现质量和交付风险。
 
 1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `test/code-review.md` 的模板。
-3. 读取 `product/prd.md`、`product/requirements.md`、`product/acceptance-criteria.md`、`ui/ui-design-system.md`、`ui/ui-screens.md`、`ui/ui-components.md`、`ui/figma-handoff.md`、`tech/tech-plan.md`、`tech/api-contract.md`、`tech/integration-map.md`、`tech/task-slices.md`、`sync/integration-report.md`、`test/test-report.md`、前后端实现记录、changed files、dev notes、当前 git diff 和 git status。
+3. 读取 `product/prd.md`、`product/requirements.md`、`product/acceptance-criteria.md`、`ui/ui-design-system.md`、`ui/ui-screens.md`、`ui/ui-components.md`、`ui/figma-handoff.md`、`ui/ui-review-report.md`（如存在）、`tech/tech-plan.md`、`tech/api-contract.md`、`tech/integration-map.md`、`tech/task-slices.md`、`sync/integration-report.md`、`test/test-report.md`、前后端实现记录、changed files、dev notes、当前 git diff 和 git status。
 4. 如果当前目录是 git 仓库且存在 diff，先运行本 skill 自带脚本 `scripts/diff_triage.py`，将目标仓库的 `git diff --no-ext-diff --unified=80` 通过 stdin 传入；用输出决定审查顺序、风险标签和需要加载的 references。
 5. 根据 diff 技术栈渐进式加载 references：
    - 任意代码级 review：读取 [Universal Code Quality](references/universal-code-quality.md)。
@@ -32,6 +32,7 @@ Codex Product Delivery Skill：在提交前审查实现质量和交付风险。
 - 不把格式化、import 顺序、简单 lint 或类型风格问题作为主要 finding，除非它们导致真实行为风险；这类问题优先交给 formatter、linter、typecheck。
 - `$pd-review` 重点关注自动化工具难以发现的问题：业务语义、契约偏差、边界条件、权限、安全、并发、数据一致性、可维护性和测试有效性。
 - UI diff 不只看视觉偏好；必须对照 `ui/ui-design-system.md`、产品类型、Figma handoff、frontend-acceptance、截图 / 浏览器证据和用户任务。
+- `$pd-ui-review` 是独立设计稿 / 截图 / 页面视觉审查入口；如存在 `ui/ui-review-report.md`，必须把其中未解决 P0/P1 作为阻断或残余风险，不用代码级审查覆盖掉独立 UI finding。
 - 如果 lint / typecheck / test 未执行或失败，按证据缺口或阻断项记录，不伪造通过。
 
 ## 审查类别优先级

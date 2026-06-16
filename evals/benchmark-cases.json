@@ -197,6 +197,37 @@
     }
   },
   {
+    "id": "pd-ui-review-screenshot-visual-defects",
+    "skill": "pd-ui-review",
+    "prompt": "审查这个 SaaS 管理后台页面截图和 Figma handoff，生成 ui/ui-review-report.md。截图证据显示：移动端 375px 底部固定操作栏遮挡提交按钮，表格列导致横向溢出，筛选区按钮高度不一致，错误态缺失。请按 P0/P1/P2/P3 输出 findings，并把实现展示问题归属给 $pd-fe，设计稿状态缺失归属给 $pd-figma。",
+    "setup_files": {
+      "product/prd.md": "# PRD\n产品：广告异常提醒管理后台。\n核心场景：运营查看异常、筛选、确认处理。\n",
+      "product/product-brief.md": "# 产品设计输入\n## UI 方向输入\n- 产品类型：SaaS 管理后台\n- 信息密度：高\n- 视觉气质：克制、可扫描、效率优先\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n- 产品类型：SaaS 管理后台\n- 信息密度：高\n- 视觉气质：克制、可扫描\n- 字体层级：表格 14px，按钮 14px\n- 间距规则：8px 基础尺度\n- 响应式规则：375px 不允许页面级横向溢出\n## Page Overrides\n无。\n",
+      "ui/ui-pages.md": "# UI 页面地图\n页面：异常列表。\n",
+      "ui/ui-screens.md": "# UI 页面规格\n## 页面：异常列表\n### 状态\ndefault/loading/empty/error/permission\n### 响应式要求\n移动端不得横向溢出，固定底部操作不得遮挡关键内容。\n",
+      "ui/ui-components.md": "# UI 组件清单\n表格、筛选器、状态 badge、底部操作栏。\n",
+      "ui/figma-handoff.md": "# Figma 交付说明\n## 页面清单\n| 页面 | Figma frame | 状态 | Page override | 备注 |\n| --- | --- | --- | --- | --- |\n| 异常列表 | Alerts/List | default/loading/empty/permission | - | error 待补 |\n",
+      "visual-evidence.md": "# 截图证据\n- mobile-375.png：fixed bottom bar 覆盖提交按钮。\n- mobile-375.png：表格撑出页面级横向滚动。\n- desktop-1440.png：筛选区按钮高度不一致。\n"
+    },
+    "expected_files": [
+      "ui/ui-review-report.md"
+    ],
+    "all_contains": {
+      "ui/ui-review-report.md": [
+        "Findings",
+        "P",
+        "遮挡",
+        "横向溢出",
+        "截图证据",
+        "同类问题扫描",
+        "$pd-fe",
+        "$pd-figma",
+        "ui/ui-design-system.md"
+      ]
+    }
+  },
+  {
     "id": "pd-plan-from-design",
     "skill": "pd-plan",
     "prompt": "基于 PRD、页面蓝图和 figma-handoff 生成技术设计、前后端映射、API 契约和任务切片。",
@@ -210,6 +241,7 @@
     },
     "expected_files": [
       "tech/tech-plan.md",
+      "tech/dependency-readiness.md",
       "tech/frontend/frontend-design.md",
       "tech/frontend/frontend-component-map.md",
       "tech/frontend/frontend-route-map.md",
@@ -223,6 +255,11 @@
       "tech/risk-plan.md"
     ],
     "all_contains": {
+      "tech/dependency-readiness.md": [
+        "ready",
+        "not-required",
+        "mock-only"
+      ],
       "tech/frontend/frontend-design.md": [
         "UI 设计系统约束",
         "响应式",
@@ -232,6 +269,48 @@
         "frontend",
         "backend",
         "contract"
+      ]
+    }
+  },
+  {
+    "id": "pd-plan-dependency-readiness-required",
+    "skill": "pd-plan",
+    "prompt": "基于 PRD 和现有代码生成技术设计。后端需要调用 Dify 和 Activepieces，使用 PostgreSQL，项目需要 JDK、Node 和包管理器。当前只知道 mock Dify / mock Activepieces 存在，真实服务地址和凭证还没确认。请生成真实依赖准备清单，并且不要在依赖未 ready 时建议进入开发。",
+    "setup_files": {
+      "product/prd.md": "# PRD\n目标：AI 员工系统。\n能力：创建任务、调用 Dify 生成任务方案、调用 Activepieces 执行自动化流程、写入 PostgreSQL。\n",
+      "product/product-brief.md": "# 产品设计输入\n用户：运营管理员。\n核心任务：创建 AI 员工任务并查看执行结果。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n## Page Overrides\n无。\n",
+      "ui/ui-screens.md": "# UI 页面规格\n任务列表、任务详情、创建任务。\n",
+      "ui/ui-components.md": "# UI 组件清单\n表格、表单、详情抽屉。\n",
+      "ui/figma-handoff.md": "# Figma 交付说明\n任务列表、创建任务。\n",
+      "code-scan.md": "# 代码扫描\n存在 MockDifyClient 和 MockActivepiecesClient；未发现真实 Dify / Activepieces 地址配置。\n"
+    },
+    "expected_files": [
+      "tech/tech-plan.md",
+      "tech/dependency-readiness.md",
+      "tech/backend/sql-execution-plan.md",
+      "tech/task-slices.md",
+      "tech/risk-plan.md"
+    ],
+    "all_contains": {
+      "tech/dependency-readiness.md": [
+        "JDK",
+        "Node",
+        "PostgreSQL",
+        "Dify",
+        "Activepieces",
+        "mock-only"
+      ],
+      "tech/task-slices.md": [
+        "依赖准备"
+      ],
+      "tech/risk-plan.md": [
+        "依赖"
+      ]
+    },
+    "forbidden_contains": {
+      "tech/risk-plan.md": [
+        "依赖全部 ready"
       ]
     }
   },
@@ -248,6 +327,7 @@
       "tech/frontend/frontend-route-map.md": "# 前端路由映射\n异常列表 /alerts。\n",
       "tech/frontend/frontend-state-api.md": "# 前端状态与 API\n页面状态：default/loading/empty/error/permission。\n",
       "tech/api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-NODE | runtime | Node | FE-01 | local node | node --version | ready | 已安装 | - | - |\n| DEP-API | http | Alerts API | FE-01 | http://localhost/api/alerts | curl /api/alerts | ready | 本地真实 API | - | - |\n",
       "tech/integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
       "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n视觉气质：克制、可扫描\n## Page Overrides\n无。\n",
       "ui/figma-handoff.md": "# Figma 交付说明\n页面：异常列表。\n设计系统：ui/ui-design-system.md。\n",
@@ -289,6 +369,7 @@
     "setup_files": {
       "tech/backend/backend-design.md": "# 后端技术设计\n接口：GET /api/alerts。\n",
       "tech/api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-RUNTIME | runtime | Python | BE-01 | local python | python3 --version | ready | 已安装 | - | - |\n| DEP-DB | database | DB | BE-01 | 不涉及 | - | not-required | 纯函数 fixture | - | - |\n",
       "tech/backend/data-model.md": "# 数据模型\nAlert。\n",
       "tech/backend/sql-execution-plan.md": "# SQL 执行计划\nSQL 执行项：无\n说明：无 SQL 执行项 / 不涉及。\n",
       "tech/integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
@@ -315,11 +396,45 @@
     ]
   },
   {
+    "id": "pd-be-blocks-on-mock-downstream",
+    "skill": "pd-be",
+    "prompt": "执行 BE-020：把 Dify / Activepieces 调用接入真实下游。当前代码扫描显示只有 MockDifyClient 和 MockActivepiecesClient，dependency-readiness 里 Dify / Activepieces 都是 mock-only。请不要写真实业务代码，只按规则输出阻断记录，要求先准备真实 RestClient / WebClient 或真实下游配置。",
+    "setup_files": {
+      "tech/backend/backend-design.md": "# 后端技术设计\nBE-020 需要调用 Dify 和 Activepieces 创建任务执行流。\n",
+      "tech/api-contract.md": "# API 契约\nPOST /api/tasks\n",
+      "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-DIFY | downstream-http | Dify API | BE-020 | mock only | - | mock-only | MockDifyClient | 缺真实 Dify 地址和凭证 | 配置真实 RestClient/WebClient |\n| DEP-ACTIVEPIECES | downstream-http | Activepieces API | BE-020 | mock only | - | mock-only | MockActivepiecesClient | 缺真实 Activepieces 地址和凭证 | 配置真实 RestClient/WebClient |\n",
+      "tech/backend/data-model.md": "# 数据模型\nTask。\n",
+      "tech/backend/sql-execution-plan.md": "# SQL 执行计划\nSQL 执行项：无\n说明：无 SQL 执行项 / 不涉及。\n",
+      "tech/integration-map.md": "# 前后端一致性映射\n任务创建 -> POST /api/tasks -> Dify / Activepieces。\n",
+      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| BE-020 | P1 | backend | pending | serial | - | SYNC-020 | 接入真实 Dify / Activepieces | 依赖准备：DEP-DIFY ready、DEP-ACTIVEPIECES ready |\n",
+      "code-scan.md": "# 代码扫描\nMockDifyClient.java\nMockActivepiecesClient.java\n未发现 RestClient/WebClient 真实调用。\n"
+    },
+    "expected_files": [
+      "tech/backend/backend-implementation-log.md",
+      "tech/backend/backend-dev-notes.md"
+    ],
+    "all_contains": {
+      "tech/backend/backend-implementation-log.md": [
+        "BE-020",
+        "blocked",
+        "mock-only",
+        "DEP-DIFY",
+        "DEP-ACTIVEPIECES"
+      ],
+      "tech/backend/backend-dev-notes.md": [
+        "RestClient",
+        "WebClient",
+        "真实"
+      ]
+    }
+  },
+  {
     "id": "pd-sync-contract-report",
     "skill": "pd-sync",
     "prompt": "做联调报告。环境可以不可用，但必须记录未执行原因、契约检查项和下一步。",
     "setup_files": {
       "tech/api-contract.md": "# API 契约\nGET /api/alerts。\n",
+      "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-API | http | Alerts API | FE-01, BE-01 | local app | curl /api/alerts | ready | 本地真实 API | - | - |\n",
       "tech/integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
       "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行 | blocked-by | blocks | 内容 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-01 | P1 | frontend | done | parallel-safe | | | 异常列表 | npm test |\n| BE-01 | P1 | backend | done | parallel-safe | | | 查询异常列表 | python test |\n",
       "tech/frontend/frontend-implementation-log.md": "# 前端实现记录\nFE-01 done。\n",
@@ -332,6 +447,8 @@
     "all_contains": {
       "sync/integration-report.md": [
         "实现前置状态",
+        "真实依赖验证",
+        "Mock 禁用检查",
         "环境",
         "未执行"
       ]
@@ -343,6 +460,7 @@
     "prompt": "联调人工确认审批接口。契约中已有 POST /api/v1/confirmations/{id}/approve，task-slices 中 FE-010 和 BE-010 都是 done，但真实后端目前只有 GET /api/v1/confirmations，POST 调用返回 500 / NoResourceFoundException。请生成联调报告并判断下一步，不要把实现漏接口误判成需要新增契约。",
     "setup_files": {
       "tech/api-contract.md": "# API 契约\nPOST /api/v1/confirmations/{id}/approve\nPOST /api/v1/confirmations/{id}/reject\nPOST /api/v1/confirmations/{id}/cancel\nGET /api/v1/confirmations\n",
+      "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-CONFIRMATION-API | http | Confirmation API | FE-010, BE-010, SYNC-003 | local app | curl POST approve | ready | 本地真实 API | - | - |\n",
       "tech/integration-map.md": "# 前后端一致性映射\n人工确认页 approve 动作 -> POST /api/v1/confirmations/{id}/approve。\n",
       "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-010 | P1 | frontend | done | parallel-safe | - | SYNC-003 | 人工确认审批按钮和 API client | npm test |\n| BE-010 | P1 | backend | done | parallel-safe | - | SYNC-003 | 人工确认 approve/reject/cancel 接口 | mvn test |\n| SYNC-003 | P1 | sync | blocked | stage-gate | FE-010, BE-010 | - | 人工确认审批真实 API 联调 | POST approve 返回 2xx |\n",
       "tech/frontend/frontend-implementation-log.md": "# 前端实现记录\nFE-010 done。\n",
@@ -374,6 +492,40 @@
     }
   },
   {
+    "id": "pd-sync-rejects-mock-implementation",
+    "skill": "pd-sync",
+    "prompt": "做 Dify / Activepieces 任务创建联调。前后端 slice 都标 done，但运行证据显示后端还是 MockDifyClient / MockActivepiecesClient，没有真实 HTTP client。请生成联调报告，必须拒绝进入 pd-test。",
+    "setup_files": {
+      "tech/api-contract.md": "# API 契约\nPOST /api/tasks\n",
+      "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-DIFY | downstream-http | Dify API | BE-020, SYNC-020 | mock only | - | mock-only | MockDifyClient | 缺真实服务 | 接入真实 HTTP client |\n| DEP-ACTIVEPIECES | downstream-http | Activepieces API | BE-020, SYNC-020 | mock only | - | mock-only | MockActivepiecesClient | 缺真实服务 | 接入真实 HTTP client |\n",
+      "tech/integration-map.md": "# 前后端一致性映射\n任务创建 -> POST /api/tasks -> Dify / Activepieces。\n",
+      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-020 | P1 | frontend | done | parallel-safe | - | SYNC-020 | 任务创建表单 | npm test |\n| BE-020 | P1 | backend | done | parallel-safe | - | SYNC-020 | Dify / Activepieces 调用 | 依赖准备：DEP-DIFY ready、DEP-ACTIVEPIECES ready |\n| SYNC-020 | P1 | sync | pending | stage-gate | FE-020, BE-020 | - | 任务创建真实联调 | 真实下游返回 2xx |\n",
+      "tech/frontend/frontend-implementation-log.md": "# 前端实现记录\nFE-020 done。\n",
+      "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-020 done，但代码扫描仍显示 MockDifyClient / MockActivepiecesClient。\n",
+      "runtime-evidence.md": "# 运行证据\nPOST /api/tasks -> 200\n日志：using MockDifyClient, using MockActivepiecesClient\n未发现真实 Dify / Activepieces HTTP request。\n"
+    },
+    "expected_files": [
+      "sync/integration-plan.md",
+      "sync/integration-report.md"
+    ],
+    "all_contains": {
+      "sync/integration-report.md": [
+        "实现前置状态",
+        "真实依赖验证",
+        "Mock 禁用检查",
+        "mock-only",
+        "implementation-defect",
+        "BE-020"
+      ]
+    },
+    "forbidden_contains": {
+      "sync/integration-report.md": [
+        "可进入 $pd-test",
+        "联调通过"
+      ]
+    }
+  },
+  {
     "id": "pd-test-risk-report",
     "skill": "pd-test",
     "prompt": "制定并执行可行的最小测试。如果无法执行真实测试，必须写明未执行项、原因和风险。",
@@ -381,6 +533,7 @@
       "product/prd.md": "# PRD\n广告异常提醒。\n",
       "product/acceptance-criteria.md": "# 验收标准\n- [ ] 异常列表可打开\n",
       "tech/tech-plan.md": "# 技术方案\n前后端分离。\n",
+      "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-API | http | Alerts API | test | local app | curl /api/alerts | ready | 本地真实 API | - | - |\n",
       "tech/backend/sql-execution-plan.md": "# SQL 执行计划\nSQL 执行项：无\n说明：无 SQL 执行项 / 不涉及。\n",
       "sync/integration-report.md": "# 联调报告\n环境未启动。\n",
       ".gitignore": "node_modules/\ndist/\ncoverage/\n*.log\n"
@@ -394,6 +547,8 @@
     "all_contains": {
       "test/test-report.md": [
         "联调前置状态",
+        "真实依赖验证",
+        "Mock 禁用检查",
         "SQL 执行验证",
         "未执行",
         "风险",
