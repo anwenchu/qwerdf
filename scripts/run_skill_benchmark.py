@@ -18,7 +18,7 @@ from string import Template
 
 
 ROOT = Path(__file__).resolve().parents[1]
-DEFAULT_CASES = ROOT / "evals" / "benchmark-cases.json"
+DEFAULT_CASES = ROOT / "evals" / "cases" / "benchmark-cases.json"
 DEFAULT_RUNS_DIR = ROOT / "evals" / "runs"
 SKILLS_DIR = ROOT / "skills"
 SKILL_MANIFEST = SKILLS_DIR / "manifest.txt"

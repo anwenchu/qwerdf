@@ -1,14 +1,24 @@
 # Ordered qwerdf skill names. Scripts read this file as the single source of truth.
+
+# Product discovery
 pd-vet
 pd-prd
+
+# Product and UI design
 pd-blueprint
 pd-figma
 pd-ui-review
+
+# Engineering design and implementation
 pd-plan
 pd-fe
 pd-be
+
+# Quality gates
 pd-sync
 pd-test
 pd-review
+
+# Git and release
 pd-git
 pd-release

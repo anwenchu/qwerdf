@@ -13,9 +13,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 SKILLS_DIR = ROOT / "skills"
 MANIFEST_FILE = SKILLS_DIR / "manifest.txt"
-EVALS_FILE = ROOT / "evals" / "trigger-queries.json"
-REPORT_MD = ROOT / "evals" / "trigger-preflight-report.md"
-REPORT_JSON = ROOT / "evals" / "trigger-preflight-report.json"
+EVALS_FILE = ROOT / "evals" / "cases" / "trigger-queries.json"
+REPORTS_DIR = ROOT / "evals" / "reports"
+REPORT_MD = REPORTS_DIR / "trigger-preflight-report.md"
+REPORT_JSON = REPORTS_DIR / "trigger-preflight-report.json"
 
 NEGATION_PATTERNS = [
     "不需要",
@@ -382,6 +383,7 @@ def main() -> int:
     report = evaluate()
 
     if args.write_default_reports:
+        REPORTS_DIR.mkdir(parents=True, exist_ok=True)
         REPORT_JSON.write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         REPORT_MD.write_text(render_markdown(report), encoding="utf-8")
 
@@ -399,6 +401,7 @@ def main() -> int:
         )
 
     if args.out:
+        args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(output, encoding="utf-8")
     else:
         print(output)

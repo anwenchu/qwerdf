@@ -14,6 +14,8 @@ SKILLS_DIR = ROOT / "skills"
 COMMON_DIR = SKILLS_DIR / "qwerdf-common"
 MANIFEST_FILE = SKILLS_DIR / "manifest.txt"
 EVALS_DIR = ROOT / "evals"
+EVAL_CASES_DIR = EVALS_DIR / "cases"
+DOCS_DIR = ROOT / "docs"
 CANONICAL_ARTIFACT_PREFIXES = ("product/", "ui/", "tech/", "sync/", "test/", "release/")
 ARTIFACT_FILENAMES = {
     "idea-brief.md",
@@ -198,6 +200,7 @@ def validate_skill(skill: str, errors: list[str]) -> None:
 
 def iter_markdown_files() -> list[Path]:
     paths = [ROOT / "README.md", ROOT / "CONTRIBUTING.md", ROOT / "SECURITY.md", ROOT / "CHANGELOG.md"]
+    paths.extend(sorted(DOCS_DIR.rglob("*.md")) if DOCS_DIR.exists() else [])
     paths.extend(sorted(SKILLS_DIR.rglob("*.md")))
     return [path for path in paths if path.exists()]
 
@@ -218,6 +221,8 @@ def validate_links(errors: list[str]) -> None:
 
 def validate_forbidden_terms(errors: list[str]) -> None:
     checked = [ROOT / "README.md"]
+    if DOCS_DIR.exists():
+        checked.extend(sorted(DOCS_DIR.rglob("*")))
     checked.extend(sorted(SKILLS_DIR.rglob("*")))
     for path in checked:
         if not path.is_file():
@@ -240,6 +245,18 @@ def validate_open_source_files(errors: list[str]) -> None:
 def validate_reference_guardrails(errors: list[str]) -> None:
     required_tokens_by_file = {
         ROOT / "README.md": [
+            "Quick Start",
+            "Workflow",
+            "Skills",
+            "Repository Layout",
+            "Documentation",
+            "License",
+            "中文",
+            "docs/usage.md",
+            "docs/architecture.md",
+            "docs/benchmarking.md",
+        ],
+        DOCS_DIR / "usage.md": [
             "product/",
             "ui/",
             "tech/",
@@ -249,6 +266,48 @@ def validate_reference_guardrails(errors: list[str]) -> None:
             "legacy fallback",
             "sql-execution-plan.md",
             "ui-design-system.md",
+            "MASTER",
+            "Page Overrides",
+            "bash scripts/install.sh",
+        ],
+        DOCS_DIR / "development.md": [
+            "skills/manifest.txt",
+            "evals/cases/trigger-queries.json",
+            "evals/cases/benchmark-cases.json",
+            "agents/openai.yaml",
+            "validate_skills.py",
+            "qwerdf-common",
+        ],
+        DOCS_DIR / "benchmarking.md": [
+            "evals/cases/trigger-queries.json",
+            "evals/cases/benchmark-cases.json",
+            "evals/reports/",
+            "evals/runs/",
+            "--run-baseline",
+            "--case",
+            "--skill",
+            "--list-cases",
+            "dry-run",
+            "真实执行",
+            "rep-01",
+            "command.json",
+            "forbidden_contains",
+            "last-message.txt",
+            "checks/",
+        ],
+        DOCS_DIR / "architecture.md": [
+            "skills/<skill-name>/SKILL.md",
+            "skills/qwerdf-common",
+            "Codex skill discovery",
+            "qwerdf-common",
+            "product-delivery-flow.md",
+            "engineering-contracts.md",
+        ],
+        DOCS_DIR / "references.md": [
+            "anthropics/skills",
+            "vercel-labs/agent-skills",
+            "nextlevelbuilder/ui-ux-pro-max-skill",
+            "Design System Generator",
             "MASTER",
             "Page Overrides",
         ],
@@ -576,7 +635,7 @@ def validate_manifest(skill_names: list[str], errors: list[str]) -> None:
 
 
 def validate_trigger_evals(skill_names: list[str], errors: list[str]) -> None:
-    eval_file = EVALS_DIR / "trigger-queries.json"
+    eval_file = EVAL_CASES_DIR / "trigger-queries.json"
     if not eval_file.exists():
         fail(errors, f"{eval_file}: missing")
         return
@@ -634,7 +693,7 @@ def validate_trigger_evals(skill_names: list[str], errors: list[str]) -> None:
 
 
 def validate_benchmark_cases(skill_names: list[str], errors: list[str]) -> None:
-    cases_file = EVALS_DIR / "benchmark-cases.json"
+    cases_file = EVAL_CASES_DIR / "benchmark-cases.json"
     if not cases_file.exists():
         fail(errors, f"{cases_file}: missing")
         return
@@ -760,6 +819,9 @@ def validate_benchmark_cases(skill_names: list[str], errors: list[str]) -> None:
 def validate_benchmark_runner_contract(errors: list[str]) -> None:
     readme = ROOT / "README.md"
     readme_text = readme.read_text(encoding="utf-8") if readme.exists() else ""
+    benchmark_doc = DOCS_DIR / "benchmarking.md"
+    benchmark_text = benchmark_doc.read_text(encoding="utf-8") if benchmark_doc.exists() else ""
+    benchmark_docs_text = f"{readme_text}\n{benchmark_text}"
     for token in (
         "--run-baseline",
         "--case",
@@ -773,10 +835,10 @@ def validate_benchmark_runner_contract(errors: list[str]) -> None:
         "last-message.txt",
         "checks/",
     ):
-        if token not in readme_text:
-            fail(errors, f"{readme}: benchmark docs must mention {token!r}")
+        if token not in benchmark_docs_text:
+            fail(errors, f"{benchmark_doc}: benchmark docs must mention {token!r}")
 
-    cases_file = EVALS_DIR / "benchmark-cases.json"
+    cases_file = EVAL_CASES_DIR / "benchmark-cases.json"
     if not cases_file.exists():
         return
     try:

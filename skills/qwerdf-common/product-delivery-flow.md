@@ -62,7 +62,7 @@ pd-work/<name>/
 - 需要修改代码、设计、Git 或外部系统时，遵守对应 skill 的边界；没有明确授权时只做计划、报告或文案。
 - 执行命令、浏览器验证或截图检查后，必须在对应报告中记录命令 / 方式、结果和证据位置。
 - 当任务反复出现相同机械步骤时，优先把步骤沉淀为脚本或公共模板，而不是在多个 skill 中复制长指令。
-- 修改 skill 描述、触发词或阶段边界后，检查 `evals/trigger-queries.json`，确保 should-trigger 和 should-not-trigger 样例仍然成立。
+- 修改 skill 描述、触发词或阶段边界后，检查 `evals/cases/trigger-queries.json`，确保 should-trigger 和 should-not-trigger 样例仍然成立。
 
 ### 产品事实与参考使用 Gate
 

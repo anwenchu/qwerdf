@@ -4,5 +4,6 @@ __pycache__/
 *.pyc
 pd-work/
 evals/runs/
+evals/reports/
 evals/*-report.json
 evals/*-report.md
