@@ -12,10 +12,20 @@ Install the skills into `${CODEX_HOME:-$HOME/.codex}/skills/`:
 bash scripts/install.sh
 ```
 
+The default install uses live symlinks. If a skill is already installed as a live symlink, editing this repository is immediately reflected in Codex; rerunning install keeps that link and reports it explicitly. Use `--copy` only when symlinks are not desired.
+
 Preview install actions:
 
 ```bash
 bash scripts/install.sh --dry-run
+```
+
+Refresh copied installs or switch install mode:
+
+```bash
+bash scripts/install.sh --copy          # refresh existing qwerdf-owned copies
+bash scripts/install.sh --copy --force  # replace qwerdf-owned symlinks with copies
+bash scripts/install.sh --force         # replace qwerdf-owned copies with live symlinks
 ```
 
 Validate the repository:

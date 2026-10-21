@@ -29,7 +29,7 @@
   },
   {
     "id": "pd-ui-review-figma-screenshot",
-    "query": "用 $pd-ui-review 检查这个 Figma 设计稿和页面截图，重点看样式不统一、字体不统一、遮挡、重叠、不整齐、移动端横向溢出、状态缺失、截图证据和同类问题扫描。",
+    "query": "用 $pd-ui-review 检查这个 Figma 设计稿和页面截图，重点看样式不统一、字体不统一、遮挡、重叠、不整齐、布局不专业、字段层级不清、右侧贴边、按钮节奏、卡片模板不一致、移动端横向溢出、状态缺失、截图证据、三层审查和同类问题扫描。",
     "should_trigger": true,
     "skill": "pd-ui-review",
     "reason": "独立 UI 设计质量审查，输出 UI Review findings。"

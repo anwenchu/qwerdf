@@ -55,12 +55,19 @@ Codex Product Delivery Skill：把产品和设计产物串成前后端一致、�
 - `blocked-by` 和 `blocks` 是独立依赖列，不属于并行标记；所有任务 ID 依赖只能写入这两列，`-` 表示无依赖且不得和任务 ID 混用。
 - 依赖必须双向闭环：如果 `A.blocked-by` 包含 `B`，则 `B.blocks` 必须包含 `A`；如果 `B.blocks` 包含 `A`，则 `A.blocked-by` 必须包含 `B`。
 - `frontend` / `backend` 开发任务默认依赖具体的 `C-*`、`FE-*`、`BE-*` 前置任务；不要为了流程整齐让所有后续开发都依赖 `SYNC-*`。
-- 只有后续开发必须基于“已通过真实前后端联调的契约、字段、数据、错误码或端到端行为”时，才允许开发任务在 `blocked-by` 中依赖 `SYNC-*`。
-- 如果 `SYNC-*` 只是验证建议，不应阻塞开发任务；应写入“验证”列或任务说明中的并行建议。
-- 如果 `SYNC-*` 是阶段门，必须在任务描述、验证列或并行建议中说明理由，例如：`依赖配置域真实 API 差异关闭后才能进入任务域真实 API 开发`。
-- `SYNC-*` 的 `blocked-by` 应包含它要联调的所有前后端实现任务；`blocks` 只应包含确实需要联调结果作为阶段门的后续任务；验证列必须说明联调范围和通过条件。
+- 前端实现默认依赖 `api-contract`、`frontend-state-api`、UI 设计系统、前端运行环境和自身前置 `FE-*` / `shared-frontend` slice，不依赖后端实现进度；真实后端未完成只应成为 `SYNC-*` / 测试验收的前置，不应阻塞页面、状态、真实 API client、loading / empty / error / permission 状态实现。
+- `FE-* blocked-by BE-*` 只有在后端 slice 会先产出前端编码必须消费的具体工程产物时才允许，例如已提交的 OpenAPI generated client、共享 SDK、认证中间件适配文件或无法从 `tech/api-contract.md` 推导的真实字段文件；必须在任务描述或验证列写明该产物路径和理由。
+- 如果前端只需要调用契约中定义的 API，或只是等待真实后端返回成功数据，不得写 `FE-* blocked-by BE-*`；应让 `FE-*` 和 `BE-*` 并行，并让二者共同 `blocks SYNC-*`。
+- 前端真实 API client 可以在后端未完成时实现并验证失败态 / 空态 / 配置缺失 / 服务不可用状态；禁止用 mock 成功数据冒充联调通过，真实成功链路只能在 `$pd-sync` 中验证。
+- 后端实现默认依赖 `api-contract`、`backend-design`、`data-model`、`sql-execution-plan`、真实依赖准备、后端运行环境和自身前置 `BE-*` / `shared-backend` slice，不依赖前端实现进度；真实前端未完成只应成为 `SYNC-*` / 测试验收的前置，不应阻塞接口、服务、数据模型、权限、错误码、migration 或真实下游实现。
+- `BE-* blocked-by FE-*` 只有在前端 slice 会先产出后端编码必须消费的具体工程产物时才允许，例如提交到仓库的共享 schema / type 包、前端维护的回调 payload fixture、必须用于后端测试的契约样例文件；必须在任务描述或验证列写明该产物路径和理由。普通页面、组件、样式、交互或浏览器验收不应阻塞后端实现。
+- 如果后端只需要按契约实现 API，或只是等待前端页面发起真实请求，不得写 `BE-* blocked-by FE-*`；应让 `BE-*` 和 `FE-*` 并行，并让二者共同 `blocks SYNC-*`。
+- `SYNC-*` 是严格的联调阶段门，只能在相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` 实现 slice 全部 `done` 后执行。
+- 开发任务不得依赖 `SYNC-*`：任何 `frontend` / `backend` / `shared-*` slice 的 `blocked-by` 都禁止包含 `SYNC-*`；任何 `SYNC-*` 的 `blocks` 都禁止包含 `FE-*`、`BE-*` 或 `shared-*` 开发任务。
+- 如果后续发现必须基于联调结果修代码，不要预先创建 `blocked-by SYNC-*` 的开发任务；应由 `$pd-sync` 输出 `implementation-defect`，再让 `$pd-fe` / `$pd-be` 以缺陷修复模式重开已有 slice，或以 `slice-missing` 回 `$pd-plan` 补齐切片。
+- `SYNC-*` 的 `blocked-by` 必须包含它要联调的所有前后端实现任务；`blocks` 只允许指向 `test` 或后续非开发门禁任务，或写 `-`；验证列必须说明联调范围和通过条件。
 - 每个 `frontend` / `backend` / `shared-*` slice 的验证列必须引用对应依赖准备状态，例如 `依赖准备：JDK ready、DB ready、Dify API ready`；若依赖是 `unknown` / `blocked` / `mock-only`，该 slice 不得交付给开发，验证列也不得把 mock / stub / fake / fixture / simulator 作为通过证据。
-- 前端 UI slice 的验证列必须包含 UI 质量验收要求，例如设计系统一致性、桌面 / 移动端、无横向溢出、文本不重叠、loading / empty / error / permission / saving 状态、表单错误或截图 / 浏览器证据。
+- 前端 UI slice 的验证列必须包含 UI 质量验收要求，例如设计系统一致性、目标平台、无横向溢出、文本不重叠、适用状态及截图 / 浏览器证据；状态按 [共享质量清单](../qwerdf-common/ui-quality-checklist.md#4-适用的状态与交互) 判断，不适用写明理由，不另列全量必检状态。
 - 首次上线 / 空仓库场景使用以下模式：
   - `C-001`: `contract` / `done` / 确认工程基线契约，验证指向 `tech/tech-plan.md`、`tech/api-contract.md`、`tech/backend/data-model.md`、`tech/integration-map.md`。
   - `FE-001`: `frontend` / `pending` / 创建前端工程骨架并验证构建。
@@ -80,9 +87,13 @@ Codex Product Delivery Skill：把产品和设计产物串成前后端一致、�
 9. 对 `tech/task-slices.md` 和 `tech/dependency-readiness.md` 做 handoff 自检；若发现问题，先修正再输出最终技术设计结果：
    - 检查“并行标记”列是否合法，是否误写了 `blocked-by`、`blocks` 或任务 ID。
    - 检查所有 `blocked-by` / `blocks` 是否双向一致，不允许单边声明。
-   - 检查所有被 `SYNC-*` 阻塞的 `frontend` / `backend` 任务是否有明确阶段门理由。
-   - 检查是否存在开发任务被 `SYNC-*` 阻塞，但实际只依赖某个 `C-*`、`FE-*` 或 `BE-*` 的情况；若是，改为依赖具体 slice 或写入“验证”列。
-   - 检查 `SYNC-*` 的 `blocked-by` 是否覆盖它要联调的所有前后端实现任务，`blocks` 是否只包含真实阶段门后续任务，验证列是否说明联调范围和通过条件。
+   - 检查是否存在任何 `frontend` / `backend` / `shared-*` 开发任务 `blocked-by SYNC-*`；若存在，删除该依赖，改为并行实现并让相关实现任务共同阻塞 `SYNC-*`。
+   - 检查是否存在任何 `SYNC-* blocks FE-* / BE-* / shared-*`；若存在，删除该反向开发阻塞，必要时把联调后修复写成 `$pd-sync` finding 路由规则，而不是预建开发任务。
+   - 检查是否存在 `FE-* blocked-by BE-*` 但没有后端产出工程文件 / SDK / generated client 的明确理由；若只是等待后端实现或真实接口成功响应，改为 `FE-*` 与 `BE-*` 并行并共同阻塞 `SYNC-*`。
+   - 检查前端实现任务是否把“真实后端未完成”写成开发阻塞；若 API 契约已存在，必须拆成“前端实现可先做”和“真实后端联调验收后做”。
+   - 检查是否存在 `BE-* blocked-by FE-*` 但没有前端产出工程文件 / schema / type / 契约样例的明确理由；若只是等待前端页面或真实请求，改为 `BE-*` 与 `FE-*` 并行并共同阻塞 `SYNC-*`。
+   - 检查后端实现任务是否把“真实前端未完成”写成开发阻塞；若 API 契约已存在，必须拆成“后端实现可先做”和“真实前端联调验收后做”。
+   - 检查 `SYNC-*` 的 `blocked-by` 是否覆盖它要联调的所有前后端实现任务，且这些实现任务在联调执行前必须为 `done`；`blocks` 是否只包含 `test` 或后续非开发门禁任务，验证列是否说明联调范围和通过条件。
    - 检查所有 `contract` slice 是否为 `done`，且没有把代码实现动作误归为 `contract`。
    - 检查前端 UI slice 是否包含 UI 质量验收要求；不得只写“实现页面”而缺少设计系统、状态、响应式或浏览器验证。
    - 检查是否生成 `tech/backend/sql-execution-plan.md`；涉及 SQL / migration 时执行清单、顺序、验证、回滚和风险不得为空；不涉及时必须明确写“不涉及”。

@@ -30,6 +30,8 @@ Codex Product Delivery Skill：验证前后端实现是否符合统一契约。
 - 无法启动或连接环境时，仍需写入 `sync/integration-report.md`，说明未执行项、原因和后续验证方式。
 - 未明确通过联调时，不得建议进入 `$pd-test`、`$pd-review`、`$pd-git` 或提交 / PR。
 - 相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 未全部为 `done` 时，不得执行联调；必须在 `sync/integration-report.md` 记录缺失实现并提示回到 `$pd-fe` / `$pd-be`。
+- 开发任务不得依赖联调任务。若发现任何 `frontend` / `backend` / `shared-*` slice 的 `blocked-by` 包含 `SYNC-*`，或任何 `SYNC-*` 的 `blocks` 包含 `FE-*`、`BE-*`、`shared-*` 开发任务，必须归类为 `slice-model-invalid`，写入 `sync/plan-revision.md` 并回 `$pd-plan` 修正；不得执行联调。
+- `SYNC-*` 自身必须 `blocked-by` 它要联调的所有前后端实现 slice；缺失时视为 `slice-model-invalid`，先回 `$pd-plan` 修正任务切片。
 
 ## 联调决策树
 
@@ -47,21 +49,24 @@ Codex Product Delivery Skill：验证前后端实现是否符合统一契约。
 
 ## 流程
 
-1. 先检查 `tech/task-slices.md`：本次相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 必须全部为 `done`，并且前端 / 后端实现记录必须存在。
-2. 如果存在未完成实现 slice，写入 `sync/integration-report.md` 的实现前置状态，列出缺失 slice、当前状态和应回到的 `$pd-fe` / `$pd-be`；停止联调，不启动环境，不进入 `$pd-test`。
-3. 检查 `tech/dependency-readiness.md`：本次联调涉及的依赖必须为 `ready` / `not-required`；`unknown` / `blocked` / `mock-only` 写入“真实依赖验证”并阻断联调通过。
-4. 生成 `sync/integration-plan.md`，列出联调场景、前端入口、API、数据准备、真实依赖和预期。
-5. 启动或连接可用的前后端环境。
-6. 检查 path、method、request、response、状态码、错误结构、权限、分页、状态页和真实接口接入。
-7. 执行 Mock 禁用检查：检查前端 API client、后端 client/repository、配置开关、日志、请求目标和运行证据是否仍指向 mock/stub/fake/fixture/simulator；发现即归类为 `implementation-defect` 或依赖阻断。
-8. 对每个场景记录证据：命令输出、请求 / 响应摘要、真实资源 / 地址、截图、日志位置或未执行原因。
-9. 写入 `sync/integration-report.md`，必须包含“真实依赖验证”和“Mock 禁用检查”。
-10. 对每个阻断问题做修复路由分类，并写入 `sync/integration-report.md` 的“修复路由”表：
+1. 先检查 `tech/task-slices.md` 的联调依赖模型：开发任务不得 `blocked-by SYNC-*`，`SYNC-*` 不得 `blocks` 开发任务，目标 `SYNC-*` 必须 `blocked-by` 它要联调的所有前后端实现 slice。
+2. 如果发现依赖模型错误，写入 `sync/integration-report.md` 的实现前置状态和“修复路由”，分类为 `slice-model-invalid`；必要时写入 `sync/plan-revision.md`，停止联调，不启动环境，不进入 `$pd-test`。
+3. 再检查本次相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 必须全部为 `done`，并且前端 / 后端实现记录必须存在。
+4. 如果存在未完成实现 slice，写入 `sync/integration-report.md` 的实现前置状态，列出缺失 slice、当前状态和应回到的 `$pd-fe` / `$pd-be`；停止联调，不启动环境，不进入 `$pd-test`。
+5. 检查 `tech/dependency-readiness.md`：本次联调涉及的依赖必须为 `ready` / `not-required`；`unknown` / `blocked` / `mock-only` 写入“真实依赖验证”并阻断联调通过。
+6. 生成 `sync/integration-plan.md`，列出联调场景、前端入口、API、数据准备、真实依赖和预期。
+7. 启动或连接可用的前后端环境。
+8. 检查 path、method、request、response、状态码、错误结构、权限、分页、状态页和真实接口接入。
+9. 执行 Mock 禁用检查：检查前端 API client、后端 client/repository、配置开关、日志、请求目标和运行证据是否仍指向 mock/stub/fake/fixture/simulator；发现即归类为 `implementation-defect` 或依赖阻断。
+10. 对每个场景记录证据：命令输出、请求 / 响应摘要、真实资源 / 地址、截图、日志位置或未执行原因。
+11. 写入 `sync/integration-report.md`，必须包含“真实依赖验证”和“Mock 禁用检查”。
+12. 对每个阻断问题做修复路由分类，并写入 `sync/integration-report.md` 的“修复路由”表：
    - `contract-mismatch`: `tech/api-contract.md`、`tech/integration-map.md`、数据模型、权限或状态枚举本身缺失 / 冲突 / 模糊；写入 `sync/api-mismatch.md` 和 `sync/plan-revision.md`，下一步 `$pd-plan`。
    - `implementation-defect`: 契约存在且清楚，已有实现 slice 覆盖该契约，但真实代码 / 运行结果不符合契约；下一步 `$pd-fe` 或 `$pd-be` 缺陷修复模式，并写明归属 slice。
    - `slice-missing`: 契约存在且清楚，但 `tech/task-slices.md` 没有任何实现 slice 覆盖该契约；写入 `sync/plan-revision.md`，下一步 `$pd-plan` 补齐切片。
+   - `slice-model-invalid`: `tech/task-slices.md` 把开发任务建模为依赖 `SYNC-*`，或让 `SYNC-*` 反向阻塞开发任务，或目标 `SYNC-*` 没有等待所有相关实现 slice；写入 `sync/plan-revision.md`，下一步 `$pd-plan` 修正依赖。
    - `environment-blocked`: 环境、数据、账号、依赖服务或配置导致无法判断；下一步继续 `$pd-sync` 环境准备或补充数据。
-11. 若同一个问题无法确定是 `implementation-defect` 还是 `slice-missing`，默认先回 `$pd-plan` 修正任务归属；不得让 `$pd-fe` / `$pd-be` 在无归属 slice 的情况下扩展范围。
+13. 若同一个问题无法确定是 `implementation-defect` 还是 `slice-missing`，默认先回 `$pd-plan` 修正任务归属；不得让 `$pd-fe` / `$pd-be` 在无归属 slice 的情况下扩展范围。
 
 ## 输出摘要
 
@@ -73,6 +78,6 @@ Codex Product Delivery Skill：验证前后端实现是否符合统一契约。
   - sync/integration-report.md
   - sync/api-mismatch.md
   - sync/plan-revision.md
-结论: <通过 / implementation-defect / contract-mismatch / slice-missing / environment-blocked>
+结论: <通过 / implementation-defect / contract-mismatch / slice-missing / slice-model-invalid / environment-blocked>
 下一步: <通过则用 $pd-test；实现缺陷回 $pd-fe / $pd-be 并注明归属 slice；契约或切片问题回 $pd-plan；环境问题继续 $pd-sync>
 ```

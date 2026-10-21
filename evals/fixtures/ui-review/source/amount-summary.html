@@ -1,0 +1,13 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Payment summary</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f8fafc;color:#182230;font:16px Arial,sans-serif}
+header{padding:24px 20px;background:white;border-bottom:1px solid #d0d5dd;font-weight:700}
+main{padding:28px 20px}h1{font-size:24px;margin:0 0 24px}.summary{background:#fff;border:1px solid #d0d5dd;border-radius:8px;padding:20px}
+p{line-height:1.5;color:#475467}.amount{font-size:28px;line-height:1.5;font-weight:700;white-space:nowrap;width:150px;overflow:hidden}
+body.readable .amount{width:auto}button{width:100%;padding:16px;border:0;border-radius:6px;background:#175cd3;color:#fff;font:600 16px Arial,sans-serif;margin-top:28px}
+small{display:block;margin-top:24px;color:#667085}
+</style>
+<header>ACME Operations</header><main><h1>Payment summary</h1><section class="summary"><p>Amount due (USD)</p><div class="amount">12,345,678.90</div><p>Invoice INV-2048</p></section><button type="button">Confirm payment</button><small>Sample data · Preview fixture</small></main>
+<script>if(new URLSearchParams(location.search).get('variant')==='readable')document.body.classList.add('readable');</script></html>

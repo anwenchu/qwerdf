@@ -6,11 +6,13 @@ This guide covers installation, the Product Delivery workflow, and generated art
 
 ## Install
 
-Install skills as symlinks into `${CODEX_HOME:-$HOME/.codex}/skills/`:
+Install skills as live symlinks into `${CODEX_HOME:-$HOME/.codex}/skills/`:
 
 ```bash
 bash scripts/install.sh
 ```
+
+Live symlink mode is the default and recommended mode for local development. When the output says `Already installed as live symlink`, it does not mean a stale copy was skipped. It means Codex points directly at this repository, so every `SKILL.md` or `qwerdf-common` edit is already effective after reinstall or restart.
 
 Preview the install:
 
@@ -18,11 +20,20 @@ Preview the install:
 bash scripts/install.sh --dry-run
 ```
 
-Use copy mode when symlinks are not desired:
+Use copy mode only when symlinks are not desired. Copy mode refreshes existing qwerdf-owned copies on each install:
 
 ```bash
 bash scripts/install.sh --copy
 ```
+
+Switch install modes explicitly:
+
+```bash
+bash scripts/install.sh --copy --force  # replace qwerdf-owned symlinks with refreshed copies
+bash scripts/install.sh --force         # replace qwerdf-owned copies with live symlinks
+```
+
+The installer refuses to overwrite non-qwerdf entries under `${CODEX_HOME:-$HOME/.codex}/skills/`. Only current qwerdf live symlinks or copies marked with `.qwerdf-install-source` are refreshed or replaced.
 
 Uninstall only qwerdf-owned entries recorded in `${CODEX_HOME:-$HOME/.codex}/skills/.qwerdf/manifest.tsv`:
 

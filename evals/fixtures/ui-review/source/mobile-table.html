@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Invoice comparison — synthetic review fixture</title>
+<style>
+* { box-sizing: border-box; }
+body { margin: 0; color: #182230; background: #f8fafc; font: 16px Arial, sans-serif; }
+main { padding: 20px 16px; }
+h1 { font-size: 24px; }
+p { line-height: 1.5; }
+.table-scroll { width: 100%; overflow-x: auto; border: 1px solid #98a2b3; background: white; }
+.table-scroll:focus-visible { outline: 3px solid #175cd3; outline-offset: 2px; }
+table { width: 640px; table-layout: fixed; border-collapse: collapse; }
+th, td { padding: 16px 12px; border-bottom: 1px solid #d0d5dd; text-align: left; }
+th { color: #475467; }
+th:first-child, td:first-child { width: 130px; position: sticky; left: 0; background: white; }
+th:nth-child(2) { width: 220px; }
+th:nth-child(3) { width: 100px; }
+.amount { display: inline-block; white-space: nowrap; font-variant-numeric: tabular-nums; }
+button { margin-top: 24px; padding: 14px 20px; background: #175cd3; border: 0; border-radius: 6px; color: white; font: inherit; }
+body.page-overflow .table-scroll { width: 640px; }
+body.clipped .amount { max-width: 75px; overflow: hidden; vertical-align: middle; }
+</style>
+<main>
+  <h1>Compare invoices</h1>
+  <p id="scroll-hint">Scroll the table horizontally to compare every column. Invoice IDs stay visible.</p>
+  <div class="table-scroll" role="region" aria-label="Invoice comparison" aria-describedby="scroll-hint" tabindex="0">
+    <table>
+      <thead><tr><th scope="col">Invoice</th><th scope="col">Amount due (USD)</th><th scope="col">Status</th><th scope="col">Due date</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">INV-2048</th><td><span class="amount">12,345,678.90</span></td><td>Due</td><td>2026-11-01</td></tr>
+        <tr><th scope="row">INV-2049</th><td><span class="amount">8,765,432.10</span></td><td>Due</td><td>2026-11-02</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <button type="button">Continue review</button>
+  <p>Synthetic comparison sample. The table is the only amount source; amounts have no tooltip or expansion.</p>
+</main>
+<script>
+const variant = new URLSearchParams(location.search).get('variant');
+if (['page-overflow', 'clipped'].includes(variant)) document.body.classList.add(variant);
+</script>
+</html>

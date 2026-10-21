@@ -87,11 +87,13 @@
 
 ## `tech/frontend/frontend-state-api.md`
 
+状态范围统一按 [UI Quality Checklist](ui-quality-checklist.md#4-适用的状态与交互) 判断，模板记录结果，不重列全量必检状态。
+
 ```markdown
 # 前端状态与 API — <name>
 
 ## 页面：<页面名>
-- 页面状态：default / loading / empty / error / permission
+- 页面状态及证据：按 qwerdf-common/ui-quality-checklist.md「适用的状态与交互」记录；共享组件状态引用，不适用说明理由
 - 本地状态：
 - 服务端状态 / query key：
 - API client：
@@ -196,13 +198,26 @@
 - 不允许出现只在 `blocked-by` 单边声明、但对方 `blocks` 缺失的关系。
 - 生成后必须做一次依赖闭环自检；发现不一致时，先修正 `tech/task-slices.md` 再输出。
 
+Frontend / Backend 双向依赖：
+
+- `frontend` / `shared-frontend` slice 默认不依赖 `backend` / `shared-backend` 实现进度；前端实现应基于 `tech/api-contract.md`、`tech/frontend/frontend-state-api.md`、UI 设计系统和前端运行依赖推进。
+- 真实后端 API 未完成或真实数据暂不可用，默认写入 `SYNC-*` / `test` 的前置和验证要求，不写入 `FE-* blocked-by BE-*`。
+- 只有后端 slice 会先产出前端编码必须消费的具体工程产物时，才允许 `FE-* blocked-by BE-*`，例如 generated client、共享 SDK、schema / type 文件、认证适配文件；必须在“任务”或“验证”列写明产物路径和阶段门理由。
+- 如果前端只是在等待后端成功响应，切片应拆成 `FE-*` 与 `BE-*` 并行实现，二者共同 `blocks SYNC-*`，由 `SYNC-*` 验证真实链路。
+- 前端实现验证可以覆盖真实 API client、错误态、空态、配置缺失态、服务不可用态和 UI / 构建 / 组件检查；不得用 mock 成功数据作为 `done` 或联调通过证据。
+- `backend` / `shared-backend` slice 默认不依赖 `frontend` / `shared-frontend` 实现进度；后端实现应基于 `tech/api-contract.md`、`tech/backend/backend-design.md`、`tech/backend/data-model.md`、`tech/backend/sql-execution-plan.md` 和真实依赖准备推进。
+- 真实前端页面未完成或浏览器链路暂不可用，默认写入 `SYNC-*` / `test` 的前置和验证要求，不写入 `BE-* blocked-by FE-*`。
+- 只有前端 slice 会先产出后端编码必须消费的具体工程产物时，才允许 `BE-* blocked-by FE-*`，例如共享 schema / type 包、回调 payload fixture、契约样例文件；必须在“任务”或“验证”列写明产物路径和阶段门理由。
+- 如果后端只是在等待前端页面发起真实请求，切片应拆成 `BE-*` 与 `FE-*` 并行实现，二者共同 `blocks SYNC-*`，由 `SYNC-*` 验证真实链路。
+- 后端实现验证可以覆盖接口契约、service / repository、权限、错误码、事务、migration、真实下游和后端测试；不得用 fake frontend request 或 fixture-only 成功路径作为端到端通过证据。
+
 `SYNC-*` 建模：
 
+- `SYNC-*` 只能表示前后端真实联调阶段门；执行前相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 必须全部 `done`。
 - `SYNC-*` 的 `blocked-by` 应包含它要联调的所有前后端实现任务。
-- `SYNC-*` 的 `blocks` 只应包含确实需要联调结果作为阶段门的后续任务。
-- `frontend` / `backend` 开发任务默认依赖具体 `C-*`、`FE-*`、`BE-*` 前置任务；只有后续开发必须基于已通过真实联调的契约、字段、数据、错误码或端到端行为时，才允许依赖 `SYNC-*`。
-- 如果 `SYNC-*` 只是验证建议，写入“验证”列或并行建议，不写入 `blocked-by`。
-- 被 `SYNC-*` 阻塞的开发任务必须在任务描述或“验证”列说明阶段门理由。
+- `SYNC-*` 的 `blocks` 禁止包含 `FE-*`、`BE-*` 或 `shared-*` 开发任务，只允许指向 `test` 或后续非开发门禁任务，或写 `-`。
+- `frontend` / `backend` / `shared-*` 开发任务的 `blocked-by` 禁止包含 `SYNC-*`。
+- 联调发现的实现问题不预建为 `blocked-by SYNC-*` 的开发任务；由 `$pd-sync` 写成 `implementation-defect` 回已有实现 slice，或写成 `slice-missing` 回 `$pd-plan`。
 - `SYNC-*` 的“验证”列必须说明联调范围和通过条件。
 - 前端 UI slice 的“验证”列必须包含 UI 质量验证要求，例如桌面 / 移动端、无横向溢出、状态覆盖、表单错误、设计系统一致性或截图 / 浏览器证据。
 
@@ -217,6 +232,8 @@
 
 ## `tech/frontend/frontend-implementation-log.md`
 
+独立 UI finding 的分类与 slice 映射按 [UI finding 修复交接](ui-review-rules.md#6-ui-finding-修复交接) 核对；修复来源直接引用原报告，不复制 finding 正文。
+
 ```markdown
 # 前端实现记录 — <name>
 
@@ -226,7 +243,7 @@
 - 状态:
 
 ## 修复来源（如适用）
-- 来源：<sync/integration-report.md | test/test-report.md | test/code-review.md>
+- 来源：<原报告路径与 finding ID / 区域；独立 UI 报告可直接引用 ui/ui-review-report.md>
 - 问题 ID：
 - 类型：<implementation-defect>
 - 契约证据：
@@ -238,6 +255,9 @@
 - 结果：
 - 证据：
 ## 阻塞
+- 类型：<dependency-readiness | over-constrained-slice | contract-gap | ui-design-gap | none>
+- 证据：
+- 下一步：
 ```
 
 ## `tech/frontend/frontend-changed-files.md`
@@ -256,10 +276,19 @@
 
 ## 实现取舍
 ## API / 真实依赖说明
+- 前端实现是否依赖后端进度：<否 / 是，若是必须写明后端产出文件或 SDK 路径>
+- 后端未就绪时的处理：<真实 API client + loading / empty / error / permission / service-unavailable；不得 mock 成功数据>
 ## 待联调点
+## 切片建模问题（如适用）
+- 类型：<over-constrained-slice | none>
+- 被过度阻塞的 FE slice：
+- 相关 BE / shared-backend slice：
+- 建议回 `$pd-plan` 修正：
 ```
 
 ## `tech/frontend/frontend-acceptance.md`
+
+状态范围与必要证据沿用 [UI Quality Checklist](ui-quality-checklist.md#4-适用的状态与交互) 和 [UI Review Rules](ui-review-rules.md)，不适用与未验证分别记录。
 
 ```markdown
 # 前端验收清单 — <name>
@@ -272,8 +301,8 @@
 ## 页面验收
 - [ ] 页面可打开
 - [ ] 无 console error
-- [ ] default / loading / empty / error / permission 状态可验证
-- [ ] saving / submitting / disabled 状态可验证
+- [ ] 已按共享 UI Quality Checklist「适用的状态与交互」确认本次状态范围；不适用说明理由
+- [ ] 适用状态已有证据，共享组件可引用；必要检查未执行时明确记为未验证
 - [ ] 核心交互可用
 - [ ] 桌面端布局正确
 - [ ] 移动端无横向溢出
@@ -316,6 +345,9 @@
 - 结果：
 - 证据：
 ## 阻塞
+- 类型：<dependency-readiness | over-constrained-slice | contract-gap | sql-plan-gap | none>
+- 证据：
+- 下一步：
 ```
 
 ## `tech/backend/backend-changed-files.md`
@@ -334,7 +366,14 @@
 
 ## 实现取舍
 ## API / 数据说明
+- 后端实现是否依赖前端进度：<否 / 是，若是必须写明前端产出文件、schema、type 或契约样例路径>
+- 前端未就绪时的处理：<接口契约 + service / repository / 权限 / 错误码 / 真实下游 / 后端测试；不得 fake 端到端通过>
 ## 待联调点
+## 切片建模问题（如适用）
+- 类型：<over-constrained-slice | none>
+- 被过度阻塞的 BE slice：
+- 相关 FE / shared-frontend slice：
+- 建议回 `$pd-plan` 修正：
 ```
 
 ## `sync/integration-plan.md`
@@ -373,6 +412,13 @@
 ## 修复路由
 | 问题 ID | 分类 | 契约证据 | 实现证据 | 归属 slice | 下一步 | 处理规则 |
 | --- | --- | --- | --- | --- | --- | --- |
+
+分类枚举：
+- `implementation-defect`: 契约清楚且已有实现 slice 覆盖，但真实代码 / 运行结果不符合契约；回 `$pd-fe` / `$pd-be` 缺陷修复模式。
+- `contract-mismatch`: 契约、数据模型、权限或状态枚举本身缺失 / 冲突 / 模糊；回 `$pd-plan`。
+- `slice-missing`: 契约清楚但没有实现 slice 覆盖；回 `$pd-plan`。
+- `slice-model-invalid`: 任务依赖建模错误，例如开发任务 `blocked-by SYNC-*` 或 `SYNC-* blocks` 开发任务；回 `$pd-plan`。
+- `environment-blocked`: 环境、数据、账号、依赖服务或配置导致无法判断；留在 `$pd-sync` / 环境准备。
 
 ## 环境
 - 前端：

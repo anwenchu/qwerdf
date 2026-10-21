@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Billing contact</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f8fafc;color:#182230;font:16px Arial,sans-serif}
+header{padding:24px 20px;background:white;border-bottom:1px solid #d0d5dd;font-weight:700}
+main{padding:28px 20px}h1{font-size:24px;margin:0 0 20px}p{line-height:1.5;color:#475467}
+label{display:block;margin:24px 0 8px;font-weight:600}input{width:100%;padding:14px;border:1px solid #98a2b3;border-radius:6px;font:inherit}
+button{margin-top:28px;width:100%;padding:16px;border:0;border-radius:6px;background:#175cd3;color:white;font:600 16px Arial,sans-serif}
+.error{color:#b42318;font-size:14px;line-height:1.5;margin-top:10px}small{display:block;margin-top:24px;color:#667085}
+</style>
+<header>ACME Operations</header><main><h1>Billing contact</h1><p>Invoices will be sent to this email.</p><form novalidate><label for="email">Email address</label><input id="email" type="email" value="finance@@example.com"><div id="error" role="alert" class="error"></div><button>Save changes</button></form><small>Sample data · Preview fixture</small></main>
+<script>
+document.querySelector('form').addEventListener('submit',event=>{
+  event.preventDefault();
+  const input=document.querySelector('#email');
+  if(!input.validity.valid){
+    window.lastAttempt={action:'submit',outcome:'rejected',reason:'invalid-email',inputPreserved:input.value==='finance@@example.com'};
+    if(new URLSearchParams(location.search).get('variant')==='feedback'){
+      document.querySelector('#error').textContent='Not saved. Enter a valid email address, such as name@example.com, then save again.';
+      input.setAttribute('aria-invalid','true');input.setAttribute('aria-describedby','error');
+    }
+  }
+});
+</script></html>

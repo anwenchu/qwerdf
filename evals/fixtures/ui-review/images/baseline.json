@@ -1,0 +1,95 @@
+{
+  "browser": "155.0.8059.85",
+  "images": [
+    {
+      "file": "mobile-form.png",
+      "width": 375,
+      "height": 812,
+      "dpr": 1,
+      "theme": "light",
+      "locale": "en-US",
+      "state": "default",
+      "data": "synthetic static sample",
+      "version": "fixture-v1",
+      "font": "Arial, sans-serif",
+      "sha256": "de2c480073c2e434372663b1b877a5bbff5505c627943b318b48cb15d84b7648"
+    },
+    {
+      "file": "compact-report.png",
+      "width": 1024,
+      "height": 640,
+      "dpr": 1,
+      "theme": "light",
+      "locale": "en-US",
+      "state": "default",
+      "data": "synthetic static sample",
+      "version": "fixture-v1",
+      "font": "Arial, sans-serif",
+      "sha256": "a166e7d22095edfb703d734a94b17c3b543843540e9be1defd44d5d964ad3492"
+    },
+    {
+      "file": "amount-clipped.png",
+      "width": 375,
+      "height": 640,
+      "dpr": 1,
+      "theme": "light",
+      "locale": "en-US",
+      "state": "default",
+      "data": "synthetic static sample",
+      "version": "fixture-v1",
+      "font": "Arial, sans-serif",
+      "sha256": "e8273ca46e892e4602f54976a15e9c136a823fe9290066012a9506bb52ac182f"
+    },
+    {
+      "file": "amount-readable.png",
+      "width": 375,
+      "height": 640,
+      "dpr": 1,
+      "theme": "light",
+      "locale": "en-US",
+      "state": "default",
+      "data": "synthetic static sample",
+      "version": "fixture-v1",
+      "font": "Arial, sans-serif",
+      "sha256": "3f61c9934191677083d30cd93eb4c5b0af43f8210f9d60c8b7f2ac3ec4e9f510"
+    },
+    {
+      "file": "save-error.png",
+      "width": 375,
+      "height": 640,
+      "dpr": 1,
+      "theme": "light",
+      "locale": "en-US",
+      "state": "save-rejected",
+      "data": "synthetic static sample",
+      "version": "fixture-v1",
+      "font": "Arial, sans-serif",
+      "attempt": {
+        "action": "submit",
+        "outcome": "rejected",
+        "reason": "invalid-email",
+        "inputPreserved": true
+      },
+      "sha256": "46bbb87f68938a766dc364901a17443d986dfc20ffdc562a14460bb383cfde77"
+    },
+    {
+      "file": "save-error-feedback.png",
+      "width": 375,
+      "height": 640,
+      "dpr": 1,
+      "theme": "light",
+      "locale": "en-US",
+      "state": "save-rejected",
+      "data": "synthetic static sample",
+      "version": "fixture-v1",
+      "font": "Arial, sans-serif",
+      "attempt": {
+        "action": "submit",
+        "outcome": "rejected",
+        "reason": "invalid-email",
+        "inputPreserved": true
+      },
+      "sha256": "c9fb5415364ec1bef44460a99b61e944b22f50d29bb4a6ba0b9790163e3637db"
+    }
+  ]
+}

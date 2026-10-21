@@ -21,11 +21,12 @@
   {
     "id": "pd-prd-from-vet-artifacts",
     "skill": "pd-prd",
-    "prompt": "基于已有想法验证产物生成 PRD、需求清单、用户故事、验收标准和开放问题。",
+    "prompt": "基于已有验证材料与 source-notes.md 中用户已确认的规则，为“标记异常已处理”这一个功能生成 PRD、需求清单、用户故事、验收标准和开放问题。不要新增功能，不要编造访谈或指标；仅在机械检查与业务自审均通过时交给页面蓝图阶段。",
     "setup_files": {
       "product/idea-brief.md": "# 想法简报\n目标：广告异常提醒。\n用户：跨境电商运营。\n判断：进入 PRD。\n",
       "product/user-problem.md": "# 用户问题\n运营需要及时发现广告花费异常和 ROI 下跌。\n",
-      "product/mvp-hypothesis.md": "# MVP 假设\n必须有：异常规则、提醒列表、处理状态。\n"
+      "product/mvp-hypothesis.md": "# MVP 假设\n必须有：异常规则、提醒列表、处理状态。\n",
+      "source-notes.md": "# 用户确认记录（评估用合成场景，不是真实市场证据）\n1. 产品服务跨境电商运营；本期只做把异常从待处理标记为已处理，目标是减少重复处理。\n2. 运营只可查看并处理自己租户的异常；其他租户即使直接访问也不能读取或修改记录。\n3. 成功处理后显示已处理并反馈操作结果；不新增处理人指派、审批、通知渠道或自动投放。\n4. 提交失败时保留待处理，显示失败及重试入口；失败重试成功后显示已处理。\n5. 重复提交已处理异常不重复生成处理记录；已处理不能恢复待处理；不存在的异常给出找不到的反馈。\n6. 页面有默认、加载、空列表、错误和无权限反馈；提交中避免重复操作并反馈结果。\n7. 竞品与访谈尚未提供；耗时改善没有基线和目标值，仅待试用验证，不阻断本功能规则定义。\n8. 无其他阻断业务问题；运营账号及租户已由已有产品提供，本期不设计登录注册。\n"
     },
     "expected_files": [
       "product/prd.md",
@@ -40,7 +41,37 @@
         "目标",
         "验收标准"
       ]
-    }
+    },
+    "fixture_dirs": {
+      "skills/qwerdf-common/scripts": "verification"
+    },
+    "check_commands": [
+      "python3 -c 'import json, subprocess, sys; r = subprocess.run([sys.executable, \"verification/product_artifacts.py\", \"validate\", \"--stage\", \"prd\", \"--root\", \".\", \"--format\", \"json\"], capture_output=True, text=True); print(r.stdout, end=\"\"); print(r.stderr, end=\"\", file=sys.stderr); sys.exit(0 if r.returncode == 0 and json.loads(r.stdout)[\"status\"] == \"PASS\" else 1)'"
+    ],
+    "forbidden_files": [
+      "tech/api-contract.md",
+      "ui/ui-pages.md"
+    ]
+  },
+  {
+    "id": "pd-prd-blocks-unconfirmed-permission",
+    "skill": "pd-prd",
+    "prompt": "我们想给运营做异常处理功能，但尚未确认运营能不能看其他租户数据，也不知道已处理能否撤回。这是本期关键规则，不能先默认。请仅把需要确认的问题及其阻断原因写到 product/open-questions.md，再提出关键澄清；不要生成正式 PRD、需求清单、API 或页面蓝图，不要自行决定权限和状态流转。",
+    "expected_files": [
+      "product/open-questions.md"
+    ],
+    "all_contains": {
+      "product/open-questions.md": [
+        "租户",
+        "撤回"
+      ]
+    },
+    "forbidden_files": [
+      "product/prd.md",
+      "product/requirements.md",
+      "tech/api-contract.md",
+      "ui/ui-pages.md"
+    ]
   },
   {
     "id": "pd-blueprint-from-prd",
@@ -199,33 +230,170 @@
   {
     "id": "pd-ui-review-screenshot-visual-defects",
     "skill": "pd-ui-review",
-    "prompt": "审查这个 SaaS 管理后台页面截图和 Figma handoff，生成 ui/ui-review-report.md。截图证据显示：移动端 375px 底部固定操作栏遮挡提交按钮，表格列导致横向溢出，筛选区按钮高度不一致，错误态缺失。请按 P0/P1/P2/P3 输出 findings，并把实现展示问题归属给 $pd-fe，设计稿状态缺失归属给 $pd-figma。",
+    "prompt": "审查 visual-fixtures/mobile-form.png 的可见 UI 质量，先实际打开图片，再结合 product/product-brief.md 与设计系统给出有证据的 findings。只提供截图，没有运行页面，不臆测接口、隐藏状态或精确 CSS 尺寸。不要改设计或代码；输出 ui/ui-review-report.md，沿用报告模板的三层结果表与结论状态，明确范围与证据限制。",
     "setup_files": {
-      "product/prd.md": "# PRD\n产品：广告异常提醒管理后台。\n核心场景：运营查看异常、筛选、确认处理。\n",
-      "product/product-brief.md": "# 产品设计输入\n## UI 方向输入\n- 产品类型：SaaS 管理后台\n- 信息密度：高\n- 视觉气质：克制、可扫描、效率优先\n",
-      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n- 产品类型：SaaS 管理后台\n- 信息密度：高\n- 视觉气质：克制、可扫描\n- 字体层级：表格 14px，按钮 14px\n- 间距规则：8px 基础尺度\n- 响应式规则：375px 不允许页面级横向溢出\n## Page Overrides\n无。\n",
-      "ui/ui-pages.md": "# UI 页面地图\n页面：异常列表。\n",
-      "ui/ui-screens.md": "# UI 页面规格\n## 页面：异常列表\n### 状态\ndefault/loading/empty/error/permission\n### 响应式要求\n移动端不得横向溢出，固定底部操作不得遮挡关键内容。\n",
-      "ui/ui-components.md": "# UI 组件清单\n表格、筛选器、状态 badge、底部操作栏。\n",
-      "ui/figma-handoff.md": "# Figma 交付说明\n## 页面清单\n| 页面 | Figma frame | 状态 | Page override | 备注 |\n| --- | --- | --- | --- | --- |\n| 异常列表 | Alerts/List | default/loading/empty/permission | - | error 待补 |\n",
-      "visual-evidence.md": "# 截图证据\n- mobile-375.png：fixed bottom bar 覆盖提交按钮。\n- mobile-375.png：表格撑出页面级横向滚动。\n- desktop-1440.png：筛选区按钮高度不一致。\n"
+      "product/product-brief.md": "# 产品设计输入\n移动端费用申请预览，用户任务是核对描述和金额后提交。下方为主导航，提交操作应清楚可见且可用。本轮只审查截图可见布局，不验证实际提交或权限。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n沿用现有白底、蓝色主操作和 Arial 字体。固定导航须避让主操作，关键按钮文字完整可读。\n## Page Overrides\n无。\n"
+    },
+    "fixture_dirs": {
+      "evals/checks": "verification",
+      "skills/qwerdf-common/scripts": "verification/common",
+      "evals/fixtures/ui-review/images": "visual-fixtures"
     },
     "expected_files": [
       "ui/ui-review-report.md"
     ],
-    "all_contains": {
-      "ui/ui-review-report.md": [
-        "Findings",
-        "P",
-        "遮挡",
-        "横向溢出",
-        "截图证据",
-        "同类问题扫描",
-        "$pd-fe",
-        "$pd-figma",
-        "ui/ui-design-system.md"
-      ]
-    }
+    "check_commands": [
+      "python3 verification/ui_review.py --root . --scenario mobile-form"
+    ],
+    "review_notes": [
+      "人工核对是否真的从图片定位底部提交区与导航的覆盖关系。",
+      "不能仅凭截图声称提交接口、键盘或隐藏状态已验证。",
+      "自动检查只验证材料与报告一致性，不证明模型看图或视觉判断正确。"
+    ]
+  },
+  {
+    "id": "pd-ui-review-compact-approved-design",
+    "skill": "pd-ui-review",
+    "prompt": "审查 visual-fixtures/compact-report.png，先实际打开图片，按已有设计系统判断可见布局。只审查这张静态公开目录的 default 状态；没有可运行页面。不要新增设计、功能或状态页，输出 ui/ui-review-report.md，沿用模板的三层结果表与结论状态，明确范围、适用性和残余建议。",
+    "setup_files": {
+      "product/product-brief.md": "# 产品设计输入\n公开只读的团队联系目录，帮助用户查找团队与联系入口。本轮仅审查静态发布快照；没有异步加载、登录权限或写操作。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n已确认紧凑模式：页面和单元格侧距可用 8px，表格正文 14px，辅助文字 12px，Arial 字体；品牌色使用紫色，不是错误状态。表格行按内容自适应高度，允许二级说明。关键内容须完整可读。\n## Page Overrides\n无。\n"
+    },
+    "fixture_dirs": {
+      "evals/checks": "verification",
+      "skills/qwerdf-common/scripts": "verification/common",
+      "evals/fixtures/ui-review/images": "visual-fixtures"
+    },
+    "expected_files": [
+      "ui/ui-review-report.md"
+    ],
+    "check_commands": [
+      "python3 verification/ui_review.py --root . --scenario compact-report"
+    ],
+    "review_notes": [
+      "不得仅因 8px 侧距、紫色、不同内容行高或没有 loading/permission 而报阻断。",
+      "只有截图时运行检查可不适用，但须完成可见布局审查。",
+      "可有具体 P2/P3 建议；不得声称整产品、键盘或对比度已通过。"
+    ]
+  },
+  {
+    "id": "pd-ui-review-missing-image-evidence",
+    "skill": "pd-ui-review",
+    "prompt": "这里只有修复说明，没有提供图片、Figma 或页面 URL。请审查当前可用证据，输出 ui/ui-review-report.md，沿用模板的三层结果表与结论状态。不要把文字说明当成亲自看过截图，也不要臆测具体视觉缺陷。",
+    "setup_files": {
+      "repair-notes.md": "# 修复说明\n开发者称 mobile.png 的底部提交按钮遮挡已修复，尚未提供对应截图或运行证据。\n"
+    },
+    "fixture_dirs": {
+      "evals/checks": "verification",
+      "skills/qwerdf-common/scripts": "verification/common"
+    },
+    "expected_files": [
+      "ui/ui-review-report.md"
+    ],
+    "check_commands": [
+      "python3 verification/ui_review.py --root . --scenario missing-visual"
+    ],
+    "review_notes": [
+      "应指出缺少对应版本视觉证据，不能确认修复。",
+      "证据不足不是已经验证的 P0/P1 产品缺陷。"
+    ]
+  },
+  {
+    "id": "pd-ui-review-amount-clipped",
+    "skill": "pd-ui-review",
+    "prompt": "审查 visual-fixtures/amount-clipped.png，先实际打开原图，结合产品输入、设计系统与 baseline.json 的采集状态判断本轮 UI 质量。仅提供静态证据，不操作真实产品。输出 ui/ui-review-report.md，沿用模板的三层结果表与结论状态，区分可见结论与未验证行为。",
+    "setup_files": {
+      "product/product-brief.md": "# 产品设计输入\n付款确认页，任务是核对应付金额后确认。本页金额是确认前唯一的金额来源，不提供 tooltip、展开或另一个金额入口；金额必须完整可读。本轮只判断提供截图的可见布局，不验证真实支付。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n沿用 Arial、蓝色主操作和现有留白。金额层级使用 28px，容器须容纳完整数值；不通过缩小字体掩盖裁切。\n## Page Overrides\n无。\n"
+    },
+    "fixture_dirs": {
+      "evals/checks": "verification",
+      "skills/qwerdf-common/scripts": "verification/common",
+      "evals/fixtures/ui-review/images": "visual-fixtures"
+    },
+    "expected_files": [
+      "ui/ui-review-report.md"
+    ],
+    "check_commands": [
+      "python3 verification/ui_review.py --root . --scenario amount-clipped"
+    ],
+    "review_notes": [
+      "人工按图核对金额尾部裁切，以及产品明确无其他恢复入口；不得将小间距或品牌风格当作原因。",
+      "自动断言仅核对固定案例，必须人工对照原图、证据和具体 finding；截图不能证明键盘或真实接口通过。"
+    ]
+  },
+  {
+    "id": "pd-ui-review-amount-readable",
+    "skill": "pd-ui-review",
+    "prompt": "审查 visual-fixtures/amount-readable.png，先实际打开原图，结合产品输入、设计系统与 baseline.json 的采集状态判断本轮 UI 质量。仅提供静态证据，不操作真实产品。输出 ui/ui-review-report.md，沿用模板的三层结果表与结论状态，区分可见结论与未验证行为。",
+    "setup_files": {
+      "product/product-brief.md": "# 产品设计输入\n付款确认页，任务是核对应付金额后确认。本页金额是确认前唯一的金额来源，不提供 tooltip、展开或另一个金额入口；金额必须完整可读。本轮只判断提供截图的可见布局，不验证真实支付。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n沿用 Arial、蓝色主操作和现有留白。金额层级使用 28px，容器须容纳完整数值；不通过缩小字体掩盖裁切。\n## Page Overrides\n无。\n"
+    },
+    "fixture_dirs": {
+      "evals/checks": "verification",
+      "skills/qwerdf-common/scripts": "verification/common",
+      "evals/fixtures/ui-review/images": "visual-fixtures"
+    },
+    "expected_files": [
+      "ui/ui-review-report.md"
+    ],
+    "check_commands": [
+      "python3 verification/ui_review.py --root . --scenario amount-readable"
+    ],
+    "review_notes": [
+      "金额完整可读的对照应允许继续，不套固定宽度或强制增加异步 / 权限态。",
+      "自动断言仅核对固定案例，必须人工对照原图、证据和具体 finding；截图不能证明键盘或真实接口通过。"
+    ]
+  },
+  {
+    "id": "pd-ui-review-save-error",
+    "skill": "pd-ui-review",
+    "prompt": "审查 visual-fixtures/save-error.png，先实际打开原图，结合产品输入、设计系统与 baseline.json 的采集状态判断本轮 UI 质量。仅提供静态证据，不操作真实产品。输出 ui/ui-review-report.md，沿用模板的三层结果表与结论状态，区分可见结论与未验证行为。",
+    "setup_files": {
+      "product/product-brief.md": "# 产品设计输入\n账单联系邮箱设置页。表单校验失败后需说明未保存、定位错误字段并给出修改指引，保留已填输入。本地合成截图由 capture.cjs 实际点击保存后生成；baseline.json 的 attempt 记录确认本次校验拒绝和输入保留，不代表真实接口联调。只审查这次失败后的可见反馈，不从默认画面推断隐藏状态或服务行为。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n沿用 Arial 与蓝色主操作；失败提示需可见、说明原因与修正方式，不只靠颜色；输入保留。\n## Page Overrides\n无。\n"
+    },
+    "fixture_dirs": {
+      "evals/checks": "verification",
+      "skills/qwerdf-common/scripts": "verification/common",
+      "evals/fixtures/ui-review/images": "visual-fixtures"
+    },
+    "expected_files": [
+      "ui/ui-review-report.md"
+    ],
+    "check_commands": [
+      "python3 verification/ui_review.py --root . --scenario save-error"
+    ],
+    "review_notes": [
+      "结合失败后状态记录及截图确认缺少错误反馈；不能只因默认截图没有红字就认定缺陷，也不能臆测实际网络。",
+      "自动断言仅核对固定案例，必须人工对照原图、证据和具体 finding；截图不能证明键盘或真实接口通过。"
+    ]
+  },
+  {
+    "id": "pd-ui-review-save-error-feedback",
+    "skill": "pd-ui-review",
+    "prompt": "审查 visual-fixtures/save-error-feedback.png，先实际打开原图，结合产品输入、设计系统与 baseline.json 的采集状态判断本轮 UI 质量。仅提供静态证据，不操作真实产品。输出 ui/ui-review-report.md，沿用模板的三层结果表与结论状态，区分可见结论与未验证行为。",
+    "setup_files": {
+      "product/product-brief.md": "# 产品设计输入\n账单联系邮箱设置页。表单校验失败后需说明未保存、定位错误字段并给出修改指引，保留已填输入。本地合成截图由 capture.cjs 实际点击保存后生成；baseline.json 的 attempt 记录确认本次校验拒绝和输入保留，不代表真实接口联调。只审查这次失败后的可见反馈，不从默认画面推断隐藏状态或服务行为。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n沿用 Arial 与蓝色主操作；失败提示需可见、说明原因与修正方式，不只靠颜色；输入保留。\n## Page Overrides\n无。\n"
+    },
+    "fixture_dirs": {
+      "evals/checks": "verification",
+      "skills/qwerdf-common/scripts": "verification/common",
+      "evals/fixtures/ui-review/images": "visual-fixtures"
+    },
+    "expected_files": [
+      "ui/ui-review-report.md"
+    ],
+    "check_commands": [
+      "python3 verification/ui_review.py --root . --scenario save-error-feedback"
+    ],
+    "review_notes": [
+      "失败反馈完整、有改正指引且输入保留的对照应允许继续；文案不必使用某句固定文字。",
+      "自动断言仅核对固定案例，必须人工对照原图、证据和具体 finding；截图不能证明键盘或真实接口通过。"
+    ]
   },
   {
     "id": "pd-plan-from-design",
@@ -360,6 +528,43 @@
     ]
   },
   {
+    "id": "pd-fe-detects-overconstrained-backend-dependency",
+    "skill": "pd-fe",
+    "prompt": "执行 FE-014 / FE-015 前端任务。当前 task-slices 把 FE-014 blocked-by BE-018 / BE-019 / BE-020，把 FE-015 blocked-by BE-017 / BE-022，但这些后端任务只是实现真实接口和真实链路，没有说明会产出前端编码必须消费的 generated client、SDK 或 schema 文件。请不要等待后端，也不要直接忽略依赖写代码；按规则判断这是不是 task slice 依赖建模问题，并写出应回 $pd-plan 修正的说明。",
+    "setup_files": {
+      "tech/frontend/frontend-design.md": "# 前端技术设计\n页面：任务列表、知识库面板。\n前端可基于 API 契约和 UI 设计系统实现真实 API client、loading / empty / error / permission / service-unavailable 状态。\n",
+      "tech/frontend/frontend-component-map.md": "# 前端组件映射\n任务列表 -> TaskList。\n知识库面板 -> KnowledgePanel。\n",
+      "tech/frontend/frontend-route-map.md": "# 前端路由映射\n任务列表 /tasks。\n",
+      "tech/frontend/frontend-state-api.md": "# 前端状态与 API\n页面状态：default/loading/empty/error/permission/service-unavailable。\nAPI client：调用 tech/api-contract.md 中的真实 API，不使用 mock 成功数据。\n",
+      "tech/api-contract.md": "# API 契约\nGET /api/tasks\nPOST /api/tasks\nGET /api/knowledge\n",
+      "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-NODE | runtime | Node | FE-014, FE-015 | local node | node --version | ready | 已安装 | - | - |\n| DEP-BACKEND-LIVE | http | Backend live API | SYNC-014, SYNC-015 | local backend | curl /api/tasks | blocked | 后端 slice 未完成 | 等 BE 后联调 | 执行 $pd-sync 前完成 |\n",
+      "tech/integration-map.md": "# 前后端一致性映射\n任务列表 -> GET /api/tasks。\n知识库面板 -> GET /api/knowledge。\n真实成功链路由 SYNC-014 / SYNC-015 验证。\n",
+      "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n视觉气质：克制、可扫描\n",
+      "ui/figma-handoff.md": "# Figma 交付说明\n页面：任务列表、知识库面板。\n",
+      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-014 | P1 | frontend | pending | serial | BE-018, BE-019, BE-020 | SYNC-014 | 任务列表页面、真实 API client 和状态展示 | 前端实现基于 api-contract；真实成功链路待 SYNC-014 |\n| FE-015 | P1 | frontend | pending | serial | BE-017, BE-022 | SYNC-015 | 知识库面板和状态展示 | 前端实现基于 api-contract；真实成功链路待 SYNC-015 |\n| BE-017 | P1 | backend | pending | parallel-safe | - | FE-015, SYNC-015 | 知识库真实接口 | mvn test |\n| BE-018 | P1 | backend | pending | parallel-safe | - | FE-014, SYNC-014 | 任务列表真实接口 | mvn test |\n| BE-019 | P1 | backend | pending | parallel-safe | - | FE-014, SYNC-014 | 任务状态更新接口 | mvn test |\n| BE-020 | P1 | backend | pending | parallel-safe | - | FE-014, SYNC-014 | 任务执行链路 | mvn test |\n| BE-022 | P1 | backend | pending | parallel-safe | - | FE-015, SYNC-015 | embedding dashscope 真实依赖 | 依赖准备：真实服务 ready |\n| SYNC-014 | P1 | sync | pending | stage-gate | FE-014, BE-018, BE-019, BE-020 | - | 任务列表真实联调 | 真实 API 返回 2xx |\n| SYNC-015 | P1 | sync | pending | stage-gate | FE-015, BE-017, BE-022 | - | 知识库真实联调 | 真实 API 返回 2xx |\n"
+    },
+    "expected_files": [
+      "tech/frontend/frontend-dev-notes.md"
+    ],
+    "all_contains": {
+      "tech/frontend/frontend-dev-notes.md": [
+        "over-constrained-slice",
+        "FE-014",
+        "FE-015",
+        "$pd-plan",
+        "前端实现与后端实现并行",
+        "共同阻塞",
+        "SYNC-014",
+        "SYNC-015"
+      ]
+    },
+    "forbidden_contains": {
+      "tech/frontend/frontend-dev-notes.md": [
+        "等待后端完成后再开发前端"
+      ]
+    }
+  },
+  {
     "id": "pd-be-single-slice-reporting",
     "skill": "pd-be",
     "prompt": "执行 BE-01 后端 slice。请在 fixtures/backend-alerts 中实现后端告警查询逻辑，让 Python 测试通过，并按 skill 写实现记录、变更文件和后端开发说明。",
@@ -394,6 +599,40 @@
     "check_commands": [
       "python3 fixtures/backend-alerts/test_alerts.py"
     ]
+  },
+  {
+    "id": "pd-be-detects-overconstrained-frontend-dependency",
+    "skill": "pd-be",
+    "prompt": "执行 BE-014 / BE-015 后端任务。当前 task-slices 把 BE-014 blocked-by FE-018 / FE-019，把 BE-015 blocked-by FE-020，但这些前端任务只是页面、组件和浏览器验收，没有说明会产出后端编码必须消费的 schema、type 包或契约样例文件。请不要等待前端，也不要直接忽略依赖写代码；按规则判断这是不是 task slice 依赖建模问题，并写出应回 $pd-plan 修正的说明。",
+    "setup_files": {
+      "tech/backend/backend-design.md": "# 后端技术设计\n接口：任务列表、任务状态更新、知识库查询。\n后端可基于 API 契约、数据模型和真实依赖准备实现 controller / service / repository、权限、错误码和后端测试。\n",
+      "tech/api-contract.md": "# API 契约\nGET /api/tasks\nPATCH /api/tasks/{id}/status\nGET /api/knowledge\n",
+      "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-JDK | runtime | JDK | BE-014, BE-015 | local jdk | java -version | ready | 已安装 | - | - |\n| DEP-FRONTEND-LIVE | ui | Frontend live page | SYNC-014, SYNC-015 | local web | open /tasks | blocked | 前端 slice 未完成 | 等 FE 后联调 | 执行 $pd-sync 前完成 |\n",
+      "tech/backend/data-model.md": "# 数据模型\nTask、Knowledge。\n",
+      "tech/backend/sql-execution-plan.md": "# SQL 执行计划\nSQL 执行项：无\n说明：无 SQL 执行项 / 不涉及。\n",
+      "tech/integration-map.md": "# 前后端一致性映射\n任务列表页面 -> GET /api/tasks。\n知识库面板 -> GET /api/knowledge。\n真实页面链路由 SYNC-014 / SYNC-015 验证。\n",
+      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| BE-014 | P1 | backend | pending | serial | FE-018, FE-019 | SYNC-014 | 任务列表与状态更新真实接口 | 后端实现基于 api-contract；真实页面链路待 SYNC-014 |\n| BE-015 | P1 | backend | pending | serial | FE-020 | SYNC-015 | 知识库查询真实接口 | 后端实现基于 api-contract；真实页面链路待 SYNC-015 |\n| FE-018 | P1 | frontend | pending | parallel-safe | - | BE-014, SYNC-014 | 任务列表页面 | npm test |\n| FE-019 | P1 | frontend | pending | parallel-safe | - | BE-014, SYNC-014 | 任务状态按钮 | npm test |\n| FE-020 | P1 | frontend | pending | parallel-safe | - | BE-015, SYNC-015 | 知识库面板 | npm test |\n| SYNC-014 | P1 | sync | pending | stage-gate | FE-018, FE-019, BE-014 | - | 任务列表真实联调 | 页面请求真实 API 返回 2xx |\n| SYNC-015 | P1 | sync | pending | stage-gate | FE-020, BE-015 | - | 知识库真实联调 | 页面请求真实 API 返回 2xx |\n"
+    },
+    "expected_files": [
+      "tech/backend/backend-dev-notes.md"
+    ],
+    "all_contains": {
+      "tech/backend/backend-dev-notes.md": [
+        "over-constrained-slice",
+        "BE-014",
+        "BE-015",
+        "$pd-plan",
+        "后端实现与前端实现并行",
+        "共同阻塞",
+        "SYNC-014",
+        "SYNC-015"
+      ]
+    },
+    "forbidden_contains": {
+      "tech/backend/backend-dev-notes.md": [
+        "等待前端完成后再开发后端"
+      ]
+    }
   },
   {
     "id": "pd-be-blocks-on-mock-downstream",
@@ -451,6 +690,44 @@
         "Mock 禁用检查",
         "环境",
         "未执行"
+      ]
+    }
+  },
+  {
+    "id": "pd-sync-rejects-development-depending-on-sync",
+    "skill": "pd-sync",
+    "prompt": "检查任务列表联调。当前 task-slices 错误地把 FE-014 blocked-by SYNC-014，同时 SYNC-014 blocks FE-014。请不要执行联调，判断这是切片依赖建模问题，并输出应回 $pd-plan 修正的 integration-report / plan-revision。",
+    "setup_files": {
+      "tech/api-contract.md": "# API 契约\nGET /api/tasks\n",
+      "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-API | http | Tasks API | SYNC-014 | local app | curl /api/tasks | ready | 本地真实 API | - | - |\n",
+      "tech/integration-map.md": "# 前后端一致性映射\n任务列表 -> GET /api/tasks。\n",
+      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-014 | P1 | frontend | pending | serial | SYNC-014 | - | 任务列表页面 | npm test |\n| BE-014 | P1 | backend | done | parallel-safe | - | SYNC-014 | 任务列表真实接口 | mvn test |\n| SYNC-014 | P1 | sync | pending | stage-gate | BE-014 | FE-014 | 任务列表真实联调 | 真实 API 返回 2xx |\n",
+      "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-014 done。\n"
+    },
+    "expected_files": [
+      "sync/integration-report.md",
+      "sync/plan-revision.md"
+    ],
+    "all_contains": {
+      "sync/integration-report.md": [
+        "实现前置状态",
+        "slice-model-invalid",
+        "开发任务不得依赖 SYNC-*",
+        "不得执行联调",
+        "$pd-plan"
+      ],
+      "sync/plan-revision.md": [
+        "FE-014",
+        "SYNC-014",
+        "blocked-by",
+        "blocks",
+        "删除开发任务对联调任务的依赖"
+      ]
+    },
+    "forbidden_contains": {
+      "sync/integration-report.md": [
+        "联调通过",
+        "进入 $pd-test"
       ]
     }
   },
