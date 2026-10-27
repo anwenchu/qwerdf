@@ -1,0 +1,7 @@
+# Synthetic deployment-intent configuration; not runtime verification.
+[ledger]
+service = "ledger-service"
+protocol = "grpc"
+method = "sample.ledger.v1.BalanceReader/ReadSnapshot"
+client_symbol = "ledger_client.read_snapshot"
+environment_verified = false

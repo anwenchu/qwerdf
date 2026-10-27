@@ -13,8 +13,9 @@ Codex Product Delivery Skill：把产品和设计产物串成前后端一致、�
 1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `tech/tech-plan.md`、`tech/dependency-readiness.md`、`tech/frontend/frontend-design.md`、`tech/frontend/frontend-component-map.md`、`tech/frontend/frontend-route-map.md`、`tech/frontend/frontend-state-api.md`、`tech/backend/backend-design.md`、`tech/api-contract.md`、`tech/backend/data-model.md`、`tech/backend/sql-execution-plan.md`、`tech/integration-map.md`、`tech/task-slices.md`、`tech/risk-plan.md` 的模板。
 3. 读取 [UI Design System Rules](../qwerdf-common/ui-design-system.md) 和 [UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)。
+   技术依据、范围控制和交接判断读取 [技术设计依据与范围规则](../qwerdf-common/technical-design-rules.md)。
 4. 读取 `product/prd.md`、`product/requirements.md`、`product/product-brief.md`、`ui/ui-design-system.md`、`ui/ui-screens.md`、`ui/ui-components.md`、`ui/figma-handoff.md`。
-5. 扫描现有代码库的前端、后端、API client、路由、数据模型、权限和测试结构。
+5. 先按本期业务链路限定扫描问题和停止边界，再读取相关前后端入口、API client、契约 / 提供方实现、路由、数据模型、权限、实际依赖版本 / 配置及测试结构；只读影响核查不自动扩成改造范围。
 6. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
 
 ## 边界
@@ -22,6 +23,7 @@ Codex Product Delivery Skill：把产品和设计产物串成前后端一致、�
 - 不写代码。
 - 不提交代码。
 - 不改 PRD 或 Figma。
+- 关键接入不明确或决定性依据缺失时，按共享技术设计规则报告草案 / 受影响部分待补，不仅凭文件齐全宣称完成；范围外发现不自动进入本期改动或 task slices。
 - 不让 `$pd-fe` 或 `$pd-be` 单方面处理 `contract` 类型任务。
 - 发现需求不清时，停止并提示回到 `$pd-prd`、`$pd-blueprint` 或 `$pd-figma`。
 - Figma handoff 是表现层输入，不是产品事实源；如果它新增了 PRD、product-brief 或 UI 蓝图中不存在的页面、导航、资产类型、业务模块或文案，先记录冲突并停止，不下推到技术设计。
@@ -72,19 +74,20 @@ Codex Product Delivery Skill：把产品和设计产物串成前后端一致、�
   - `C-001`: `contract` / `done` / 确认工程基线契约，验证指向 `tech/tech-plan.md`、`tech/api-contract.md`、`tech/backend/data-model.md`、`tech/integration-map.md`。
   - `FE-001`: `frontend` / `pending` / 创建前端工程骨架并验证构建。
   - `BE-001`: `backend` / `pending` / 创建后端工程骨架并验证健康检查。
-- 如果某个契约仍无法确认，停止输出并说明缺口；不要生成看似可执行但会阻塞实现阶段的 `tech/task-slices.md`。
+- 如果某个契约仍无法确认，停止受影响范围的正式交接并说明缺口，保留已确认的设计记录；不要生成看似可执行但缺少关键契约的任务，或把未决契约伪标为 `done`。
 
 ## 流程
 
 1. 先确认 PRD、产品设计输入、`ui/ui-design-system.md`、UI 蓝图和 Figma handoff 足够支撑工程设计。
 2. 对照产品事实源和 `ui/ui-design-system.md` 检查 Figma handoff：若发现范围外页面、导航、资产类型、业务模块、交易品类、参考产品文案或设计系统漂移，写入冲突说明并停止。
-3. 产出 `tech/tech-plan.md`，明确范围、非目标、现有系统影响、实施顺序和风险。
+3. 产出 `tech/tech-plan.md`，关联本期需求与必要技术前置，区分改动和影响核查范围；按共享规则记录关键结论依据、设计提案、未决项及其影响，再明确现有系统影响、实施顺序和风险。
 4. 分别产出 `tech/frontend/frontend-design.md` 和 `tech/backend/backend-design.md`；前端设计必须包含 UI 设计系统约束、响应式、可访问性、表单校验、错误映射、空态和 UI 验收方式。
 5. 产出 `tech/frontend/frontend-component-map.md`、`tech/frontend/frontend-route-map.md` 和 `tech/frontend/frontend-state-api.md`，把 Figma / UI 蓝图 / design system 映射到前端组件、路由、状态、API client、page override 和状态覆盖。
-6. 产出 `tech/api-contract.md`、`tech/backend/data-model.md`、`tech/backend/sql-execution-plan.md` 和 `tech/integration-map.md`，串通前端字段、后端字段、状态、错误码、权限、分页、真实依赖和 SQL / migration 执行要求；不得产出 mock 契约、mock 数据结构或 mock 实现方案。
+6. 产出 `tech/api-contract.md`、`tech/backend/data-model.md`、`tech/backend/sql-execution-plan.md` 和 `tech/integration-map.md`，串通前端字段、后端字段、状态、错误码、权限、分页、真实依赖和 SQL / migration 执行要求；关键服务接入、参数来源、取值语义、顺序和失败路径在对应设计段落写清并关联依据。区分既有能力与拟新增设计，不得产出 mock 契约、mock 数据结构或 mock 实现方案。
 7. 产出 `tech/dependency-readiness.md`，扫描并列出 JDK、Node、包管理器、数据库、缓存 / 队列、下游 HTTP 服务、SDK / 开源框架、环境变量 / 凭证、SQL / migration 等本次开发依赖；每项必须写适用 slice、真实资源 / 地址、验证命令、状态、证据、阻断原因和下一步。
 8. 产出 `tech/task-slices.md`，每个 slice 必须包含优先级、类型、状态、并行标记、依赖、阻塞关系、依赖准备引用和验证方式。
 9. 对 `tech/task-slices.md` 和 `tech/dependency-readiness.md` 做 handoff 自检；若发现问题，先修正再输出最终技术设计结果：
+   - 先按共享技术设计规则走通本期关键链路，检查接口 / 数据映射的依据及决定性未决项；逐项核对任务、SQL 和依赖改动是否属于确认范围或必要前置。只读影响发现和未授权的一般建议不得变成本期任务。
    - 检查“并行标记”列是否合法，是否误写了 `blocked-by`、`blocks` 或任务 ID。
    - 检查所有 `blocked-by` / `blocks` 是否双向一致，不允许单边声明。
    - 检查是否存在任何 `frontend` / `backend` / `shared-*` 开发任务 `blocked-by SYNC-*`；若存在，删除该依赖，改为并行实现并让相关实现任务共同阻塞 `SYNC-*`。
@@ -101,12 +104,12 @@ Codex Product Delivery Skill：把产品和设计产物串成前后端一致、�
    - 检查每个开发 slice 的验证列是否引用对应依赖准备项；存在 `unknown` / `blocked` / `mock-only` 时，不得提示进入 `$pd-fe` / `$pd-be`，只输出阻断和下一步依赖准备。
    - 检查技术实现任务、验证方式和开发说明中是否出现 mock client / mock server / stub / fake / fixture / simulator；出现时必须改为真实依赖方案或阻断说明。
 10. 产出 `tech/risk-plan.md`。
-11. 输出摘要必须根据 `tech/dependency-readiness.md` 决定下一步：全部开发必需依赖为 `ready` / `not-required` 时才提示可并行执行 `$pd-fe` 和 `$pd-be`；否则提示先完成依赖准备。
+11. 输出摘要先说明本轮设计是否可交接、关键依据和未决项，再根据适用 slice 的 `tech/dependency-readiness.md` 决定下一步：设计足够支撑且必需依赖为 `ready` / `not-required` 时才提示执行对应 `$pd-fe` / `$pd-be`；否则列出受影响范围和补证 / 准备事项，不伪称全部完成。
 
 ## 输出摘要
 
 ```text
-技术设计完成: <name>
+技术设计状态: <name；本轮范围可交接 / 部分待补 / 阻断，说明依据>
 目录: <output-dir>
 文件:
   - tech/tech-plan.md
@@ -123,5 +126,7 @@ Codex Product Delivery Skill：把产品和设计产物串成前后端一致、�
   - tech/task-slices.md
   - tech/risk-plan.md
 
-下一步: <依赖全部 ready / not-required 时并行使用 $pd-fe 和 $pd-be；否则先完成 tech/dependency-readiness.md 中的阻断依赖>
+设计依据与未决项: <关键链路定位 / 决定性缺口及受影响范围>
+范围核对: <本期改动；仅作影响记录的范围外发现；待确认变化>
+下一步: <设计可支撑且相关依赖 ready / not-required 时执行对应实现 slice；否则先补设计依据或准备依赖>
 ```

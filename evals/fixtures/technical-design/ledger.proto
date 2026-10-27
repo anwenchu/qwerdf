@@ -1,0 +1,16 @@
+// Synthetic contract for source-grounded design review, not a production API.
+syntax = "proto3";
+package sample.ledger.v1;
+
+service BalanceReader {
+  rpc ReadSnapshot(ReadSnapshotRequest) returns (BalanceSnapshot);
+}
+message ReadSnapshotRequest {
+  string account_id = 1;
+  string settlement_asset = 2;
+}
+message BalanceSnapshot {
+  // Decimal amount in settlement_asset units; includes reserved funds.
+  string total = 1;
+  string available = 2;
+}

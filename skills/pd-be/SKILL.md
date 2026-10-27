@@ -12,6 +12,7 @@ Codex Product Delivery Skill：按技术设计执行一个后端 task slice。
 
 1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中所有 `backend-*` 模板。
+   关键接入与范围按 [技术设计依据与范围规则](../qwerdf-common/technical-design-rules.md) 核对；需要猜服务、方法、参数来源或字段语义时回 `$pd-plan` 补证，不静默发明契约或新增范围。
 3. 读取 `tech/backend/backend-design.md`、`tech/api-contract.md`、`tech/dependency-readiness.md`、`tech/backend/data-model.md`、`tech/backend/sql-execution-plan.md`、`tech/integration-map.md`、`tech/task-slices.md`。
 4. 如存在，读取 `sync/integration-report.md`、`sync/api-mismatch.md`、`test/test-report.md`、`test/code-review.md` 中归属 `$pd-be` 的 findings。
 5. 识别后端项目结构：服务入口、路由 / controller、service、repository、数据模型、权限、错误码、测试命令。

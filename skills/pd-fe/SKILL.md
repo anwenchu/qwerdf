@@ -12,6 +12,7 @@ Codex Product Delivery Skill：按技术设计执行一个前端 task slice。
 
 1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中所有 `frontend-*` 模板。
+   API 接入与任务范围按 [技术设计依据与范围规则](../qwerdf-common/technical-design-rules.md) 核对；关键参数 / 字段语义需猜测时回 `$pd-plan` 补证，不自行扩展契约或产品能力。
 3. 读取 [UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)、[UI Patterns](../qwerdf-common/ui-patterns.md) 和 [UI Design System Rules](../qwerdf-common/ui-design-system.md)。
 4. 读取 `tech/frontend/frontend-design.md`、`tech/frontend/frontend-component-map.md`、`tech/frontend/frontend-route-map.md`、`tech/frontend/frontend-state-api.md`、`tech/api-contract.md`、`tech/dependency-readiness.md`、`tech/integration-map.md`、`tech/task-slices.md`、`ui/ui-design-system.md`、`ui/figma-handoff.md`。
 5. 如存在，读取 `sync/integration-report.md`、`sync/api-mismatch.md`、`test/test-report.md`、`test/code-review.md`、`ui/ui-review-report.md` 中归属 `$pd-fe` 的 findings。

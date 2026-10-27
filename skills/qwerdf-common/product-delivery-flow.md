@@ -79,6 +79,7 @@ pd-work/<name>/
 - `ui/ui-design-system.md` 是 UI 设计系统事实源，`MASTER` 定义全局规则，`Page Overrides` 只记录必要页面差异。不得在页面规格、Figma handoff 或前端技术设计中复制出互相冲突的局部设计系统。
 - `$pd-blueprint` 必须在产品设计输入阶段明确产品类型、用户角色、核心任务、信息密度、视觉气质、页面模式、导航结构、关键状态和设计风险，并生成设计系统草案。
 - `$pd-figma` 在生成 UI 方向或写入 Figma 前必须读取或补齐 `ui/ui-design-system.md`；UI 方向只能改变呈现方式，不能改变产品范围。
+- 候选先在 Figma 展示、用户选择后深化；已有方向或仅本地预览的处理统一见 [pd-figma 的方向交付流程](../pd-figma/SKILL.md#gate-1在-figma-比较并选择-ui-方向)。候选不等于正式 handoff，不据此进入技术设计。
 - `$pd-figma` 创建或修改 Figma frame 后必须执行交付前截图级视觉 QA：每个目标 frame / 断点都要有截图证据，检查遮挡、重叠、溢出、字体、间距、安全区、状态和产品类型适配，并记录同类问题扫描。
 - `$pd-figma` 不得只凭文字或图层描述声称已修复；用户指出的字体、间距、遮挡、重叠、突兀、不整齐或移动端溢出问题，必须修复后重新截图并检查相似 frame / 组件 / 断点。
 - `$pd-ui-review` 是独立 UI 设计质量审查 gate，默认放在 `$pd-figma` 后、`$pd-plan` 前；也可在 `$pd-fe` 后用于视觉回归。它只输出 `ui/ui-review-report.md`，不改设计稿、不改代码、不提交。
@@ -131,6 +132,7 @@ pd-work/<name>/
 
 ## 7. 设计与工程 Gate
 
+- 技术设计的关键链路依据、需求到改动的必要性及未决项交接，统一见 [技术设计依据与范围规则](technical-design-rules.md)。只读影响核查不代表授权扩大本期改动；设计是否明确与真实依赖是否 ready 分开判断。
 - `$pd-plan` 完成前，不允许进入 `$pd-fe` 或 `$pd-be`。
 - `$pd-fe` 和 `$pd-be` 必须基于同一份 `tech/task-slices.md`、`tech/api-contract.md` 和 `tech/integration-map.md`。
 - `$pd-fe` 必须基于同一份 `ui/ui-design-system.md`、`ui/figma-handoff.md` 和 `tech/frontend/frontend-design.md`；设计系统缺失、冲突或未转成前端约束时，先回到 `$pd-figma` 或 `$pd-plan`。

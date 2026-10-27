@@ -54,6 +54,8 @@ $pd-vet -> $pd-prd -> $pd-blueprint -> $pd-figma -> $pd-ui-review -> $pd-plan ->
 - Quality gates: `$pd-sync`, `$pd-test`, `$pd-review`
 - Git and release: `$pd-git`, `$pd-release`
 
+For Figma work, the default is to show candidate directions in a separate Figma exploration page before asking the user to choose, then refine the chosen direction. Existing approved directions can be reused; explicit local-only or choose-before-writing requests take precedence. Identify the destination early and report actual file/frame links and preview type; local boards do not count as Figma delivery. The maintained rules are in [pd-figma](../skills/pd-figma/SKILL.md#gate-1在-figma-比较并选择-ui-方向).
+
 ## Output Directory
 
 By default, skills write artifacts under `pd-work/<name>/`. New artifacts must use canonical subdirectories. Legacy flat files may be read as a legacy fallback, but new outputs should not be written flat.

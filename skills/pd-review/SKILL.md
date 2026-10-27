@@ -12,6 +12,7 @@ Codex Product Delivery Skill：在提交前审查实现质量和交付风险。
 
 1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
 2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `test/code-review.md` 的模板。
+   方案依据与范围核对读取 [技术设计依据与范围规则](../qwerdf-common/technical-design-rules.md)，分别检查引用是否支持结论、任务是否属于本期。
 3. 读取 `product/prd.md`、`product/requirements.md`、`product/acceptance-criteria.md`、`ui/ui-design-system.md`、`ui/ui-screens.md`、`ui/ui-components.md`、`ui/figma-handoff.md`、`ui/ui-review-report.md`（如存在）、`tech/tech-plan.md`、`tech/api-contract.md`、`tech/integration-map.md`、`tech/task-slices.md`、`sync/integration-report.md`、`test/test-report.md`、前后端实现记录、changed files、dev notes、当前 git diff 和 git status。
 4. 如果当前目录是 git 仓库且存在 diff，先运行本 skill 自带脚本 `scripts/diff_triage.py`，将目标仓库的 `git diff --no-ext-diff --unified=80` 通过 stdin 传入；用输出决定审查顺序、风险标签和需要加载的 references。
 5. 根据 diff 技术栈渐进式加载 references：
