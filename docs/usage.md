@@ -58,6 +58,8 @@ For Figma work, the default is to show candidate directions in a separate Figma 
 
 ## Output Directory
 
+Java implementation and backend review directly read the [shared Java coding conventions](../skills/qwerdf-common/java-coding-rules.md); no separate command is required. The [source and adaptation notes](../skills/qwerdf-common/java-coding-sources.md) explain how Alibaba's handbook is applied to current repository contracts and configuration.
+
 By default, skills write artifacts under `pd-work/<name>/`. New artifacts must use canonical subdirectories. Legacy flat files may be read as a legacy fallback, but new outputs should not be written flat.
 
 ```text

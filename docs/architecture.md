@@ -44,6 +44,8 @@ Do not move skills into nested directories such as `skills/product/pd-vet/`. Tha
 
 ## Shared Rules
 
+`qwerdf-common/java-coding-rules.md` owns shared Java coding conventions, directly consumed by Java implementation and backend review. It has no separate command or delivery stage. Existing delivery gates and artifacts remain owned by their original skills.
+
 `skills/qwerdf-common` contains shared contracts and references:
 
 - `product-delivery-flow.md`

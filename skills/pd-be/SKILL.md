@@ -16,6 +16,7 @@ Codex Product Delivery Skill：按技术设计执行一个后端 task slice。
 3. 读取 `tech/backend/backend-design.md`、`tech/api-contract.md`、`tech/dependency-readiness.md`、`tech/backend/data-model.md`、`tech/backend/sql-execution-plan.md`、`tech/integration-map.md`、`tech/task-slices.md`。
 4. 如存在，读取 `sync/integration-report.md`、`sync/api-mismatch.md`、`test/test-report.md`、`test/code-review.md` 中归属 `$pd-be` 的 findings。
 5. 识别后端项目结构：服务入口、路由 / controller、service、repository、数据模型、权限、错误码、测试命令。
+   涉及 Java 时按 [共享 Java 编码规则](../qwerdf-common/java-coding-rules.md) 的适用章节实现；不将规范建议扩成新任务或另一套阶段门。
 6. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
 
 ## 边界
