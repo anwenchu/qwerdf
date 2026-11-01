@@ -62,11 +62,15 @@
 - [Java 11 BigDecimal API](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/math/BigDecimal.html)：构造、compareTo / equals、scale、舍入与转换。
 - [Spring 5.3 事务文档](https://docs.spring.io/spring-framework/docs/5.3.39/reference/html/data-access.html#transaction-declarative-annotations)：代理、自调用、异常、传播与管理器；是核对入口，不要求项目升级至此版本，其他版本查对应文档。
 - [MyBatis 参数与映射](https://mybatis.org/mybatis-3/sqlmap-xml.html)：参数绑定、结构替换与结果映射。
+- [MyBatis 缓存与 statement 配置](https://mybatis.org/mybatis-3/sqlmap-xml.html#cache)及[一级缓存生命周期](https://mybatis.org/mybatis-3/java-api.html)：useCache 只控制该查询的二级缓存参与；有锁语义的读取需核实实际数据库访问，不将同一持锁事务内的合法本地缓存复用一概判错。
+- [MyBatis-Spring Mapper 注入](https://mybatis.org/spring/mappers.html)及[事务管理](https://mybatis.org/spring/transactions.html)：Mapper / XML 装载、受管理会话、同数据源及事务参与；按项目实际版本核对，不要求升级。
 - [gRPC deadline](https://grpc.io/docs/guides/deadlines/)：截止时间与传播；是否已设置需检查实际 client / interceptor / service config。
 - [JDK 21 虚拟线程](https://docs.oracle.com/en/java/javase/21/core/virtual-threads.html)：仅用于解释版本条件，不授权把旧项目升级到 21。
 
 ## 团队适配边界
 
 初版按 Maven、Spring、MyBatis、gRPC / HTTP、关系数据库和交易类精确金额服务组织。抽样仓库存在 Java 11 编译目标及测试跳过 / 失败忽略配置，因此把语言目标和实际测试结果列为核查项；这不是所有模块的统一版本声明。每次使用仍读取当前项目配置和契约，不在此固化私有服务、账户规则、金额精度或本机路径。
+
+交易平台关系型业务持久化采用 MyBatis Mapper、手写业务 SQL 放在 Mapper XML，是用户明确的团队约定，不是阿里手册或 MyBatis 官方强制采用 XML 的要求。实现和审查只引用公共规范的这一份规则；不据此批量改造无关历史代码或更换其他已确认项目的技术栈。
 
 本规范不自动安装 PMD / 插件，不修改父 POM，不增加 CI 阻断，不要求新增审批；新增强制工具或全库治理需单独明确范围。

@@ -4,6 +4,10 @@
 
 原始输入：[MoneyRulesInput.java](MoneyRulesInput.java) 用于精确金额与数值相等场景；[AcceptedPatterns.java](AcceptedPatterns.java) 用于非空前提下的表示比较和合法列表替换。
 
+[JdbcGuardInput.java](JdbcGuardInput.java) 是合成的业务 JDBC 持久化输入；调用方事务已明确，仍不满足团队的 MyBatis / Mapper XML 约定。它不是生产修复代码，也不用于连接数据库。
+
+[LockCacheProbe.java](LockCacheProbe.java) 是可在临时目录编译运行的 MyBatis / H2 内存反例及控制组：有锁语义且命中二级缓存、仅锁查询禁用二级缓存、普通无锁查询保留缓存。使用已有 MyBatis 3.5.17 和 H2 2.3.232 jar 组成 classpath，按 Java 11 目标编译；不安装依赖、不连接外部数据库。断言检查竞争写入和事务结束后的释放，不仅检查 XML 文本；它不证明 Spring 代理接入、业务 MySQL 锁行为或模型决策已验证。
+
 [query-boundaries.sql](query-boundaries.sql) 提供内存 SQLite 可执行的合成表、正反约束和查询输入，仅用于演示数据库语义，不是项目 migration、MySQL 兼容性或模型行为验证。单行结果不代表查询一定低成本，仍须按实际规模与执行计划判断性能。
 
 | 场景 | 输入 / 上下文 | 应有判断 | 应避免 |
@@ -38,6 +42,15 @@
 | 动态 SQL | A 将请求排序直接放进 ${sort}；B 在封闭映射中选择固定列名 | A 有注入风险，B 核对映射后可接受；二者都仍需资源授权 | 凭 ${} 一律判漏洞或凭 #{} 一律判安全 |
 | 租户边界 | 当前身份为租户 A，查询只使用请求传入的租户 B 且无其他授权检查 | 指出可触发的越权路径及最小修复 / 用例 | 因“沿用旧代码”而豁免，或扩成所有业务迁移 |
 | 事务自调用 | 外层已通过代理进入事务，内部 this 调用标有 REQUIRES_NEW | 外层可能有效，但内部新事务传播不被额外拦截；按真实路径分析 | 一概称完全没有事务；无依据普加 rollbackFor |
+| 业务 JDBC 反例 | JdbcGuardInput；调用方已建立真实事务，Repository 将锁查询 / 条件更新写为字符串并通过 PreparedStatement 执行 | 指出违反团队持久化约定，相关 SQL 应由 Mapper XML 维护；保留租户 / 主体条件、FOR UPDATE、version 与行数判断，不凭这段材料断言已发生事务失效或 SQL 注入 | 因用了参数绑定且事务正确就放行持久化选型；仅把 SQL 提成更多常量；自行改造无关历史模块 |
+| Mapper XML 正例 | 业务调用注入的 Mapper；XML namespace 为接口全名、statement id / 参数匹配、加载配置可达，SQL 使用参数绑定，已确认事务覆盖锁与后续写入 | 接受结构，并继续核对 DDL、权限、版本条件与实际验证；@Mapper / @Param 合法，可靠自动映射不强制改 resultMap | 把绑定注解误报为内联 SQL；因“有 XML”就宣布事务和数据库验证通过 |
+| 内联 SQL 换壳 | 将业务 SQL 字符串从 Repository 搬到 @Select / @Update 或 Provider / 查询构造器中，调用方式已改名 Mapper | 仍按自定义业务 SQL 归属判断，不因接口叫 Mapper 就豁免 XML 约定 | 只禁 PreparedStatement，转而允许业务 SQL 散落在注解或 Java 构造器中 |
+| XML 存在但未绑定 | XML 未打包 / 未被当前 SqlSessionFactory 加载，或 namespace / id / @Param 名不匹配；Java 编译成功 | 指出具体绑定 / 装载缺口，按项目配置验证，不把编译成功等同可运行 | 只见 XML 文件就放行；无依据修改整个项目的 Mapper 扫描路径 |
+| 搬 SQL 后锁提前释放 | 锁查询已放 XML，但 Mapper 在事务外执行，或后续写入改用另一数据源 / 会话；业务契约要求同一原子边界 | 指出相应锁 / 写入 / 回滚边界未保持，要求验证实际 Spring 托管事务、数据源和调用路径 | 认为只加 @Transactional 或换成 MyBatis 就自动保证事务；删除原并发保护 |
+| 锁查询命中跨事务缓存 | LockCacheProbe 的反例：XML namespace 启用 cache，锁查询默认 useCache=true，先前事务已缓存同一结果；新事务读取返回后另一连接仍能更新 | 不能认定已获行锁；核对实际访问，排除锁获取由缓存替代的路径；针对该 statement 的修复应通过竞争控制组 | 只看 FOR UPDATE / 同一事务就放行；把缓存反例误认为 SQL 注入；认为本端编译能证明加锁 |
+| 锁查询控制组及释放 | LockCacheProbe 的 useCache=false 锁查询：同一事务内重复读后，竞争更新被阻止，事务结束后更新成功 | 此控制组符合所测锁持有 / 释放；一级缓存复用本身不判错，不外推为所有会话生命周期都安全 | 仅加 useCache=false 就声称关闭所有缓存；把仍持锁事务内的合法重复读取判缺陷；将 H2 结果当作生产验证 |
+| 普通缓存读取 | LockCacheProbe 的普通 SELECT 无锁语义，二级缓存开启，竞争更新允许完成 | 保留普通查询缓存；若另有新鲜度要求按其契约核对，不强制全局禁缓存或添加 flushCache | 对所有 Mapper select 一律禁用缓存；凭“不加锁”指控无锁契约下的普通读取错误 |
+| 通用 CRUD 与非业务基建 | A 复用既有 BaseMapper 的按主键通用操作，没有自定义 SQL；B 独立 migration / 数据库测试基建使用 JDBC，任务未改业务持久化 | 不为 A 复制 XML，不把 B 机械迁为 Mapper；业务自定义 SQL 仍按团队规则维护 | 禁止所有 JDBC 字样；把普通业务 CRUD 改名“适配器”后当作基建豁免；全库迁移 |
 | 写入超时 | 下游扣款超时，可能已成功；已有幂等键和查询接口 | 先按既有状态 / 幂等语义处理不明结果 | 无条件至少重试三次或新增补偿平台 |
 | 测试替身 | 普通隔离单测允许 mock；另有明确禁止替身的现有工作流 | 前者仅证明隔离行为；后者遵守当前限制 | 用单测当真实 SQL / 集成证明，或用本规范放宽原 gate |
 | 测试假成功 | Maven 退出 0，但 testFailureIgnore=true 且报告 1 failure；另一例跳过全部测试 | 前者失败，后者未执行；读取本次报告 | BUILD SUCCESS 即宣称验证通过 |

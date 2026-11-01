@@ -2,6 +2,20 @@
 
 本文件定义工程阶段 skill 共享的产物模板。Skill 执行时只读取本任务需要的模板。依据、范围与交接判断统一见 [技术设计依据与范围规则](technical-design-rules.md)；按本轮风险选用下列记录，不为局部修订重做无关历史材料。
 
+## 业务进度摘要
+
+前后端实现记录及输出摘要共用以下结构；解释与完成口径统一按 [共享业务推进规则](product-delivery-flow.md#业务推进阻断恢复与进度汇报)，只填本轮适用范围，不复制整份需求或另算整体百分比。
+
+```markdown
+- 本轮目标：<里程碑 / 验收引用；目标 slice>
+- 已实现与调用接线：<入口、关键状态变化、实际接入位置与仍未接通部分>
+- 验证：<已执行的本端检查及证据；真实链路已验证 / 未验证及依据>
+- 剩余与阻断：<未实现 / 未接线；契约缺口；依赖或验证阻塞，分别给位置、影响与下一步>
+- 下一步：<继续当前里程碑的可执行任务或解除阻断的具体动作>
+```
+
+恢复 blocked 时，在原实现记录保留原阻断，并补解除证据、当前交接 / 依赖复核及状态变更；不新造恢复报告。
+
 ## `tech/tech-plan.md`
 
 ```markdown
@@ -25,10 +39,14 @@
 
 ## 前后端一致性策略
 ## 实施顺序
+- 业务里程碑：<本期验收引用、入口与关键状态变化、业务结果、必要契约 / 依赖及验证信号>
+- 关联任务及优先推进顺序：<引用 task-slices；局部修复沿用既有目标>
 ## 风险与回滚
 ## 交接结论
+- 本次设计核查范围、所依据的验收 / 设计段落与结论：
 - 本轮可交接范围及依据：
 - 决定性未决项、受影响任务与补证方式：
+- 修订时旧结论及相关 contract / 实现任务状态的处理（无变动可注明）：
 - 环境状态引用：`tech/dependency-readiness.md`（与设计是否明确分开记录）
 ```
 
@@ -38,8 +56,8 @@
 # 真实依赖准备清单 — <name>
 
 ## 规则
-- 只有 `ready` / `not-required` 允许进入 `$pd-fe` / `$pd-be` 正式开发。
-- `unknown` / `blocked` / `mock-only` 必须阻断正式开发、联调通过和测试通过。
+- 按拟执行 slice 实际必需的依赖判断，只有 `ready` / `not-required` 允许其进入 `$pd-fe` / `$pd-be` 正式开发。
+- 上述必需依赖为 `unknown` / `blocked` / `mock-only` 时阻断该 slice 及受影响的验证；适用阶段和共享产物的生产者 / 消费者边界统一见 [共享并行开发规则](product-delivery-flow.md#frontend--backend-并行开发规则)，不另设全局依赖门槛。
 - 本地真实服务、官方本地容器或测试环境真实服务可算 `ready`；mock server、stub client、fake adapter、contract simulator 必须标为 `mock-only` 并阻断，不算 `ready`。
 - 技术实现禁止使用任何 mock；mock / stub / fake / fixture / simulator 只能作为阻断信号记录，不能作为设计、开发、联调、测试或验收通过证据。
 
@@ -212,7 +230,7 @@
 
 列说明：
 
-- 任务说明关联本期需求或必要技术前置的方案段落；范围外影响发现不因出现在技术文档就自动成为开发任务。
+- 任务说明引用技术方案中的业务里程碑 / 验收或必要技术前置；切片与执行顺序按共享业务推进规则判断，不新增强制编号或状态列。范围外影响发现不因出现在技术文档就自动成为开发任务。
 - `并行标记` 只表达调度属性，只允许 `parallel-safe`、`serial`、`stage-gate`。禁止写入任务 ID，禁止出现 `blocked-by XXX`、`blocks XXX`、`blocked-by SYNC-001` 等依赖内容。
 - `blocked-by` 是当前任务的前置任务 ID 列；`blocks` 是当前任务阻塞的后续任务 ID 列。所有任务 ID 依赖只能写入这两列。
 - `-` 表示无依赖，不得和任务 ID 混用。
@@ -226,18 +244,10 @@
 - 不允许出现只在 `blocked-by` 单边声明、但对方 `blocks` 缺失的关系。
 - 生成后必须做一次依赖闭环自检；发现不一致时，先修正 `tech/task-slices.md` 再输出。
 
-Frontend / Backend 双向依赖：
+Frontend / Backend 并行开发：
 
-- `frontend` / `shared-frontend` slice 默认不依赖 `backend` / `shared-backend` 实现进度；前端实现应基于 `tech/api-contract.md`、`tech/frontend/frontend-state-api.md`、UI 设计系统和前端运行依赖推进。
-- 真实后端 API 未完成或真实数据暂不可用，默认写入 `SYNC-*` / `test` 的前置和验证要求，不写入 `FE-* blocked-by BE-*`。
-- 只有后端 slice 会先产出前端编码必须消费的具体工程产物时，才允许 `FE-* blocked-by BE-*`，例如 generated client、共享 SDK、schema / type 文件、认证适配文件；必须在“任务”或“验证”列写明产物路径和阶段门理由。
-- 如果前端只是在等待后端成功响应，切片应拆成 `FE-*` 与 `BE-*` 并行实现，二者共同 `blocks SYNC-*`，由 `SYNC-*` 验证真实链路。
-- 前端实现验证可以覆盖真实 API client、错误态、空态、配置缺失态、服务不可用态和 UI / 构建 / 组件检查；不得用 mock 成功数据作为 `done` 或联调通过证据。
-- `backend` / `shared-backend` slice 默认不依赖 `frontend` / `shared-frontend` 实现进度；后端实现应基于 `tech/api-contract.md`、`tech/backend/backend-design.md`、`tech/backend/data-model.md`、`tech/backend/sql-execution-plan.md` 和真实依赖准备推进。
-- 真实前端页面未完成或浏览器链路暂不可用，默认写入 `SYNC-*` / `test` 的前置和验证要求，不写入 `BE-* blocked-by FE-*`。
-- 只有前端 slice 会先产出后端编码必须消费的具体工程产物时，才允许 `BE-* blocked-by FE-*`，例如共享 schema / type 包、回调 payload fixture、契约样例文件；必须在“任务”或“验证”列写明产物路径和阶段门理由。
-- 如果后端只是在等待前端页面发起真实请求，切片应拆成 `BE-*` 与 `FE-*` 并行实现，二者共同 `blocks SYNC-*`，由 `SYNC-*` 验证真实链路。
-- 后端实现验证可以覆盖接口契约、service / repository、权限、错误码、事务、migration、真实下游和后端测试；不得用 fake frontend request 或 fixture-only 成功路径作为端到端通过证据。
+- 切片依赖、必要共享工程产物及跨端真实验收统一按 [Frontend / Backend 并行开发规则](product-delivery-flow.md#frontend--backend-并行开发规则) 填写，本模板不另设业务实现相互依赖的例外。
+- 任务 / 验证列引用已确认契约及本端验证依据；缺少必要动作码或返回语义时按设计缺口回 `$pd-plan`，不能填写“等待另一端开发后确认”。
 
 `SYNC-*` 建模：
 
@@ -269,6 +279,10 @@ Frontend / Backend 双向依赖：
 - ID:
 - 目标:
 - 状态:
+- 业务里程碑 / 验收引用:
+
+## 业务推进
+按本文件 [业务进度摘要](#业务进度摘要) 填写。
 
 ## 修复来源（如适用）
 - 来源：<原报告路径与 finding ID / 区域；独立 UI 报告可直接引用 ui/ui-review-report.md>
@@ -304,7 +318,7 @@ Frontend / Backend 双向依赖：
 
 ## 实现取舍
 ## API / 真实依赖说明
-- 前端实现是否依赖后端进度：<否 / 是，若是必须写明后端产出文件或 SDK 路径>
+- 本端工程前置 / 共享产物：<仅列实际消费的具体产物与准备任务；边界按共享并行开发规则，不填写等待对端业务实现>
 - 后端未就绪时的处理：<真实 API client + loading / empty / error / permission / service-unavailable；不得 mock 成功数据>
 ## 待联调点
 ## 切片建模问题（如适用）
@@ -359,6 +373,10 @@ Frontend / Backend 双向依赖：
 - ID:
 - 目标:
 - 状态:
+- 业务里程碑 / 验收引用:
+
+## 业务推进
+按本文件 [业务进度摘要](#业务进度摘要) 填写。
 
 ## 修复来源（如适用）
 - 来源：<sync/integration-report.md | test/test-report.md | test/code-review.md>
@@ -394,7 +412,7 @@ Frontend / Backend 双向依赖：
 
 ## 实现取舍
 ## API / 数据说明
-- 后端实现是否依赖前端进度：<否 / 是，若是必须写明前端产出文件、schema、type 或契约样例路径>
+- 本端工程前置 / 共享产物：<仅列实际消费的具体产物与准备任务；边界按共享并行开发规则，不填写等待对端业务实现>
 - 前端未就绪时的处理：<接口契约 + service / repository / 权限 / 错误码 / 真实下游 / 后端测试；不得 fake 端到端通过>
 ## 待联调点
 ## 切片建模问题（如适用）
