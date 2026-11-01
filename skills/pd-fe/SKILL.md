@@ -15,6 +15,7 @@ Codex Product Delivery Skill：按技术设计逐片实现，每个迭代闭合�
    API 接入与任务范围按 [技术设计依据与范围规则](../qwerdf-common/technical-design-rules.md) 核对；关键参数 / 字段语义需猜测时回 `$pd-plan` 补证，不自行扩展契约或产品能力。
 3. 读取 [UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)、[UI Patterns](../qwerdf-common/ui-patterns.md) 和 [UI Design System Rules](../qwerdf-common/ui-design-system.md)。
 4. 读取 `tech/tech-plan.md`、`tech/frontend/frontend-design.md`、`tech/frontend/frontend-component-map.md`、`tech/frontend/frontend-route-map.md`、`tech/frontend/frontend-state-api.md`、`tech/api-contract.md`、`tech/dependency-readiness.md`、`tech/integration-map.md`、`tech/task-slices.md`、`ui/ui-design-system.md`、`ui/figma-handoff.md`，以及其中关联的未决项 / 设计检查记录。
+   必须补读 Figma 原稿时，先加载当前环境中对应的 Figma 设计转代码技能并遵守其工具前置要求，连接选择与有效 session 按 [共享复用规则](../qwerdf-common/product-delivery-flow.md#figma-连接与会话复用) 执行，不因加载规范重新核查其他账号。已有材料不足时保留证据缺口，不用猜测或重复授权替代。
 5. 如存在，读取 `sync/integration-report.md`、`sync/api-mismatch.md`、`test/test-report.md`、`test/code-review.md`、`ui/ui-review-report.md` 中归属 `$pd-fe` 的 findings。
 6. 识别前端项目结构：`package.json`、路由、页面目录、组件目录、状态管理、API client、样式体系、测试命令。
 7. 如果用户未指定目录，默认使用 `pd-work/<name>/`。

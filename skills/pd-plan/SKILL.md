@@ -15,6 +15,7 @@ Codex Product Delivery Skill：把产品和设计产物串成前后端一致、�
 3. 读取 [UI Design System Rules](../qwerdf-common/ui-design-system.md) 和 [UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)。
    技术依据、范围控制和交接判断读取 [技术设计依据与范围规则](../qwerdf-common/technical-design-rules.md)。
 4. 读取 `product/prd.md`、`product/requirements.md`、`product/product-brief.md`、`ui/ui-design-system.md`、`ui/ui-screens.md`、`ui/ui-components.md`、`ui/figma-handoff.md`。
+   如确需访问 Figma 补证，加载对应操作技能并按 [共享连接规则](../qwerdf-common/product-delivery-flow.md#figma-连接与会话复用) 使用已有选择和有效会话；不将例行技术设计检查变成全部账号认证。
 5. 先按本期业务链路限定扫描问题和停止边界，再读取相关前后端入口、API client、契约 / 提供方实现、路由、数据模型、权限、实际依赖版本 / 配置及测试结构；只读影响核查不自动扩成改造范围。
    涉及 Java 持久化设计时，按 [共享持久化规则](../qwerdf-common/java-coding-rules.md#spring-事务与持久化涉及数据库时) 明确数据访问方式、Mapper / XML 归属及事务边界，不把未确定的持久化选型留给实现阶段。
 6. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
