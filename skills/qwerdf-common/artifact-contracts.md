@@ -2,6 +2,8 @@
 
 本文件定义Codex Product Delivery skill 共享的产物模板。Skill 执行时只读取本任务需要的模板。
 
+阶段产物归属以 [阶段产物表](product-delivery-flow.md#1-交付链路) 为准，原位更新、规模评估、增量证据与续作按 [生命周期规则](artifact-lifecycle.md) 执行；模板不要求每轮重建全部文件。
+
 ## `product/idea-brief.md`
 
 ```markdown

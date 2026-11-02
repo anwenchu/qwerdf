@@ -52,6 +52,6 @@
 ## 6. UI finding 修复交接
 
 - `ui/ui-review-report.md` 保留 finding、视觉证据与复查入口；不要求设计阶段的报告预填工程分类或 slice。用户授权实现修复后，`$pd-fe` 直接引用原报告与 finding ID / 区域，不另复制一份到联调或 Code Review 报告。
-- `$pd-fe` 核对现有 UI 设计事实源、当前实现 / 截图证据和 `tech/task-slices.md`：设计要求明确、实现确有偏差且已有 `frontend` / `shared-frontend` slice 覆盖时，记录为 `implementation-defect`，可按同 slice 修复模式重开 `done` slice。分类、映射与修复结果只在前端实现记录维护，原报告保留引用与复查结果。
+- `$pd-fe` 核对现有 UI 设计事实源、当前实现 / 截图证据和 `tech/task-slices.md`：设计要求明确、实现确有偏差且已有前端清单任务覆盖时，记录为 `implementation-defect`，可按同 slice 修复模式重开 `done` slice。分类、映射与修复结果只在前端实现记录维护，原报告保留引用与复查结果。
 - 无法映射已有 slice 时，记录 `slice-missing` 回 `$pd-plan`；需要改变页面范围、契约或 UI 设计事实源时，回 `$pd-plan` / `$pd-figma` / `$pd-blueprint`。证据不足或归属不明先补证或人工核对，不猜成实现缺陷，也不新造 slice。
 - P0/P1 阻断受影响范围的交付，不阻断用户已授权的该 finding 修复。修复仍检查真实依赖、保持单 slice 边界，按原 finding 路径验证并获取可比证据，再回本报告复查；未复查关闭前不声称该 finding 已解决。

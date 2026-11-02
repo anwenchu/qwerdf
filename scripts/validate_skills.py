@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 from __future__ import annotations
 
+import importlib.util
 import json
 import re
 import subprocess
 import sys
 import tempfile
 from pathlib import Path
+
+from benchmark_contracts import forbidden_file_paths
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -73,19 +76,13 @@ ARTIFACT_FILENAMES = {
     "rollback-plan.md",
     "release-notes.md",
 }
-FORBIDDEN_TERMS = [
-    "个" + "人",
-    "tb" + "-prd-ui",
-    "tb" + "-ui-figma",
-    "tb" + "-figma-code",
-    "$" + "tb-",
-    "product" + "-blueprint",
-    "figma" + "-design",
-    "frontend" + "-handoff",
-    "pd" + "-code",
-    "ui" + "-work",
-    "ui" + "-delivery-flow.md",
-]
+# Retired local identifiers, not generic words or prefixes of current plugins.
+LEGACY_IDENTIFIERS = (
+    "tb-prd-ui", "tb-ui-figma", "tb-figma-code", "product-blueprint",
+    "figma-design", "frontend-handoff", "pd-code", "ui-work", "ui-delivery-flow.md",
+)
+LEGACY_REFERENCE = re.compile(
+    r"(?<![A-Za-z0-9_$-])\$?(?:" + "|".join(map(re.escape, LEGACY_IDENTIFIERS)) + r")(?![A-Za-z0-9_-])")
 
 
 def read_skill_names() -> list[str]:
@@ -230,9 +227,8 @@ def validate_forbidden_terms(errors: list[str]) -> None:
         if path.suffix not in {".md", ".yaml", ".yml"}:
             continue
         text = path.read_text(encoding="utf-8")
-        for term in FORBIDDEN_TERMS:
-            if term in text:
-                fail(errors, f"{path}: forbidden or outdated term found: {term}")
+        for match in LEGACY_REFERENCE.finditer(text):
+            fail(errors, f"{path}: outdated local identifier found: {match.group()}")
 
 
 def validate_open_source_files(errors: list[str]) -> None:
@@ -243,416 +239,38 @@ def validate_open_source_files(errors: list[str]) -> None:
 
 
 def validate_reference_guardrails(errors: list[str]) -> None:
-    required_tokens_by_file = {
-        ROOT / "README.md": [
-            "Quick Start",
-            "Workflow",
-            "Skills",
-            "Repository Layout",
-            "Documentation",
-            "License",
-            "中文",
-            "docs/usage.md",
-            "docs/architecture.md",
-            "docs/benchmarking.md",
-        ],
-        DOCS_DIR / "usage.md": [
-            "product/",
-            "ui/",
-            "tech/",
-            "sync/",
-            "test/",
-            "release/",
-            "legacy fallback",
-            "sql-execution-plan.md",
-            "ui-design-system.md",
-            "MASTER",
-            "Page Overrides",
-            "bash scripts/install.sh",
-        ],
-        DOCS_DIR / "development.md": [
-            "skills/manifest.txt",
-            "evals/cases/trigger-queries.json",
-            "evals/cases/benchmark-cases.json",
-            "agents/openai.yaml",
-            "validate_skills.py",
-            "qwerdf-common",
-        ],
-        DOCS_DIR / "benchmarking.md": [
-            "evals/cases/trigger-queries.json",
-            "evals/cases/benchmark-cases.json",
-            "evals/reports/",
-            "evals/runs/",
-            "--run-baseline",
-            "--case",
-            "--skill",
-            "--list-cases",
-            "dry-run",
-            "真实执行",
-            "rep-01",
-            "command.json",
-            "forbidden_contains",
-            "last-message.txt",
-            "checks/",
-        ],
-        DOCS_DIR / "architecture.md": [
-            "skills/<skill-name>/SKILL.md",
-            "skills/qwerdf-common",
-            "Codex skill discovery",
-            "qwerdf-common",
-            "product-delivery-flow.md",
-            "engineering-contracts.md",
-        ],
-        DOCS_DIR / "references.md": [
-            "anthropics/skills",
-            "vercel-labs/agent-skills",
-            "nextlevelbuilder/ui-ux-pro-max-skill",
-            "Design System Generator",
-            "MASTER",
-            "Page Overrides",
-        ],
-        COMMON_DIR / "product-delivery-flow.md": [
-            "product/",
-            "ui/",
-            "tech/",
-            "legacy fallback",
-            "tech/dependency-readiness.md",
-            "tech/backend/sql-execution-plan.md",
-            "ui/ui-design-system.md",
-            "ui/ui-review-report.md",
-            "UI 设计系统与质量 Gate",
-            "$pd-ui-review",
-            "真实依赖 Gate",
-            "mock-only",
-            "Page Overrides",
-            "管理后台",
-            "截图级视觉 QA",
-            "同类问题扫描",
-            "UI 职责边界",
-            "产品事实与参考使用 Gate",
-            "产品事实源优先级",
-            "参考禁区",
-            "Figma / 截图是表现层参考",
-            "$pd-sync` 没有明确通过",
-            "$pd-git` 只能在 commit readiness gate 全部通过后准备提交",
-            "Frontend / Backend 并行开发规则",
-            "BE-* blocked-by FE-*",
-            "开发进度不得依赖联调任务",
-            "开发任务不得依赖 SYNC-*",
-        ],
-        COMMON_DIR / "artifact-contracts.md": [
-            "产品事实源",
-            "参考使用边界",
-            "产品事实锁定",
-            "产品范围校验",
-            "ui/ui-design-system.md",
-            "ui/ui-review-report.md",
-            "MASTER",
-            "Page Overrides",
-            "信息密度",
-            "截图证据",
-            "阻断与残余风险",
-            "同类问题扫描",
-            "不能交付检查",
-            "三层审查结果",
-            "量化阈值检查",
-        ],
-        COMMON_DIR / "ui-design-system.md": [
-            "ui/ui-design-system.md",
-            "MASTER",
-            "Page Overrides",
-            "产品类型",
-            "管理后台",
-            "设计系统门禁",
-            "Typography semantic levels",
-            "Spacing scale",
-            "Complex information patterns",
-            "移动端安全边距",
-        ],
-        COMMON_DIR / "ui-quality-checklist.md": [
-            "ui-review-rules.md",
-            "不适用",
-            "无横向溢出",
-            "文本不重叠",
-            "default",
-            "loading",
-            "empty",
-            "permission",
-            "frontend-acceptance.md",
-            "ui-review-report.md",
-            "spacing scale",
-            "同类问题扫描",
-            "Figma 交付前截图 QA",
-            "三层审查",
-            "右侧安全边距",
-            "12-16px",
-        ],
-        COMMON_DIR / "ui-patterns.md": [
-            "SaaS",
-            "管理后台",
-            "数据看板",
-            "表格",
-            "Landing Page",
-        ],
-        COMMON_DIR / "ui-review-rules.md": [
-            "UI Review",
-            "P0",
-            "P1",
-            "基础视觉缺陷",
-            "设计系统一致性",
-            "响应式",
-            "防误报",
-            "不能交付条件",
-            "同类问题扫描",
-            "截图证据",
-            "三层审查",
-            "机器扫描",
-            "视觉扫描",
-            "模板扫描",
-            "量化阈值",
-        ],
-        SKILLS_DIR / "pd-ui-review" / "SKILL.md": [
-            "ui/ui-review-report.md",
-            "visual-defects.md",
-            "figma-review.md",
-            "screenshot-review.md",
-            "$pd-figma",
-            "$pd-fe",
-            "$pd-plan",
-            "$pd-blueprint",
-            "P0",
-            "P1",
-            "不能交付条件",
-            "同类问题扫描",
-            "截图证据",
-            "ui-review-rules.md",
-            "不适用",
-            "机器扫描",
-            "视觉扫描",
-            "模板扫描",
-        ],
-        SKILLS_DIR / "pd-ui-review" / "references" / "visual-defects.md": [
-            "遮挡",
-            "重叠",
-            "溢出",
-            "风格不统一",
-            "字体不一致",
-            "ui-review-rules.md",
-            "复杂信息展示缺陷",
-            "右侧贴边",
-            "字段散落",
-            "同类卡片模板不一致",
-        ],
-        SKILLS_DIR / "pd-ui-review" / "references" / "figma-review.md": [
-            "Figma",
-            "MASTER",
-            "Page Overrides",
-            "$pd-figma",
-            "screenshot",
-            "不能放行",
-        ],
-        SKILLS_DIR / "pd-ui-review" / "references" / "screenshot-review.md": [
-            "375px",
-            "768px",
-            "1024px",
-            "1440px",
-            "横向溢出",
-            "同类问题扫描",
-            "不能放行",
-            "三层截图审查",
-            "可比较条件",
-            "ui-quality-checklist.md",
-        ],
-        SKILLS_DIR / "pd-blueprint" / "SKILL.md": [
-            "产品事实锁",
-            "参考拆解",
-            "不能从参考图直接搬运",
-            "ui/ui-design-system.md",
-            "信息密度",
-            "管理后台",
-        ],
-        SKILLS_DIR / "pd-figma" / "SKILL.md": [
-            "产品事实锁定",
-            "参考使用边界",
-            "没有新增范围外页面",
-            "ui/ui-design-system.md",
-            "MASTER",
-            "page-level override",
-            "截图级视觉 QA",
-            "ui-review-rules.md",
-            "同类问题扫描",
-            "安全边距",
-        ],
-        SKILLS_DIR / "pd-plan" / "SKILL.md": [
-            "Figma handoff 是表现层输入",
-            "范围外页面",
-            "tech/dependency-readiness.md",
-            "mock-only",
-            "tech/backend/sql-execution-plan.md",
-            "无 SQL 执行项",
-            "UI 设计系统约束",
-            "响应式",
-            "可访问性",
-            "前端实现默认依赖",
-            "FE-* blocked-by BE-*",
-            "真实后端未完成",
-            "后端实现默认依赖",
-            "BE-* blocked-by FE-*",
-            "真实前端未完成",
-            "开发任务不得依赖 `SYNC-*`",
-            "SYNC-*` 的 `blocks` 都禁止包含",
-        ],
-        SKILLS_DIR / "pd-fe" / "SKILL.md": [
-            "ui/ui-design-system.md",
-            "tech/dependency-readiness.md",
-            "mock-only",
-            "ui-quality-checklist.md",
-            "无横向溢出",
-            "文本不重叠",
-            "frontend-acceptance.md",
-            "over-constrained-slice",
-            "product-delivery-flow.md#frontend--backend-并行开发规则",
-            "真实后端未完成不是前端编码阻断",
-            "开发进度不得依赖联调任务",
-        ],
-        SKILLS_DIR / "pd-be" / "SKILL.md": [
-            "tech/dependency-readiness.md",
-            "mock-only",
-            "tech/backend/sql-execution-plan.md",
-            "SQL / Migration 文件",
-            "over-constrained-slice",
-            "product-delivery-flow.md#frontend--backend-并行开发规则",
-            "真实前端未完成不是后端编码阻断",
-            "开发进度不得依赖联调任务",
-        ],
-        SKILLS_DIR / "pd-test" / "SKILL.md": [
-            ".gitignore",
-            "integration-report.md` 缺失",
-            "tech/dependency-readiness.md",
-            "Mock 禁用检查",
-            "可能漏提交",
-            "可能多提交",
-            "tech/backend/sql-execution-plan.md",
-            "SQL 执行验证",
-        ],
-        SKILLS_DIR / "pd-release" / "SKILL.md": [
-            "tech/backend/sql-execution-plan.md",
-            "SQL / 数据变更执行计划",
-            "前置备份",
-        ],
-        SKILLS_DIR / "pd-review" / "SKILL.md": [
-            "产品范围漂移检查",
-            "不能用“参考图里有”作为产品范围证据",
-            "渐进式加载",
-            "四阶段",
-            "代码级审查",
-            "UI Review",
-            "ui/ui-review-report.md",
-            "ui-review-rules.md",
-            "UI 设计质量审查",
-            "大 Diff 处理",
-            "diff_triage.py",
-            "自动化工具",
-            "修复归属",
-            "验证建议",
-        ],
-        SKILLS_DIR / "pd-review" / "scripts" / "diff_triage.py": [
-            "Diff Triage",
-            "Recommended references",
-            "Risk tags",
-            "frontend-code-review.md",
-            "backend-code-review.md",
-            "security-performance-review.md",
-            "ui-review-rules.md",
-        ],
-        SKILLS_DIR / "pd-review" / "references" / "universal-code-quality.md": [
-            "正确性",
-            "数据一致性",
-            "复用检查",
-            "测试质量",
-            "人工审查",
-        ],
-        SKILLS_DIR / "pd-review" / "references" / "frontend-code-review.md": [
-            "TypeScript",
-            "React",
-            "useEffect",
-            "API 契约",
-            "请求竞态",
-        ],
-        SKILLS_DIR / "pd-review" / "references" / "backend-code-review.md": [
-            "Java / Spring Boot",
-            "事务",
-            "SQL",
-            "DTO 校验",
-            "测试切片",
-        ],
-        SKILLS_DIR / "pd-review" / "references" / "security-performance-review.md": [
-            "IDOR",
-            "XSS",
-            "SSRF",
-            "N+1",
-            "敏感字段",
-        ],
-        COMMON_DIR / "engineering-contracts.md": [
-            "tech/dependency-readiness.md",
-            "tech/frontend/frontend-design.md",
-            "sync/integration-report.md",
-            "test/test-report.md",
-            "release/commit-summary.md",
-            "Readiness gates",
-            "ui/ui-review-report.md",
-            "实现前置状态",
-            "真实依赖验证",
-            "Mock 禁用检查",
-            "联调前置状态",
-            "SQL 执行计划",
-            "SQL 执行验证",
-            "SQL / 数据变更执行计划",
-            "Git / ignore 检查",
-            "Possible missing files",
-            "Possible extra files",
-            "审查范围",
-            "前置证据",
-            "Diff triage",
-            "Findings",
-            "UI Review 摘要",
-            "代码级检查摘要",
-            "修复归属",
-            "验证方式",
-            "UI 设计系统约束",
-            "product-delivery-flow.md#frontend--backend-并行开发规则",
-            "over-constrained-slice",
-            "开发任务的 `blocked-by` 禁止包含 `SYNC-*`",
-            "slice-model-invalid",
-        ],
-        SKILLS_DIR / "pd-sync" / "SKILL.md": [
-            "task-slices.md",
-            "tech/dependency-readiness.md",
-            "mock-only",
-            "真实依赖验证",
-            "Mock 禁用检查",
-            "未完成实现 slice",
-            "不得执行联调",
-            "不进入 `$pd-test`",
-            "开发任务不得依赖联调任务",
-            "slice-model-invalid",
-            "开发任务建模为依赖 `SYNC-*`",
-        ],
-        SKILLS_DIR / "pd-git" / "SKILL.md": [
-            "Commit readiness gate",
-            "提交范围门禁",
-            "git add -A",
-            "integration-report.md` 明确通过",
-            "possible missing files",
-            "possible extra files",
-            "staged 与 planned 不一致",
-        ],
-    }
-    for path, tokens in required_tokens_by_file.items():
-        text = path.read_text(encoding="utf-8") if path.exists() else ""
-        for token in tokens:
-            if token not in text:
-                fail(errors, f"{path}: missing reference guardrail token {token!r}")
+    """Check that runtime routes resolve; prose semantics belong to review fixtures.
+
+    Do not force every consumer to repeat the canonical owner's wording.
+    """
+    for name in ("product-delivery-flow.md", "artifact-contracts.md", "engineering-contracts.md",
+                 "artifact-lifecycle.md", "technical-design-rules.md", "java-coding-rules.md",
+                 "java-coding-sources.md", "ui-design-system.md", "ui-quality-checklist.md",
+                 "ui-patterns.md", "ui-review-rules.md"):
+        path = COMMON_DIR / name
+        if not path.is_file() or not path.read_text(encoding="utf-8").strip():
+            fail(errors, f"{path}: missing or empty shared reference")
+    helper = COMMON_DIR / "scripts" / "product_artifacts.py"
+    try:
+        spec = importlib.util.spec_from_file_location("qwerdf_context_validation", helper)
+        if spec is None or spec.loader is None:
+            raise ValueError("context helper cannot be loaded")
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        expected = {name.removeprefix("pd-") for name in read_skill_names()}
+        if set(module.CONTEXT_ARTIFACTS) != expected:
+            fail(errors, "context stages must match the skill manifest")
+        for stage in sorted(expected):
+            # Exercises actual section/template selection, including missing headings.
+            module.stage_context(stage)
+            path = SKILLS_DIR / f"pd-{stage}" / "SKILL.md"
+            text = path.read_text(encoding="utf-8")
+            if not re.search(rf"\bcontext\b[^\n]*?--stage\s+[\"']?{re.escape(stage)}(?![A-Za-z0-9_-])", text):
+                fail(errors, f"{path}: missing stage context route")
+        for area in ("frontend", "backend"):
+            module.stage_context("plan", area=area)
+    except (OSError, UnicodeError, ValueError, AttributeError, SyntaxError) as exc:
+        fail(errors, f"{helper}: invalid context route: {exc}")
 
 
 def validate_manifest(skill_names: list[str], errors: list[str]) -> None:
@@ -790,6 +408,11 @@ def validate_benchmark_cases(skill_names: list[str], errors: list[str]) -> None:
         elif any(is_flat_artifact_path(path) for path in expected_files):
             fail(errors, f"{cases_file}: item {index} expected_files must use canonical artifact subdirectories")
 
+        try:
+            forbidden_file_paths(item.get("forbidden_files", []))
+        except ValueError as exc:
+            fail(errors, f"{cases_file}: item {index} {exc}")
+
         setup_files = item.get("setup_files", {})
         if setup_files is not None and not isinstance(setup_files, dict):
             fail(errors, f"{cases_file}: item {index} setup_files must be an object when present")
@@ -801,9 +424,6 @@ def validate_benchmark_cases(skill_names: list[str], errors: list[str]) -> None:
             for required in ("sync/integration-report.md", "test/test-report.md", "test/code-review.md"):
                 if required not in setup_files:
                     fail(errors, f"{cases_file}: item {index} pd-git case must include {required}")
-        elif skill == "pd-release" and isinstance(setup_files, dict):
-            if "tech/backend/sql-execution-plan.md" not in setup_files:
-                fail(errors, f"{cases_file}: item {index} pd-release case must include tech/backend/sql-execution-plan.md")
         elif skill == "pd-sync" and isinstance(setup_files, dict):
             if "tech/task-slices.md" not in setup_files:
                 fail(errors, f"{cases_file}: item {index} pd-sync case must include tech/task-slices.md")
@@ -838,9 +458,8 @@ def validate_benchmark_cases(skill_names: list[str], errors: list[str]) -> None:
             fail(errors, f"{cases_file}: item {index} check_commands values must be non-empty strings")
 
         all_contains = item.get("all_contains", {})
-        if skill == "pd-plan":
-            if "tech/backend/sql-execution-plan.md" not in expected_files:
-                fail(errors, f"{cases_file}: item {index} pd-plan case must expect tech/backend/sql-execution-plan.md")
+        # SQL applicability belongs to each case's inputs and expected outputs.
+        # grade_output enforces declared files; do not infer scope from prose.
         if skill == "pd-test" and isinstance(all_contains, dict):
             test_report_tokens = all_contains.get("test/test-report.md", [])
             if not isinstance(test_report_tokens, list) or "联调前置状态" not in test_report_tokens:

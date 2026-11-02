@@ -37,3 +37,12 @@ The local rules are intentionally product-delivery-specific:
 Product-stage source review, adaptations, validation limits and usage: [Product Skills](product-skills.md).
 
 Design-stage source review and local adaptations: [Design Skills](design-skills.md).
+
+## Skill Content Patterns
+
+- Anthropic `skill-creator`: concise entries, progressive disclosure and feedback-driven iteration.
+- Anthropic `frontend-design`: define audience and page tasks before choosing a visual direction.
+- Anthropic `webapp-testing`: inspect rendered state and service availability before interaction.
+- Vercel `react-best-practices` / `composition-patterns`: prioritize waterfalls, bundle boundaries, state and composition.
+- Vercel `vercel-optimize`: narrow investigations using evidence and concrete gates.
+- Vercel `web-design-guidelines`: cite current rule sources and locate findings precisely.

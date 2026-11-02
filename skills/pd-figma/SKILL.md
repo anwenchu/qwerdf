@@ -1,17 +1,17 @@
 ---
 name: pd-figma
 description: >-
-  产品设计输入、UI 设计系统和页面蓝图到 Figma 工作流，在 Figma 中展示候选 UI 方向供比较，选定后深化并交付；已有明确方向时沿用，不强制重选；不接入外部变更生命周期。Use when the user mentions $pd-figma、pd-figma、Figma设计、UI转Figma、生成Figma设计、页面蓝图转Figma、UI设计系统、把页面蓝图写到 Figma。
+  产品设计输入、UI 设计系统和页面蓝图到 Figma 工作流，在 Figma 中展示候选 UI 方向供比较，选定后深化并交付；已有明确方向时沿用，不强制重选。Use when the user mentions $pd-figma、pd-figma、Figma设计、UI转Figma、生成Figma设计、页面蓝图转Figma、UI设计系统、把页面蓝图写到 Figma。
 ---
 
 # $pd-figma — Figma 设计交付
 
-Codex Product Delivery Skill：把产品设计输入和 UI 页面蓝图转成可评审、可交付给前端的 Figma 设计。
+把产品设计输入和 UI 页面蓝图转成可评审、可交付给前端的 Figma 设计。
 
 ## 读取
 
-1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
-2. 读取 [Product Delivery Artifact Contracts](../qwerdf-common/artifact-contracts.md) 中 `ui/ui-design-system.md`、`ui/ui-directions.md` 和 `ui/figma-handoff.md` 的模板。
+1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage figma`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
+2. 上述输出已包含 [Product Delivery Artifact Contracts](../qwerdf-common/artifact-contracts.md) 中 `ui/ui-design-system.md`、`ui/ui-directions.md` 和 `ui/figma-handoff.md` 的模板；只采用本轮适用项。
 3. 读取 [UI Design System Rules](../qwerdf-common/ui-design-system.md)、[UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)、[UI Patterns](../qwerdf-common/ui-patterns.md) 和 [UI Review Rules](../qwerdf-common/ui-review-rules.md)。
 4. 读取输出目录中的 `product/product-brief.md`、`ui/ui-design-system.md`、`ui/ui-flows.md`、`ui/ui-pages.md`、`ui/ui-screens.md`、`ui/ui-components.md`；如已有 `ui/ui-directions.md` / `ui/figma-handoff.md`，复用其中的有效候选、已定方向及文件 / frame 链接，续作只补未完成部分。
 5. 如果用户未指定目录，默认查找 `pd-work/<name>/`。
@@ -21,8 +21,6 @@ Codex Product Delivery Skill：把产品设计输入和 UI 页面蓝图转成可
 
 ## 边界
 
-- 不要求外部变更目录。
-- 不修改 `.state.yaml`。
 - 不写前端代码。
 - 不生成技术方案、API 契约或数据库设计。
 - 开始时从用户输入、当前会话和已有产物定位目标 Figma 文件及页面；缺失时尽早询问目标或是否新建，不到概念板做完才告知。用户已授权新建时按对应 Figma 技能执行；仅要求本地预览时不追问写入目标。
@@ -49,7 +47,7 @@ Codex Product Delivery Skill：把产品设计输入和 UI 页面蓝图转成可
 
 按本次页面、组件与平台选取适用约束；尺寸与批准 variant 来自 MASTER / Page Overrides。严重性、例外和交接条件统一遵循 [UI Review Rules](../qwerdf-common/ui-review-rules.md)，不把默认像素值或内容自适应高度当成阻断。
 
-- 字体必须来自 `ui/ui-design-system.md` 的 `MASTER` 语义层级；`MASTER` 缺少标题、正文、表格、数字、按钮或移动端字号时，先补齐设计系统或回到 `$pd-blueprint` / `$pd-figma`，不能临场随意定字号。
+- 字体按 [共享设计系统规则](../qwerdf-common/ui-design-system.md) 核对受影响页面、组件和平台的语义层级；缺少适用定义先补齐，不要求无关表格或移动端规格。
 - 不得靠手动缩小字体来掩盖容器不够、字段过多或信息密度失控；先调整布局、列宽、换行、截断、tooltip、字段分组、摘要 / 详情层级或密度策略。
 - 中文、英文、数字、金额、百分比、状态 badge 和按钮文本必须检查基线、行高和垂直对齐；同一语义层级不得混用字号、字重或行高。
 - 移动端 frame 遵循 `MASTER` 的安全边距和平台安全区规则；固定顶部 / 底部 / 浮层必须为内容预留避让空间。

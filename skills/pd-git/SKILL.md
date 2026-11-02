@@ -6,12 +6,14 @@ description: >-
 
 # $pd-git — 提交与 PR/MR 准备
 
-Codex Product Delivery Skill：整理提交范围和 PR/MR 文案。
+整理提交范围和 PR/MR 文案。
 
 ## 读取
 
-1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
-2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `release/commit-summary.md` 和 `release/pr-description.md` 的模板。
+下列项目材料只读取本轮适用的当前段落；缺少实际必需输入保留缺口，无关端、UI 或 SQL 不要求补造文件。
+
+1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage git`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
+2. 上述输出已包含 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `release/commit-summary.md` 和 `release/pr-description.md` 的模板；只采用本轮适用项。
 3. 读取实现记录、联调报告、测试报告、Code Review、`.gitignore`、当前 git diff 和 git status。
 4. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
 
@@ -22,7 +24,7 @@ Codex Product Delivery Skill：整理提交范围和 PR/MR 文案。
 - 执行 `git add` 前必须展示 planned files，并排除明显无关文件。
 - 默认不 push，除非用户明确要求。
 - 不修改业务代码。
-- 有未解决 P0/P1、联调未通过、测试未通过、测试未执行、未解释的契约差异或提交范围风险时，不得执行 `git add` / `git commit`；只能生成阻断说明和风险说明。
+- 共享正式提交条件未满足时，不得执行 `git add` / `git commit`；只能生成阻断说明和风险说明。
 - 不把 `.env`、密钥、token、私有证书、临时日志或无关生成物加入 planned files。
 - 不用 `git add -A`、`git add .` 或通配符扩大提交范围；提交时只 add 已展示并确认的 planned files。
 - 不 force-add 被 `.gitignore` / `.git/info/exclude` 忽略的文件，除非用户明确确认并说明为什么该文件必须提交。
@@ -43,7 +45,7 @@ Codex Product Delivery Skill：整理提交范围和 PR/MR 文案。
 
 ## 提交范围门禁
 
-- Commit readiness gate 必须全部通过：相关实现 slice 已完成；`sync/integration-report.md` 明确通过或明确不适用并说明原因；`test/test-report.md` 明确通过且无未解释高风险缺口；`test/code-review.md` 无 P0/P1；提交范围检查无未解决漏提 / 多提风险。
+- Commit readiness gate 统一按 [正式提交与上线](../qwerdf-common/product-delivery-flow.md#正式提交与上线) 核对，不在本入口另定义前置；有依据的联调不适用不等于缺失联调证据。
 - `release/commit-summary.md` 必须列出 planned files、excluded files、possible missing files、possible extra files 和 gitignore check。
 - 漏提交检查：对照实现记录、测试报告、Code Review、需求产物和 git status，找出本次变更相关但未进入 planned files 的文件；有疑问时列为 possible missing files 并停止提交确认。
 - 多提交检查：对照 planned files 和本次任务范围，找出无关格式化、IDE 配置、本地环境、缓存、构建产物、测试截图、临时报告、历史 benchmark run 等文件；列为 excluded files 或 possible extra files。
@@ -54,7 +56,7 @@ Codex Product Delivery Skill：整理提交范围和 PR/MR 文案。
 
 1. 采集 Git 状态，区分相关、无关、危险和待确认改动。
 2. 检查 `.gitignore` / ignored / untracked 状态，识别应提交、应忽略、应排除和待确认文件。
-3. 检查 commit readiness gate：实现 slice 完成、`sync/integration-report.md` 通过、`test/test-report.md` 通过、`test/code-review.md` 无 P0/P1。
+3. 按共享定义检查 commit readiness gate，包含适用性依据及当前变更的实现、联调、测试、审查证据。
 4. 任一 gate 未通过时，写入 `release/commit-summary.md` 的阻断原因和下一步，不生成“可提交”口径，不执行 `git add` / `git commit`。
 5. 写入 `release/commit-summary.md`，包含 readiness gates、git state、gitignore check、planned files、excluded files、possible missing files、possible extra files、commit message、summary、tests、known risks。
 6. 写入 `release/pr-description.md`，包含 what changed、why、validation、risks、rollback。

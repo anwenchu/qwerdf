@@ -1,14 +1,16 @@
 ---
 name: pd-prd
 description: >-
-   PRD 生成工作流，把已验证 idea、用户问题、MVP 假设、竞品参考、访谈记录或粗略需求整理成正式 PRD、需求清单、用户故事、验收标准和开放问题；不接入外部变更生命周期。Use when the user mentions $pd-prd、pd-prd、生成PRD、写PRD、产品需求文档、从想法生成PRD、从验证结果生成PRD。
+   PRD 生成工作流，把已验证 idea、用户问题、MVP 假设、竞品参考、访谈记录或粗略需求整理成正式 PRD、需求清单、用户故事、验收标准和开放问题。Use when the user mentions $pd-prd、pd-prd、生成PRD、写PRD、产品需求文档、从想法生成PRD、从验证结果生成PRD。
 ---
 
 # $pd-prd — PRD 生成
 
-Codex Product Delivery Skill：把已验证的产品机会和需求材料整理成可进入产品设计输入和页面蓝图阶段的 PRD。
+把已验证的产品机会和需求材料整理成可进入产品设计输入和页面蓝图阶段的 PRD。
 
 ## 读取
+
+通用产物维护与恢复按 [生命周期规则](../qwerdf-common/artifact-lifecycle.md) 执行；下列上下文工具已提取其工作规则，手动回退时也须读取该部分。
 
 1. 定位当前 `SKILL.md` 的目录作为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage prd`。仅加载 [共享规则](../qwerdf-common/product-delivery-flow.md) 的产品相关章节及 [产物模板](../qwerdf-common/artifact-contracts.md) 的五个 PRD 模板，不通读 UI、工程、SQL 或发布内容。
 2. 读取 [需求质量与交接检查](references/requirements-quality.md)。工具需要 Python 3.10+ 且无第三方依赖；不可运行时手动读取共享规则的默认工作目录、执行规范正文、产品事实 Gate、安全与意外最小化、外部生命周期边界及五个 PRD 模板，并做等价人工核对。记录未执行机械检查，不因环境限制阻断已完成业务核对的交接。

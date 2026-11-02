@@ -400,7 +400,7 @@
     "skill": "pd-plan",
     "prompt": "基于 PRD、页面蓝图和 figma-handoff 生成技术设计、前后端映射、API 契约和任务切片。",
     "setup_files": {
-      "product/prd.md": "# PRD\n广告异常提醒。\n",
+      "product/prd.md": "# PRD\n广告异常提醒。\n\n## 已确认工程约定（合成评估输入）\n本轮修改范围：前端仓库（计划路径 repositories/frontend）与后端仓库（计划路径 repositories/backend）；各修改仓库的开发分支均已由评估用户确认为 evaluation。不涉及二方包源码改动。本轮只设计，不创建仓库、分支或运行实现；计划路径不是现有代码 / 运行就绪证据。\n",
       "product/product-brief.md": "# 产品设计输入\n运营发现异常并处理。\n",
       "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n视觉气质：克制、可扫描\n## Page Overrides\n无。\n",
       "ui/ui-screens.md": "# UI 页面规格\n异常列表、详情、规则设置。\n",
@@ -445,7 +445,7 @@
     "skill": "pd-plan",
     "prompt": "基于 PRD 和现有代码生成技术设计。后端需要调用 Dify 和 Activepieces，使用 PostgreSQL，项目需要 JDK、Node 和包管理器。当前只知道 mock Dify / mock Activepieces 存在，真实服务地址和凭证还没确认。请生成真实依赖准备清单，并且不要在依赖未 ready 时建议进入开发。",
     "setup_files": {
-      "product/prd.md": "# PRD\n目标：AI 员工系统。\n能力：创建任务、调用 Dify 生成任务方案、调用 Activepieces 执行自动化流程、写入 PostgreSQL。\n",
+      "product/prd.md": "# PRD\n目标：AI 员工系统。\n能力：创建任务、调用 Dify 生成任务方案、调用 Activepieces 执行自动化流程、写入 PostgreSQL。\n\n## 已确认工程约定（合成评估输入）\n本轮修改范围：前端仓库（计划路径 repositories/frontend）与后端仓库（计划路径 repositories/backend）；各修改仓库的开发分支均已由评估用户确认为 evaluation。不涉及二方包源码改动。本轮只设计，不创建仓库、分支或运行实现；计划路径不是现有代码 / 运行就绪证据。\n",
       "product/product-brief.md": "# 产品设计输入\n用户：运营管理员。\n核心任务：创建 AI 员工任务并查看执行结果。\n",
       "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n## Page Overrides\n无。\n",
       "ui/ui-screens.md": "# UI 页面规格\n任务列表、任务详情、创建任务。\n",
@@ -485,7 +485,7 @@
   {
     "id": "pd-fe-single-slice-reporting",
     "skill": "pd-fe",
-    "prompt": "执行 FE-01 前端 slice。请在 fixtures/frontend-alerts 中实现告警筛选逻辑，让 node 测试通过，并按 skill 写实现记录、变更文件、开发说明和前端验收。",
+    "prompt": "执行 FE-01 前端 slice。请在 fixtures/frontend-alerts 中实现告警筛选逻辑，让 node 测试通过，并按 skill 写实现记录、变更文件、开发说明和前端验收。 工程约定见 tech/tech-plan.md。先核对目标与实际分支；仅当该临时 fixture 目录尚无 Git 仓库时，允许初始化到已确认的 evaluation 分支；已有仓库或改动先核查，不覆盖，不提交或推送。",
     "fixture_dirs": {
       "evals/fixtures/frontend-alerts": "fixtures/frontend-alerts"
     },
@@ -499,7 +499,8 @@
       "tech/integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
       "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n视觉气质：克制、可扫描\n## Page Overrides\n无。\n",
       "ui/figma-handoff.md": "# Figma 交付说明\n页面：异常列表。\n设计系统：ui/ui-design-system.md。\n",
-      "tech/task-slices.md": "# 任务切片\n| FE-01 | P1 | frontend | pending | parallel-safe | | | 异常列表 | npm test |\n"
+      "tech/task-slices.md": "# 任务清单\n\n任务来源：本文件。\n\n## 前端任务\n\n| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |\n| --- | --- | --- | --- | --- | --- |\n| 1 | FE-01 | 异常列表 | pending | node fixtures/frontend-alerts/test_alert_filters.mjs；真实实现与必要接线 / 权限检查 | 尚未执行；实际结果待核对 |\n\n## 后端任务\n\n本用例只检查另一端，未提供本端实现任务，不代表真实项目整体不涉及。\n\n## 联调 / 测试范围\n- 相关实现：FE-01；按 integration-map 和原验收核对实际输入及真实结果，本端完成不代表联调通过。\n",
+      "tech/tech-plan.md": "# 技术方案的工程范围（合成评估输入）\n其余契约、验证及任务以本用例提供的各设计文件为准。\n## 仓库、分支与二方包版本\n本轮仅修改 fixtures/frontend-alerts；开发分支由评估用户确认为 evaluation；无二方包源码或开发版本改动。这是范围与分支约定，不代表当前工作区 / 依赖已就绪。\n"
     },
     "expected_files": [
       "fixtures/frontend-alerts/src/alertFilters.mjs",
@@ -530,7 +531,7 @@
   {
     "id": "pd-fe-detects-overconstrained-backend-dependency",
     "skill": "pd-fe",
-    "prompt": "执行 FE-014 / FE-015 前端任务。当前 task-slices 把 FE-014 blocked-by BE-018 / BE-019 / BE-020，把 FE-015 blocked-by BE-017 / BE-022，但这些后端任务只是实现真实接口和真实链路，没有说明会产出前端编码必须消费的 generated client、SDK 或 schema 文件。请不要等待后端，也不要直接忽略依赖写代码；按规则判断这是不是 task slice 依赖建模问题，并写出应回 $pd-plan 修正的说明。",
+    "prompt": "只读检查旧任务清单中的 FE-014 / FE-015：它们要求等后端业务任务完成才编码，但没有需要消费的生成 client、SDK 或 schema 产物。核对当前材料，给出本端应有顺序、实际必需输入与后续验收边界，以及应回 $pd-plan 校正的记录。不要重新维护依赖图，不改代码或任务状态；实际契约 / 证据缺失须保留。",
     "setup_files": {
       "tech/frontend/frontend-design.md": "# 前端技术设计\n页面：任务列表、知识库面板。\n前端可基于 API 契约和 UI 设计系统实现真实 API client、loading / empty / error / permission / service-unavailable 状态。\n",
       "tech/frontend/frontend-component-map.md": "# 前端组件映射\n任务列表 -> TaskList。\n知识库面板 -> KnowledgePanel。\n",
@@ -541,33 +542,33 @@
       "tech/integration-map.md": "# 前后端一致性映射\n任务列表 -> GET /api/tasks。\n知识库面板 -> GET /api/knowledge。\n真实成功链路由 SYNC-014 / SYNC-015 验证。\n",
       "ui/ui-design-system.md": "# UI 设计系统\n## MASTER\n产品类型：SaaS 管理后台\n信息密度：高\n视觉气质：克制、可扫描\n",
       "ui/figma-handoff.md": "# Figma 交付说明\n页面：任务列表、知识库面板。\n",
-      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-014 | P1 | frontend | pending | serial | BE-018, BE-019, BE-020 | SYNC-014 | 任务列表页面、真实 API client 和状态展示 | 前端实现基于 api-contract；真实成功链路待 SYNC-014 |\n| FE-015 | P1 | frontend | pending | serial | BE-017, BE-022 | SYNC-015 | 知识库面板和状态展示 | 前端实现基于 api-contract；真实成功链路待 SYNC-015 |\n| BE-017 | P1 | backend | pending | parallel-safe | - | FE-015, SYNC-015 | 知识库真实接口 | mvn test |\n| BE-018 | P1 | backend | pending | parallel-safe | - | FE-014, SYNC-014 | 任务列表真实接口 | mvn test |\n| BE-019 | P1 | backend | pending | parallel-safe | - | FE-014, SYNC-014 | 任务状态更新接口 | mvn test |\n| BE-020 | P1 | backend | pending | parallel-safe | - | FE-014, SYNC-014 | 任务执行链路 | mvn test |\n| BE-022 | P1 | backend | pending | parallel-safe | - | FE-015, SYNC-015 | embedding dashscope 真实依赖 | 依赖准备：真实服务 ready |\n| SYNC-014 | P1 | sync | pending | stage-gate | FE-014, BE-018, BE-019, BE-020 | - | 任务列表真实联调 | 真实 API 返回 2xx |\n| SYNC-015 | P1 | sync | pending | stage-gate | FE-015, BE-017, BE-022 | - | 知识库真实联调 | 真实 API 返回 2xx |\n"
+      "tech/task-slices.md": "# 任务切片（旧格式反例，检查后按当前规则修订，不沿用为新模板）\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-014 | P1 | frontend | pending | serial | BE-018, BE-019, BE-020 | SYNC-014 | 任务列表页面、真实 API client 和状态展示 | 前端实现基于 api-contract；真实成功链路待 SYNC-014 |\n| FE-015 | P1 | frontend | pending | serial | BE-017, BE-022 | SYNC-015 | 知识库面板和状态展示 | 前端实现基于 api-contract；真实成功链路待 SYNC-015 |\n| BE-017 | P1 | backend | pending | parallel-safe | - | FE-015, SYNC-015 | 知识库真实接口 | mvn test |\n| BE-018 | P1 | backend | pending | parallel-safe | - | FE-014, SYNC-014 | 任务列表真实接口 | mvn test |\n| BE-019 | P1 | backend | pending | parallel-safe | - | FE-014, SYNC-014 | 任务状态更新接口 | mvn test |\n| BE-020 | P1 | backend | pending | parallel-safe | - | FE-014, SYNC-014 | 任务执行链路 | mvn test |\n| BE-022 | P1 | backend | pending | parallel-safe | - | FE-015, SYNC-015 | embedding dashscope 真实依赖 | 依赖准备：真实服务 ready |\n| SYNC-014 | P1 | sync | pending | stage-gate | FE-014, BE-018, BE-019, BE-020 | - | 任务列表真实联调 | 真实 API 返回 2xx |\n| SYNC-015 | P1 | sync | pending | stage-gate | FE-015, BE-017, BE-022 | - | 知识库真实联调 | 真实 API 返回 2xx |\n",
+      "tech/tech-plan.md": "# 技术方案的工程范围（合成评估输入）\n其余契约、验证及任务以本用例提供的各设计文件为准。\n## 仓库、分支与二方包版本\n本轮仅修改 repositories/frontend；开发分支由评估用户确认为 evaluation；无二方包源码或开发版本改动。这是范围与分支约定，不代表当前工作区 / 依赖已就绪。\n"
     },
     "expected_files": [
       "tech/frontend/frontend-dev-notes.md"
     ],
     "all_contains": {
       "tech/frontend/frontend-dev-notes.md": [
-        "over-constrained-slice",
         "FE-014",
         "FE-015",
-        "$pd-plan",
-        "前端实现与后端实现并行",
-        "共同阻塞",
-        "SYNC-014",
-        "SYNC-015"
+        "$pd-plan"
       ]
     },
     "forbidden_contains": {
       "tech/frontend/frontend-dev-notes.md": [
         "等待后端完成后再开发前端"
       ]
-    }
+    },
+    "review_notes": [
+      "本用例修改仓库 / 分支约定见 tech/tech-plan.md；没有实际检出证据不允许写代码，但仍应完成只读任务依赖或真实依赖检查，不用工作区缺口掩盖本用例的目标问题。",
+      "人工语义复核：在已确认契约下说明两端各按自身顺序开发；对端业务未完成只影响相应真实联调，实际编码产物缺失仍须阻断消费者；不要求输出旧标签或固定句式，不复建依赖图。"
+    ]
   },
   {
     "id": "pd-be-single-slice-reporting",
     "skill": "pd-be",
-    "prompt": "执行 BE-01 后端 slice。请在 fixtures/backend-alerts 中实现后端告警查询逻辑，让 Python 测试通过，并按 skill 写实现记录、变更文件和后端开发说明。",
+    "prompt": "执行 BE-01 后端 slice。请在 fixtures/backend-alerts 中实现后端告警查询逻辑，让 Python 测试通过，并按 skill 写实现记录、变更文件和后端开发说明。 工程约定见 tech/tech-plan.md。先核对目标与实际分支；仅当该临时 fixture 目录尚无 Git 仓库时，允许初始化到已确认的 evaluation 分支；已有仓库或改动先核查，不覆盖，不提交或推送。",
     "fixture_dirs": {
       "evals/fixtures/backend-alerts": "fixtures/backend-alerts"
     },
@@ -578,7 +579,8 @@
       "tech/backend/data-model.md": "# 数据模型\nAlert。\n",
       "tech/backend/sql-execution-plan.md": "# SQL 执行计划\nSQL 执行项：无\n说明：无 SQL 执行项 / 不涉及。\n",
       "tech/integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
-      "tech/task-slices.md": "# 任务切片\n| BE-01 | P1 | backend | pending | parallel-safe | | | 查询异常列表 | mvn test |\n"
+      "tech/task-slices.md": "# 任务清单\n\n任务来源：本文件。\n\n## 前端任务\n\n本用例只检查另一端，未提供本端实现任务，不代表真实项目整体不涉及。\n\n## 后端任务\n\n| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |\n| --- | --- | --- | --- | --- | --- |\n| 1 | BE-01 | 查询异常列表 | pending | python3 fixtures/backend-alerts/test_alerts.py；真实实现与必要接线 / 权限检查 | 尚未执行；实际结果待核对 |\n\n## 联调 / 测试范围\n- 相关实现：BE-01；按 integration-map 和原验收核对实际输入及真实结果，本端完成不代表联调通过。\n",
+      "tech/tech-plan.md": "# 技术方案的工程范围（合成评估输入）\n其余契约、验证及任务以本用例提供的各设计文件为准。\n## 仓库、分支与二方包版本\n本轮仅修改 fixtures/backend-alerts；开发分支由评估用户确认为 evaluation；无二方包源码或开发版本改动。这是范围与分支约定，不代表当前工作区 / 依赖已就绪。\n"
     },
     "expected_files": [
       "fixtures/backend-alerts/app/alerts.py",
@@ -603,7 +605,7 @@
   {
     "id": "pd-be-detects-overconstrained-frontend-dependency",
     "skill": "pd-be",
-    "prompt": "执行 BE-014 / BE-015 后端任务。当前 task-slices 把 BE-014 blocked-by FE-018 / FE-019，把 BE-015 blocked-by FE-020，但这些前端任务只是页面、组件和浏览器验收，没有说明会产出后端编码必须消费的 schema、type 包或契约样例文件。请不要等待前端，也不要直接忽略依赖写代码；按规则判断这是不是 task slice 依赖建模问题，并写出应回 $pd-plan 修正的说明。",
+    "prompt": "只读检查旧任务清单中的 BE-014 / BE-015：它们要求等前端业务任务完成才编码，但没有需要消费的 schema、type 包或生成产物。核对当前材料，给出本端应有顺序、实际必需输入与后续验收边界，以及应回 $pd-plan 校正的记录。不要重新维护依赖图，不改代码或任务状态；实际契约 / 证据缺失须保留。",
     "setup_files": {
       "tech/backend/backend-design.md": "# 后端技术设计\n接口：任务列表、任务状态更新、知识库查询。\n后端可基于 API 契约、数据模型和真实依赖准备实现 controller / service / repository、权限、错误码和后端测试。\n",
       "tech/api-contract.md": "# API 契约\nGET /api/tasks\nPATCH /api/tasks/{id}/status\nGET /api/knowledge\n",
@@ -611,28 +613,28 @@
       "tech/backend/data-model.md": "# 数据模型\nTask、Knowledge。\n",
       "tech/backend/sql-execution-plan.md": "# SQL 执行计划\nSQL 执行项：无\n说明：无 SQL 执行项 / 不涉及。\n",
       "tech/integration-map.md": "# 前后端一致性映射\n任务列表页面 -> GET /api/tasks。\n知识库面板 -> GET /api/knowledge。\n真实页面链路由 SYNC-014 / SYNC-015 验证。\n",
-      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| BE-014 | P1 | backend | pending | serial | FE-018, FE-019 | SYNC-014 | 任务列表与状态更新真实接口 | 后端实现基于 api-contract；真实页面链路待 SYNC-014 |\n| BE-015 | P1 | backend | pending | serial | FE-020 | SYNC-015 | 知识库查询真实接口 | 后端实现基于 api-contract；真实页面链路待 SYNC-015 |\n| FE-018 | P1 | frontend | pending | parallel-safe | - | BE-014, SYNC-014 | 任务列表页面 | npm test |\n| FE-019 | P1 | frontend | pending | parallel-safe | - | BE-014, SYNC-014 | 任务状态按钮 | npm test |\n| FE-020 | P1 | frontend | pending | parallel-safe | - | BE-015, SYNC-015 | 知识库面板 | npm test |\n| SYNC-014 | P1 | sync | pending | stage-gate | FE-018, FE-019, BE-014 | - | 任务列表真实联调 | 页面请求真实 API 返回 2xx |\n| SYNC-015 | P1 | sync | pending | stage-gate | FE-020, BE-015 | - | 知识库真实联调 | 页面请求真实 API 返回 2xx |\n"
+      "tech/task-slices.md": "# 任务切片（旧格式反例，检查后按当前规则修订，不沿用为新模板）\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| BE-014 | P1 | backend | pending | serial | FE-018, FE-019 | SYNC-014 | 任务列表与状态更新真实接口 | 后端实现基于 api-contract；真实页面链路待 SYNC-014 |\n| BE-015 | P1 | backend | pending | serial | FE-020 | SYNC-015 | 知识库查询真实接口 | 后端实现基于 api-contract；真实页面链路待 SYNC-015 |\n| FE-018 | P1 | frontend | pending | parallel-safe | - | BE-014, SYNC-014 | 任务列表页面 | npm test |\n| FE-019 | P1 | frontend | pending | parallel-safe | - | BE-014, SYNC-014 | 任务状态按钮 | npm test |\n| FE-020 | P1 | frontend | pending | parallel-safe | - | BE-015, SYNC-015 | 知识库面板 | npm test |\n| SYNC-014 | P1 | sync | pending | stage-gate | FE-018, FE-019, BE-014 | - | 任务列表真实联调 | 页面请求真实 API 返回 2xx |\n| SYNC-015 | P1 | sync | pending | stage-gate | FE-020, BE-015 | - | 知识库真实联调 | 页面请求真实 API 返回 2xx |\n",
+      "tech/tech-plan.md": "# 技术方案的工程范围（合成评估输入）\n其余契约、验证及任务以本用例提供的各设计文件为准。\n## 仓库、分支与二方包版本\n本轮仅修改 repositories/backend；开发分支由评估用户确认为 evaluation；无二方包源码或开发版本改动。这是范围与分支约定，不代表当前工作区 / 依赖已就绪。\n"
     },
     "expected_files": [
       "tech/backend/backend-dev-notes.md"
     ],
     "all_contains": {
       "tech/backend/backend-dev-notes.md": [
-        "over-constrained-slice",
         "BE-014",
         "BE-015",
-        "$pd-plan",
-        "后端实现与前端实现并行",
-        "共同阻塞",
-        "SYNC-014",
-        "SYNC-015"
+        "$pd-plan"
       ]
     },
     "forbidden_contains": {
       "tech/backend/backend-dev-notes.md": [
         "等待前端完成后再开发后端"
       ]
-    }
+    },
+    "review_notes": [
+      "本用例修改仓库 / 分支约定见 tech/tech-plan.md；没有实际检出证据不允许写代码，但仍应完成只读任务依赖或真实依赖检查，不用工作区缺口掩盖本用例的目标问题。",
+      "人工语义复核：在已确认契约下说明两端各按自身顺序开发；对端业务未完成只影响相应真实联调，实际编码产物缺失仍须阻断消费者；不要求输出旧标签或固定句式，不复建依赖图。"
+    ]
   },
   {
     "id": "pd-be-blocks-on-mock-downstream",
@@ -645,8 +647,9 @@
       "tech/backend/data-model.md": "# 数据模型\nTask。\n",
       "tech/backend/sql-execution-plan.md": "# SQL 执行计划\nSQL 执行项：无\n说明：无 SQL 执行项 / 不涉及。\n",
       "tech/integration-map.md": "# 前后端一致性映射\n任务创建 -> POST /api/tasks -> Dify / Activepieces。\n",
-      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| BE-020 | P1 | backend | pending | serial | - | SYNC-020 | 接入真实 Dify / Activepieces | 依赖准备：DEP-DIFY ready、DEP-ACTIVEPIECES ready |\n",
-      "code-scan.md": "# 代码扫描\nMockDifyClient.java\nMockActivepiecesClient.java\n未发现 RestClient/WebClient 真实调用。\n"
+      "tech/task-slices.md": "# 任务清单\n\n任务来源：本文件。\n\n## 前端任务\n\n本用例只检查另一端，未提供本端实现任务，不代表真实项目整体不涉及。\n\n## 后端任务\n\n| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |\n| --- | --- | --- | --- | --- | --- |\n| 1 | BE-020 | 接入真实 Dify / Activepieces | pending | 依赖准备：DEP-DIFY ready、DEP-ACTIVEPIECES ready；真实实现与必要接线 / 权限检查 | 尚未执行；实际结果待核对 |\n\n## 联调 / 测试范围\n- 相关实现：BE-020；按 integration-map 和原验收核对实际输入及真实结果，本端完成不代表联调通过。\n",
+      "code-scan.md": "# 代码扫描\nMockDifyClient.java\nMockActivepiecesClient.java\n未发现 RestClient/WebClient 真实调用。\n",
+      "tech/tech-plan.md": "# 技术方案的工程范围（合成评估输入）\n其余契约、验证及任务以本用例提供的各设计文件为准。\n## 仓库、分支与二方包版本\n本轮仅修改 repositories/backend；开发分支由评估用户确认为 evaluation；无二方包源码或开发版本改动。这是范围与分支约定，不代表当前工作区 / 依赖已就绪。\n"
     },
     "expected_files": [
       "tech/backend/backend-implementation-log.md",
@@ -665,7 +668,10 @@
         "WebClient",
         "真实"
       ]
-    }
+    },
+    "review_notes": [
+      "本用例修改仓库 / 分支约定见 tech/tech-plan.md；没有实际检出证据不允许写代码，但仍应完成只读任务依赖或真实依赖检查，不用工作区缺口掩盖本用例的目标问题。"
+    ]
   },
   {
     "id": "pd-sync-contract-report",
@@ -675,7 +681,7 @@
       "tech/api-contract.md": "# API 契约\nGET /api/alerts。\n",
       "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-API | http | Alerts API | FE-01, BE-01 | local app | curl /api/alerts | ready | 本地真实 API | - | - |\n",
       "tech/integration-map.md": "# 前后端一致性映射\n异常列表 -> GET /api/alerts。\n",
-      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行 | blocked-by | blocks | 内容 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-01 | P1 | frontend | done | parallel-safe | | | 异常列表 | npm test |\n| BE-01 | P1 | backend | done | parallel-safe | | | 查询异常列表 | python test |\n",
+      "tech/task-slices.md": "# 任务清单\n\n任务来源：本文件。\n\n## 前端任务\n\n| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |\n| --- | --- | --- | --- | --- | --- |\n| 1 | FE-01 | 异常列表 | done | npm test；真实实现与必要接线 / 权限检查 | 合成输入声明本端检查通过；正式联调另验 |\n\n## 后端任务\n\n| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |\n| --- | --- | --- | --- | --- | --- |\n| 1 | BE-01 | 查询异常列表 | done | python test；真实实现与必要接线 / 权限检查 | 合成输入声明本端检查通过；正式联调另验 |\n\n## 联调 / 测试范围\n- 相关实现：FE-01, BE-01；按 integration-map 和原验收核对实际输入及真实结果，本端完成不代表联调通过。\n",
       "tech/frontend/frontend-implementation-log.md": "# 前端实现记录\nFE-01 done。\n",
       "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-01 done。\n"
     },
@@ -696,12 +702,12 @@
   {
     "id": "pd-sync-rejects-development-depending-on-sync",
     "skill": "pd-sync",
-    "prompt": "检查任务列表联调。当前 task-slices 错误地把 FE-014 blocked-by SYNC-014，同时 SYNC-014 blocks FE-014。请不要执行联调，判断这是切片依赖建模问题，并输出应回 $pd-plan 修正的 integration-report / plan-revision。",
+    "prompt": "检查任务列表联调。当前 task-slices 错误地把 FE-014 blocked-by SYNC-014，同时 SYNC-014 blocks FE-014。请不要执行联调，判断这是切片依赖建模问题，并输出应回 $pd-plan 修正的 integration-report / plan-revision。 输出当前前后端顺序清单的修订建议和联调验收边界，不再维护旧列或并行标记。",
     "setup_files": {
       "tech/api-contract.md": "# API 契约\nGET /api/tasks\n",
       "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-API | http | Tasks API | SYNC-014 | local app | curl /api/tasks | ready | 本地真实 API | - | - |\n",
       "tech/integration-map.md": "# 前后端一致性映射\n任务列表 -> GET /api/tasks。\n",
-      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-014 | P1 | frontend | pending | serial | SYNC-014 | - | 任务列表页面 | npm test |\n| BE-014 | P1 | backend | done | parallel-safe | - | SYNC-014 | 任务列表真实接口 | mvn test |\n| SYNC-014 | P1 | sync | pending | stage-gate | BE-014 | FE-014 | 任务列表真实联调 | 真实 API 返回 2xx |\n",
+      "tech/task-slices.md": "# 任务切片（旧格式反例，检查后按当前规则修订，不沿用为新模板）\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-014 | P1 | frontend | pending | serial | SYNC-014 | - | 任务列表页面 | npm test |\n| BE-014 | P1 | backend | done | parallel-safe | - | SYNC-014 | 任务列表真实接口 | mvn test |\n| SYNC-014 | P1 | sync | pending | stage-gate | BE-014 | FE-014 | 任务列表真实联调 | 真实 API 返回 2xx |\n",
       "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-014 done。\n"
     },
     "expected_files": [
@@ -712,16 +718,10 @@
       "sync/integration-report.md": [
         "实现前置状态",
         "slice-model-invalid",
-        "开发任务不得依赖 SYNC-*",
-        "不得执行联调",
         "$pd-plan"
       ],
       "sync/plan-revision.md": [
-        "FE-014",
-        "SYNC-014",
-        "blocked-by",
-        "blocks",
-        "删除开发任务对联调任务的依赖"
+        "FE-014"
       ]
     },
     "forbidden_contains": {
@@ -729,7 +729,10 @@
         "联调通过",
         "进入 $pd-test"
       ]
-    }
+    },
+    "review_notes": [
+      "人工语义复核：停止当前正式联调的依据是相关前端实现未完成与错误顺序，不能只凭旧列名称拒绝联调；建议先完成本端实现再联调，不恢复旧依赖图。"
+    ]
   },
   {
     "id": "pd-sync-implementation-defect-routing",
@@ -739,7 +742,7 @@
       "tech/api-contract.md": "# API 契约\nPOST /api/v1/confirmations/{id}/approve\nPOST /api/v1/confirmations/{id}/reject\nPOST /api/v1/confirmations/{id}/cancel\nGET /api/v1/confirmations\n",
       "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-CONFIRMATION-API | http | Confirmation API | FE-010, BE-010, SYNC-003 | local app | curl POST approve | ready | 本地真实 API | - | - |\n",
       "tech/integration-map.md": "# 前后端一致性映射\n人工确认页 approve 动作 -> POST /api/v1/confirmations/{id}/approve。\n",
-      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-010 | P1 | frontend | done | parallel-safe | - | SYNC-003 | 人工确认审批按钮和 API client | npm test |\n| BE-010 | P1 | backend | done | parallel-safe | - | SYNC-003 | 人工确认 approve/reject/cancel 接口 | mvn test |\n| SYNC-003 | P1 | sync | blocked | stage-gate | FE-010, BE-010 | - | 人工确认审批真实 API 联调 | POST approve 返回 2xx |\n",
+      "tech/task-slices.md": "# 任务清单\n\n任务来源：本文件。\n\n## 前端任务\n\n| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |\n| --- | --- | --- | --- | --- | --- |\n| 1 | FE-010 | 人工确认审批按钮和 API client | done | npm test；真实实现与必要接线 / 权限检查 | 合成输入声明本端检查通过；正式联调另验 |\n\n## 后端任务\n\n| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |\n| --- | --- | --- | --- | --- | --- |\n| 1 | BE-010 | 人工确认 approve/reject/cancel 接口 | done | mvn test；真实实现与必要接线 / 权限检查 | 合成输入声明本端检查通过；正式联调另验 |\n\n## 联调 / 测试范围\n- SYNC-003：人工确认审批真实 API 联调；相关实现 FE-010, BE-010；通过条件：POST approve 返回 2xx，并核对契约及实际结果。\n",
       "tech/frontend/frontend-implementation-log.md": "# 前端实现记录\nFE-010 done。\n",
       "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-010 done。\n",
       "runtime-evidence.md": "# 运行证据\nPOST /api/v1/confirmations/123/approve -> 500 INTERNAL_SERVER_ERROR\n后端日志：NoResourceFoundException\nConfirmationController 当前只有 GET /api/v1/confirmations。\n"
@@ -776,7 +779,7 @@
       "tech/api-contract.md": "# API 契约\nPOST /api/tasks\n",
       "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-DIFY | downstream-http | Dify API | BE-020, SYNC-020 | mock only | - | mock-only | MockDifyClient | 缺真实服务 | 接入真实 HTTP client |\n| DEP-ACTIVEPIECES | downstream-http | Activepieces API | BE-020, SYNC-020 | mock only | - | mock-only | MockActivepiecesClient | 缺真实服务 | 接入真实 HTTP client |\n",
       "tech/integration-map.md": "# 前后端一致性映射\n任务创建 -> POST /api/tasks -> Dify / Activepieces。\n",
-      "tech/task-slices.md": "# 任务切片\n| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| FE-020 | P1 | frontend | done | parallel-safe | - | SYNC-020 | 任务创建表单 | npm test |\n| BE-020 | P1 | backend | done | parallel-safe | - | SYNC-020 | Dify / Activepieces 调用 | 依赖准备：DEP-DIFY ready、DEP-ACTIVEPIECES ready |\n| SYNC-020 | P1 | sync | pending | stage-gate | FE-020, BE-020 | - | 任务创建真实联调 | 真实下游返回 2xx |\n",
+      "tech/task-slices.md": "# 任务清单\n\n任务来源：本文件。\n\n## 前端任务\n\n| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |\n| --- | --- | --- | --- | --- | --- |\n| 1 | FE-020 | 任务创建表单 | done | npm test；真实实现与必要接线 / 权限检查 | 合成输入声明本端检查通过；正式联调另验 |\n\n## 后端任务\n\n| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |\n| --- | --- | --- | --- | --- | --- |\n| 1 | BE-020 | Dify / Activepieces 调用 | done | 依赖准备：DEP-DIFY ready、DEP-ACTIVEPIECES ready；真实实现与必要接线 / 权限检查 | 合成输入声明本端检查通过；正式联调另验 |\n\n## 联调 / 测试范围\n- SYNC-020：任务创建真实联调；相关实现 FE-020, BE-020；通过条件：真实下游返回 2xx，并核对契约及实际结果。\n",
       "tech/frontend/frontend-implementation-log.md": "# 前端实现记录\nFE-020 done。\n",
       "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-020 done，但代码扫描仍显示 MockDifyClient / MockActivepiecesClient。\n",
       "runtime-evidence.md": "# 运行证据\nPOST /api/tasks -> 200\n日志：using MockDifyClient, using MockActivepiecesClient\n未发现真实 Dify / Activepieces HTTP request。\n"
@@ -923,5 +926,55 @@
         "回滚步骤"
       ]
     }
+  },
+  {
+    "id": "pd-plan-backend-no-sql",
+    "skill": "pd-plan",
+    "prompt": "只做技术设计：根据已确认 PRD 设计一个拟新增的无状态时长换算接口，记录拟新增能力及依据，输出适用的后端设计、契约、依赖和任务顺序。明确不涉及前端、数据库或 SQL，不补造相应文件，不启动开发。",
+    "setup_files": {
+      "product/prd.md": "# 已确认需求\n提供公开、无状态的分钟转秒接口。输入 minutes 为 0 至 10080 的整数；返回 seconds，值为 minutes 乘以 60。非法输入返回参数错误，不返回成功值。不涉及账户、持久化、数据库、SQL、下游服务或 UI。接口为本期拟新增能力，不宣称已有实现。\n\n## 已确认工程约定（合成评估输入）\n本轮修改范围：仅后端仓库（计划路径 repositories/backend）；各修改仓库的开发分支均已由评估用户确认为 evaluation。不涉及二方包源码改动。本轮只设计，不创建仓库、分支或运行实现；计划路径不是现有代码 / 运行就绪证据。\n"
+    },
+    "expected_files": [
+      "tech/tech-plan.md",
+      "tech/dependency-readiness.md",
+      "tech/backend/backend-design.md",
+      "tech/api-contract.md",
+      "tech/integration-map.md",
+      "tech/task-slices.md",
+      "tech/risk-plan.md"
+    ],
+    "forbidden_files": [
+      "tech/backend/sql-execution-plan.md",
+      "tech/frontend/frontend-design.md",
+      "ui/figma-handoff.md"
+    ],
+    "review_notes": [
+      "检查适用性是否有需求依据、接口是否标为拟新增、非法输入和最小验证是否进入设计与任务。文件存在检查不能证明设计可落地；不得要求补空 SQL 文件或声称运行已验证。"
+    ]
+  },
+  {
+    "id": "pd-release-no-sql",
+    "skill": "pd-release",
+    "prompt": "只生成本轮上线计划、检查清单、回滚方案和 release notes。当前范围是无状态计算接口，技术方案已明确无数据库或 SQL；复用已有验证证据与联调不适用依据，不补造 SQL 文件，不提交、不推送、不执行发布。",
+    "setup_files": {
+      "product/prd.md": "# 需求\n公开的分钟转秒接口，无账户、UI、持久化或外部服务依赖。\n",
+      "tech/tech-plan.md": "# 技术方案\n本轮仅无状态计算接口，不读写数据库，无 DDL、DML 或 migration；不涉及 SQL。回滚为恢复上一应用版本，无数据回滚。\n",
+      "sync/integration-report.md": "# 联调报告\n不适用：本轮没有前后端交互或下游服务；输入与范围依据见技术方案。接口本端验证见测试报告。\n",
+      "test/test-report.md": "# 测试报告（合成评估输入）\n本轮通过：接口正常与非法输入、边界及构建检查均已覆盖。无外部依赖或 SQL；证据定位为本评估用例给定的本端验证记录，不代表真实生产验证。\n",
+      "test/code-review.md": "# Code Review（合成评估输入）\n本轮接口改动已审查，无未解决 P0/P1；验证及范围依据见技术方案和测试报告。\n",
+      "release/commit-summary.md": "# 提交说明\n本轮为无状态计算接口应用变更；关联提交未提供时列为待确认，不编造 SHA 或发布成功。\n"
+    },
+    "expected_files": [
+      "release/release-plan.md",
+      "release/release-checklist.md",
+      "release/rollback-plan.md",
+      "release/release-notes.md"
+    ],
+    "forbidden_files": [
+      "tech/backend/sql-execution-plan.md"
+    ],
+    "review_notes": [
+      "按技术方案保留无 SQL 依据与联调不适用，不为文件齐全补空文件；关联提交或环境未确认要如实保留。合成报告不是本次真实服务测试或上线授权。"
+    ]
   }
 ]

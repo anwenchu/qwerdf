@@ -2,6 +2,8 @@
 
 本文件定义工程阶段 skill 共享的产物模板。Skill 执行时只读取本任务需要的模板。依据、范围与交接判断统一见 [技术设计依据与范围规则](technical-design-rules.md)；按本轮风险选用下列记录，不为局部修订重做无关历史材料。
 
+当前产物职责以 [阶段产物表](product-delivery-flow.md#1-交付链路) 为准；规模评估、证据留存、短记录及续作入口统一按 [生命周期规则](artifact-lifecycle.md) 处理，不把以下模板展开成逐轮日志副本。
+
 ## 业务进度摘要
 
 前后端实现记录及输出摘要共用以下结构；解释与完成口径统一按 [共享业务推进规则](product-delivery-flow.md#业务推进阻断恢复与进度汇报)，只填本轮适用范围，不复制整份需求或另算整体百分比。
@@ -11,7 +13,8 @@
 - 已实现与调用接线：<入口、关键状态变化、实际接入位置与仍未接通部分>
 - 验证：<已执行的本端检查及证据；真实链路已验证 / 未验证及依据>
 - 剩余与阻断：<未实现 / 未接线；契约缺口；依赖或验证阻塞，分别给位置、影响与下一步>
-- 下一步：<继续当前里程碑的可执行任务或解除阻断的具体动作>
+- 任务清单：<权威源及 tech/task-slices.md 视图；按权威源列本端 done / in_progress / pending / blocked 的计数与 ID；代码已完成但待验证的项单独指出，派生视图滞后时注明>
+- 继续或结束依据：<连续执行时下一项 ID 与接下来的动作；结束时逐项说明剩余项为何无获准可执行动作，或引用用户限定 / 暂停要求>
 ```
 
 恢复 blocked 时，在原实现记录保留原阻断，并补解除证据、当前交接 / 依赖复核及状态变更；不新造恢复报告。
@@ -26,8 +29,15 @@
 ## 范围
 - 确认需求 / 用户决定及本期验收：
 - 本期业务链路与改动边界：
+- 适用性：<前端 / 后端 / UI / 联调 / SQL；不适用的依据，引用受影响范围>
 - 必要技术前置及因果依据：
 ## 非目标
+## 仓库、分支与二方包版本
+| 修改仓库 / 路径 | 本轮改动及归属 | 已确认开发分支 | 确认依据 | 二方包开发版本 / 不涉及 | 受影响消费者 |
+| --- | --- | --- | --- | --- | --- |
+
+- 只读参考仓库：<仅作依据，不属于本轮修改清单>
+
 ## 现有系统影响
 - 只读影响核查的问题、边界与结论：
 - 范围外发现及处理（仅记录 / 本期必要且已有授权 / 待确认范围变化）：
@@ -52,14 +62,13 @@
 
 ## `tech/dependency-readiness.md`
 
+填写时按 [共享开发门禁](product-delivery-flow.md#开发交接与依赖)、[并行规则](product-delivery-flow.md#frontend--backend-并行开发规则) 及 [阻断恢复](product-delivery-flow.md#业务推进阻断恢复与进度汇报) 判断，每项说明用途和消费者，不复制门禁正文。
+
 ```markdown
 # 真实依赖准备清单 — <name>
 
-## 规则
-- 按拟执行 slice 实际必需的依赖判断，只有 `ready` / `not-required` 允许其进入 `$pd-fe` / `$pd-be` 正式开发。
-- 上述必需依赖为 `unknown` / `blocked` / `mock-only` 时阻断该 slice 及受影响的验证；适用阶段和共享产物的生产者 / 消费者边界统一见 [共享并行开发规则](product-delivery-flow.md#frontend--backend-并行开发规则)，不另设全局依赖门槛。
-- 本地真实服务、官方本地容器或测试环境真实服务可算 `ready`；mock server、stub client、fake adapter、contract simulator 必须标为 `mock-only` 并阻断，不算 `ready`。
-- 技术实现禁止使用任何 mock；mock / stub / fake / fixture / simulator 只能作为阻断信号记录，不能作为设计、开发、联调、测试或验收通过证据。
+## 判断依据
+- 当前适用依据：<引用本轮技术方案与实际依赖证据，区分编码 / 验证用途>
 
 ## 依赖清单
 | 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |
@@ -221,43 +230,30 @@
 
 ## `tech/task-slices.md`
 
+默认作为任务权威源；已有 JSON 机器消费时也可作为派生视图。来源选择、冲突处理、任务粒度、完成证据与持续回填统一按 [共享任务清单规则](product-delivery-flow.md#任务清单与开发顺序) 执行，不在两种格式独立维护状态。
+
 ```markdown
 # 任务切片 — <name>
 
-| ID | 优先级 | 类型 | 状态 | 并行标记 | blocked-by | blocks | 任务 | 验证 |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+任务来源：<权威源路径；默认本文件，使用已有 JSON 时明确其路径及本文件为派生视图>
+派生方式与同步情况（仅多格式共存时）：<沿用的生成方式；与源一致 / 滞后及受影响项，不把旧视图当当前状态>
+
+## 前端任务
+
+| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |
+| --- | --- | --- | --- | --- | --- |
+
+## 后端任务
+
+| 顺序 | ID | 业务动作与交付结果 | 状态 | 完成标准 | 证据 / 阻断 |
+| --- | --- | --- | --- | --- | --- |
+
+## 联调 / 测试范围
+- 业务结果与关联实现 ID：
+- 实际必需输入与通过条件：<引用原验收；开发状态读取上方权威条目，不再抄一份>
 ```
 
-列说明：
-
-- 任务说明引用技术方案中的业务里程碑 / 验收或必要技术前置；切片与执行顺序按共享业务推进规则判断，不新增强制编号或状态列。范围外影响发现不因出现在技术文档就自动成为开发任务。
-- `并行标记` 只表达调度属性，只允许 `parallel-safe`、`serial`、`stage-gate`。禁止写入任务 ID，禁止出现 `blocked-by XXX`、`blocks XXX`、`blocked-by SYNC-001` 等依赖内容。
-- `blocked-by` 是当前任务的前置任务 ID 列；`blocks` 是当前任务阻塞的后续任务 ID 列。所有任务 ID 依赖只能写入这两列。
-- `-` 表示无依赖，不得和任务 ID 混用。
-- `parallel-safe` 只能表示可并行调度，不代表无依赖；真实依赖仍必须写入 `blocked-by` / `blocks`。
-
-依赖一致性：
-
-- 如果 `A.blocked-by` 包含 `B`，则 `B.blocks` 必须包含 `A`。
-- 如果 `B.blocks` 包含 `A`，则 `A.blocked-by` 必须包含 `B`。
-- 不允许出现只在 `blocks` 单边声明、但对方 `blocked-by` 缺失的关系。
-- 不允许出现只在 `blocked-by` 单边声明、但对方 `blocks` 缺失的关系。
-- 生成后必须做一次依赖闭环自检；发现不一致时，先修正 `tech/task-slices.md` 再输出。
-
-Frontend / Backend 并行开发：
-
-- 切片依赖、必要共享工程产物及跨端真实验收统一按 [Frontend / Backend 并行开发规则](product-delivery-flow.md#frontend--backend-并行开发规则) 填写，本模板不另设业务实现相互依赖的例外。
-- 任务 / 验证列引用已确认契约及本端验证依据；缺少必要动作码或返回语义时按设计缺口回 `$pd-plan`，不能填写“等待另一端开发后确认”。
-
-`SYNC-*` 建模：
-
-- `SYNC-*` 只能表示前后端真实联调阶段门；执行前相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 必须全部 `done`。
-- `SYNC-*` 的 `blocked-by` 应包含它要联调的所有前后端实现任务。
-- `SYNC-*` 的 `blocks` 禁止包含 `FE-*`、`BE-*` 或 `shared-*` 开发任务，只允许指向 `test` 或后续非开发门禁任务，或写 `-`。
-- `frontend` / `backend` / `shared-*` 开发任务的 `blocked-by` 禁止包含 `SYNC-*`。
-- 联调发现的实现问题不预建为 `blocked-by SYNC-*` 的开发任务；由 `$pd-sync` 写成 `implementation-defect` 回已有实现 slice，或写成 `slice-missing` 回 `$pd-plan`。
-- `SYNC-*` 的“验证”列必须说明联调范围和通过条件。
-- 前端 UI slice 的“验证”列必须包含 UI 质量验证要求，例如桌面 / 移动端、无横向溢出、状态覆盖、表单错误、设计系统一致性或截图 / 浏览器证据。
+填写与执行只按 [共享任务清单与开发顺序](product-delivery-flow.md#任务清单与开发顺序) 及 [并行开发规则](product-delivery-flow.md#frontend--backend-并行开发规则)。任务记录或引用输入 / 契约、可观察结果、本端接线、必要异常 / 安全边界和最小验证，不复制设计全文。JSON 为权威源时表内顺序和状态均从该源派生；未涉及的端说明依据，不造空任务。UI 任务的状态、平台及证据要求引用共享质量清单。
 
 ## `tech/risk-plan.md`
 
@@ -297,7 +293,7 @@ Frontend / Backend 并行开发：
 - 结果：
 - 证据：
 ## 阻塞
-- 类型：<dependency-readiness | over-constrained-slice | contract-gap | ui-design-gap | none>
+- 类型：<dependency-readiness | contract-gap | ui-design-gap | none>
 - 证据：
 - 下一步：
 ```
@@ -321,11 +317,9 @@ Frontend / Backend 并行开发：
 - 本端工程前置 / 共享产物：<仅列实际消费的具体产物与准备任务；边界按共享并行开发规则，不填写等待对端业务实现>
 - 后端未就绪时的处理：<真实 API client + loading / empty / error / permission / service-unavailable；不得 mock 成功数据>
 ## 待联调点
-## 切片建模问题（如适用）
-- 类型：<over-constrained-slice | none>
-- 被过度阻塞的 FE slice：
-- 相关 BE / shared-backend slice：
-- 建议回 `$pd-plan` 修正：
+## 顺序 / 归属问题（仅有实际问题时）
+- 受影响任务与证据：
+- 需回 `$pd-plan` 校正的顺序 / 输入说明：
 ```
 
 ## `tech/frontend/frontend-acceptance.md`
@@ -391,7 +385,7 @@ Frontend / Backend 并行开发：
 - 结果：
 - 证据：
 ## 阻塞
-- 类型：<dependency-readiness | over-constrained-slice | contract-gap | sql-plan-gap | none>
+- 类型：<dependency-readiness | contract-gap | sql-plan-gap | none>
 - 证据：
 - 下一步：
 ```
@@ -415,11 +409,9 @@ Frontend / Backend 并行开发：
 - 本端工程前置 / 共享产物：<仅列实际消费的具体产物与准备任务；边界按共享并行开发规则，不填写等待对端业务实现>
 - 前端未就绪时的处理：<接口契约 + service / repository / 权限 / 错误码 / 真实下游 / 后端测试；不得 fake 端到端通过>
 ## 待联调点
-## 切片建模问题（如适用）
-- 类型：<over-constrained-slice | none>
-- 被过度阻塞的 BE slice：
-- 相关 FE / shared-frontend slice：
-- 建议回 `$pd-plan` 修正：
+## 顺序 / 归属问题（仅有实际问题时）
+- 受影响任务与证据：
+- 需回 `$pd-plan` 校正的顺序 / 输入说明：
 ```
 
 ## `sync/integration-plan.md`
@@ -432,6 +424,8 @@ Frontend / Backend 并行开发：
 ```
 
 ## `sync/integration-report.md`
+
+分类与修复路径按 [共享验证规则](product-delivery-flow.md#验证与审查)；slice-missing 从确认的权威源判断，先排除视图滞后。
 
 ```markdown
 # 联调报告 — <name>
@@ -458,13 +452,6 @@ Frontend / Backend 并行开发：
 ## 修复路由
 | 问题 ID | 分类 | 契约证据 | 实现证据 | 归属 slice | 下一步 | 处理规则 |
 | --- | --- | --- | --- | --- | --- | --- |
-
-分类枚举：
-- `implementation-defect`: 契约清楚且已有实现 slice 覆盖，但真实代码 / 运行结果不符合契约；回 `$pd-fe` / `$pd-be` 缺陷修复模式。
-- `contract-mismatch`: 契约、数据模型、权限或状态枚举本身缺失 / 冲突 / 模糊；回 `$pd-plan`。
-- `slice-missing`: 契约清楚但没有实现 slice 覆盖；回 `$pd-plan`。
-- `slice-model-invalid`: 任务依赖建模错误，例如开发任务 `blocked-by SYNC-*` 或 `SYNC-* blocks` 开发任务；回 `$pd-plan`。
-- `environment-blocked`: 环境、数据、账号、依赖服务或配置导致无法判断；留在 `$pd-sync` / 环境准备。
 
 ## 环境
 - 前端：
@@ -518,6 +505,11 @@ Frontend / Backend 并行开发：
 ```markdown
 # 测试报告 — <name>
 
+## 本轮验证范围与整体结论
+- 范围与适用性依据：
+- 单项结果：<见下表，不外推未执行路径>
+- 整体结论：<通过 / 未通过 / 未执行 / 有残余风险及依据；正式门禁沿用共享规则>
+
 ## 联调前置状态
 | Gate | 状态 | 证据 | 处理 |
 | --- | --- | --- | --- |
@@ -526,6 +518,8 @@ Frontend / Backend 并行开发：
 | --- | --- | --- | --- |
 
 ## SQL 执行验证
+不涉及可引用技术方案依据；涉及但缺执行计划或真实验证时保留缺口，不伪称通过。
+
 | SQL ID | 环境 | SQL / Migration 文件 | 执行状态 | 验证方式 | 证据 | 风险 / 处理 |
 | --- | --- | --- | --- | --- | --- | --- |
 
@@ -680,7 +674,7 @@ Frontend / Backend 并行开发：
 
 - [ ] 测试报告已通过
 - [ ] Code Review 无 P0/P1
-- [ ] SQL 执行计划已确认；无 SQL 时已明确“不涉及”
+- [ ] SQL 适用性有依据；涉及时执行计划与必要验证已确认，无 SQL 时引用技术方案的“不涉及”说明
 - [ ] 涉及 SQL / migration 时，测试环境执行和验证证据已记录
 - [ ] 涉及 SQL / migration 时，生产执行顺序、备份、验证和回滚方案已确认
 - [ ] 回滚方案已确认

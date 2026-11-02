@@ -6,12 +6,14 @@ description: >-
 
 # $pd-review — Code Review
 
-Codex Product Delivery Skill：在提交前审查实现质量和交付风险。
+在提交前审查实现质量和交付风险。
 
 ## 读取
 
-1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
-2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `test/code-review.md` 的模板。
+下列项目材料只读取本轮适用的当前段落；缺少实际必需输入保留缺口，无关端、UI 或 SQL 不要求补造文件。
+
+1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage review`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
+2. 上述输出已包含 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `test/code-review.md` 的模板；只采用本轮适用项。
    方案依据与范围核对读取 [技术设计依据与范围规则](../qwerdf-common/technical-design-rules.md)，分别检查引用是否支持结论、任务是否属于本期。
 3. 读取 `product/prd.md`、`product/requirements.md`、`product/acceptance-criteria.md`、`ui/ui-design-system.md`、`ui/ui-screens.md`、`ui/ui-components.md`、`ui/figma-handoff.md`、`ui/ui-review-report.md`（如存在）、`tech/tech-plan.md`、`tech/api-contract.md`、`tech/integration-map.md`、`tech/task-slices.md`、`sync/integration-report.md`、`test/test-report.md`、前后端实现记录、changed files、dev notes、当前 git diff 和 git status。
 4. 如果当前目录是 git 仓库且存在 diff，先运行本 skill 自带脚本 `scripts/diff_triage.py`，将目标仓库的 `git diff --no-ext-diff --unified=80` 通过 stdin 传入；用输出决定审查顺序、风险标签和需要加载的 references。
@@ -29,7 +31,7 @@ Codex Product Delivery Skill：在提交前审查实现质量和交付风险。
 - 不提交代码。
 - 需要修复时，按问题归属回到 `$pd-fe`、`$pd-be`、`$pd-plan`、`$pd-sync` 或 `$pd-test`。
 - Findings 必须能定位到文件、区域、契约条目、测试证据或产物段落；证据不足时标记为待确认，不升级成确定问题。
-- `sync/integration-report.md` 或 `test/test-report.md` 缺失、未通过或证据不足时，不得输出“可提交 / 可进入 $pd-git”；必须作为阻断或残余风险写入 Code Review。
+- 是否可进入 `$pd-git` 统一按 [共享正式门禁](../qwerdf-common/product-delivery-flow.md#正式提交与上线) 判断；缺口写入报告，不在本入口另定义放行条件。
 - 不把格式化、import 顺序、简单 lint 或类型风格问题作为主要 finding，除非它们导致真实行为风险；这类问题优先交给 formatter、linter、typecheck。
 - `$pd-review` 重点关注自动化工具难以发现的问题：业务语义、契约偏差、边界条件、权限、安全、并发、数据一致性、可维护性和测试有效性。
 - UI diff 不只看视觉偏好；必须对照 `ui/ui-design-system.md`、产品类型、Figma handoff、frontend-acceptance、截图 / 浏览器证据和用户任务。
@@ -73,10 +75,10 @@ UI 的严重性、必要证据缺口与交接条件统一遵循 [UI Review Rules
 
 ## 审查流程
 
-按四阶段推进：上下文收集、高层审查、代码 / UI 审查、结论决策；前置证据检查和报告写入是执行门禁，以下步骤是执行展开。
+可以在开发中或联调 / 测试前执行只读审查；正式可提交判断沿用 [共享门禁](../qwerdf-common/product-delivery-flow.md#正式提交与上线)。缺证据不阻止继续静态审查，未覆盖部分不得推断通过。
 
 1. 上下文收集：读取 PRD、技术方案、API 契约、integration-map、task-slices、联调报告、测试报告、实现记录、changed files、git diff 和 git status；运行 `scripts/diff_triage.py` 生成 diff triage；识别 diff 触及的语言 / 框架并按需读取 references。
-2. 前置证据检查：`sync/integration-report.md` 必须通过或明确不适用，`test/test-report.md` 必须通过且无未解释高风险缺口；缺失或未通过时先输出阻断 finding，并把下一步指向 `$pd-sync` 或 `$pd-test`，不进入 `$pd-git`。
+2. 前置证据检查：记录联调、测试与适用 UI 的实际状态；缺失 / 未通过记交付缺口并继续代码审查，不把资料缺失直接当作代码缺陷。正式提交条件未满足时不得输出可提交。
 3. 高层审查：判断范围是否正确、架构是否贴合方案、文件组织是否合理、契约是否一致、测试策略是否覆盖主风险。
 4. UI 设计质量审查：涉及 UI diff 时，对照 `ui/ui-design-system.md`、Figma handoff、frontend-acceptance 和浏览器 / 截图证据，检查设计系统一致性、产品类型匹配、信息层级、响应式、可访问性、状态覆盖、表单 / 表格 / 图表质量。
 5. 代码级审查：按文件和 diff 逐段检查正确性、安全、性能、数据一致性、错误处理、状态覆盖、复用、可维护性和测试质量；新增 helper / service / component 前必须搜索相邻模块和 shared 目录是否已有可复用能力。
@@ -91,7 +93,6 @@ UI 的严重性、必要证据缺口与交接条件统一遵循 [UI Review Rules
 - 每个 `P0` / `P1` 必须给出修复归属：`$pd-fe`、`$pd-be`、`$pd-plan`、`$pd-sync` 或 `$pd-test`。
 - 每个 finding 必须给出验证建议，例如应补哪个单测、集成测试、E2E、浏览器验证或 API 测试。
 - UI finding 必须给出设计系统 / Figma / 截图 / 视口 / 组件路径 / 验收清单证据；不能只写“看起来不美观”。
-- 如果联调报告或测试报告缺失 / 失败，不得输出“可进入 $pd-git”。
 - `test/code-review.md` 必须记录 diff triage 摘要：总文件数、增删行、风险标签、推荐 references 和优先审查文件。
 - `test/code-review.md` 必须记录 UI Review 摘要；没有 UI diff 时写明“不适用”和依据。
 - 没有发现问题时，也要说明未发现阻断问题，并列出残余风险和未覆盖范围。
@@ -104,5 +105,5 @@ Code Review 完成: <name>
 文件:
  - test/code-review.md
 结论: <无阻断 / 有 P0 / 有 P1 / 有建议项>
-下一步: <无阻断且联调 / 测试通过则用 $pd-git；否则回到 $pd-sync / $pd-test / 修复阶段>
+交付判断与下一步: <引用共享正式门禁的核对结果及证据；未满足项回对应阶段，不以“无 finding”代替门禁通过>
 ```

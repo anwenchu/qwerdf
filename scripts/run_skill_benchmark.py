@@ -16,6 +16,8 @@ from pathlib import Path
 from statistics import mean, pstdev
 from string import Template
 
+from benchmark_contracts import forbidden_file_paths
+
 
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_CASES = ROOT / "evals" / "cases" / "benchmark-cases.json"
@@ -347,6 +349,7 @@ def grade_output(
     timed_out: bool,
     command_checks: list[dict[str, object]],
 ) -> tuple[bool, list[dict[str, object]]]:
+    forbidden_files = forbidden_file_paths(case.get("forbidden_files", []))
     checks: list[dict[str, object]] = [
         {
             "text": "agent command exited successfully",
@@ -371,13 +374,12 @@ def grade_output(
     checks.extend(contains_checks(case=case, output_dir=output_dir, key="any_contains", mode="any"))
     checks.extend(forbidden_contains_checks(case=case, output_dir=output_dir))
 
-    forbidden_files = case.get("forbidden_files", [])
-    for relative in forbidden_files if isinstance(forbidden_files, list) else []:
-        path = output_dir / safe_relative_path(str(relative))
+    for relative in forbidden_files:
+        path = output_dir / relative
         checks.append(
             {
                 "text": f"forbidden file absent: {relative}",
-                "passed": not path.exists(),
+                "passed": not (path.exists() or path.is_symlink()),
                 "evidence": str(path),
             }
         )
@@ -396,6 +398,7 @@ def run_one(
     include_skill: bool,
     dry_run: bool,
 ) -> CommandResult:
+    forbidden_file_paths(case.get("forbidden_files", []))
     output_dir = run_dir / label / "outputs"
     output_dir.mkdir(parents=True, exist_ok=True)
     materialize_setup_files(case, output_dir)
@@ -604,6 +607,11 @@ def main() -> int:
     for case in cases_raw:
         if not isinstance(case, dict):
             print("Invalid case entry: expected object", file=sys.stderr)
+            return 2
+        try:
+            forbidden_file_paths(case.get("forbidden_files", []))
+        except ValueError as exc:
+            print(f"{args.cases}: case {case.get('id', len(cases))}: {exc}", file=sys.stderr)
             return 2
         cases.append(case)
 

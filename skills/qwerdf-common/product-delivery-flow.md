@@ -11,22 +11,26 @@ UI 设计系统和质量规则见 [ui-design-system.md](ui-design-system.md)、[
 $pd-vet -> $pd-prd -> $pd-blueprint -> $pd-figma -> $pd-ui-review -> $pd-plan -> $pd-fe + $pd-be -> $pd-sync -> $pd-test -> $pd-review -> $pd-git -> $pd-release
 ```
 
-| 阶段 | 负责 Skill | 必要产物 |
-| --- | --- | --- |
-| 想法验证 | `$pd-vet` | `product/idea-brief.md`、`product/user-problem.md`、`product/competitor-notes.md`、`product/mvp-hypothesis.md`、`product/validation-questions.md` |
-| PRD 生成 | `$pd-prd` | `product/prd.md`、`product/requirements.md`、`product/user-stories.md`、`product/acceptance-criteria.md`、`product/open-questions.md` |
-| 产品设计输入 | `$pd-blueprint` | `product/product-brief.md` |
-| UI 页面蓝图 | `$pd-blueprint` | `ui/ui-design-system.md`、`ui/ui-flows.md`、`ui/ui-pages.md`、`ui/ui-screens.md`、`ui/ui-components.md` |
-| Figma 设计交付 | `$pd-figma` | `ui/ui-design-system.md`、`ui/ui-directions.md`、`ui/figma-handoff.md` |
-| UI 设计质量审查 | `$pd-ui-review` | `ui/ui-review-report.md` |
-| 技术设计 | `$pd-plan` | `tech/tech-plan.md`、`tech/dependency-readiness.md`、`tech/frontend/frontend-design.md`、`tech/frontend/frontend-component-map.md`、`tech/frontend/frontend-route-map.md`、`tech/frontend/frontend-state-api.md`、`tech/backend/backend-design.md`、`tech/api-contract.md`、`tech/backend/data-model.md`、`tech/backend/sql-execution-plan.md`、`tech/integration-map.md`、`tech/task-slices.md`、`tech/risk-plan.md` |
-| 前端实现 | `$pd-fe` | `tech/frontend/frontend-implementation-log.md`、`tech/frontend/frontend-changed-files.md`、`tech/frontend/frontend-dev-notes.md`、`tech/frontend/frontend-acceptance.md` |
-| 后端实现 | `$pd-be` | `tech/backend/backend-implementation-log.md`、`tech/backend/backend-changed-files.md`、`tech/backend/backend-dev-notes.md` |
-| 前后端联调 | `$pd-sync` | `sync/integration-plan.md`、`sync/integration-report.md`、`sync/api-mismatch.md`、`sync/plan-revision.md` |
-| 测试验证 | `$pd-test` | `test/test-plan.md`、`test/test-cases.md`、`test/test-report.md`、`test/regression-notes.md` |
-| Code Review | `$pd-review` | `test/code-review.md` |
-| Git 提交准备 | `$pd-git` | `release/commit-summary.md`、`release/pr-description.md` |
-| 上线文档 | `$pd-release` | `release/release-plan.md`、`release/release-checklist.md`、`release/rollback-plan.md`、`release/release-notes.md` |
+上述是适用阶段的正式交付顺序；开发期间可先测试或只读审查，不代表跳过正式验收与提交门禁。无关阶段不补造产物。
+
+| 阶段 | 负责 Skill | 进入该阶段时维护的当前产物 | 维护边界 |
+| --- | --- | --- | --- |
+| 想法验证 | `$pd-vet` | `product/idea-brief.md`、`product/user-problem.md`、`product/competitor-notes.md`、`product/mvp-hypothesis.md`、`product/validation-questions.md` | 进入本阶段时建立；新增证据只更新对应判断与来源，不另建整套版本。 |
+| PRD 生成 | `$pd-prd` | `product/prd.md`、`product/requirements.md`、`product/user-stories.md`、`product/acceptance-criteria.md`、`product/open-questions.md` | 需求、验收与未决各维护原权威条目，修订不复制整份历史。 |
+| 产品设计输入 | `$pd-blueprint` | `product/product-brief.md` | 维护当前产品输入；引用已确认需求，不重复 PRD 正文。 |
+| UI 页面蓝图 | `$pd-blueprint` | `ui/ui-design-system.md`、`ui/ui-flows.md`、`ui/ui-pages.md`、`ui/ui-screens.md`、`ui/ui-components.md` | 维护当前系统、流程、页面及组件索引；大主题先拆分，详情按需引用。 |
+| Figma 设计交付 | `$pd-figma` | `ui/ui-design-system.md`、`ui/ui-directions.md`、`ui/figma-handoff.md` | 复用设计系统；需要比较时维护方向记录，选定深化后才交付正式 handoff；截图按适用质量要求留证。 |
+| UI 设计质量审查 | `$pd-ui-review` | `ui/ui-review-report.md` | 维护本轮范围的当前报告及 finding 证据，不逐条复制全套上游。 |
+| 技术设计 | `$pd-plan` | `tech/tech-plan.md`、`tech/dependency-readiness.md`、`tech/frontend/frontend-design.md`、`tech/frontend/frontend-component-map.md`、`tech/frontend/frontend-route-map.md`、`tech/frontend/frontend-state-api.md`、`tech/backend/backend-design.md`、`tech/api-contract.md`、`tech/backend/data-model.md`、`tech/backend/sql-execution-plan.md`、`tech/integration-map.md`、`tech/task-slices.md`、`tech/risk-plan.md` | 维护受影响的当前设计、契约与任务；大任务先拆业务动作，不每轮复制全部设计作基线。 |
+| 前端实现 | `$pd-fe` | `tech/frontend/frontend-implementation-log.md`、`tech/frontend/frontend-changed-files.md`、`tech/frontend/frontend-dev-notes.md`、`tech/frontend/frontend-acceptance.md` | 实现记录按任务简记，路径清单 / 仍有效注意事项 / 验收各记录本职内容，原始证据按需引用。 |
+| 后端实现 | `$pd-be` | `tech/backend/backend-implementation-log.md`、`tech/backend/backend-changed-files.md`、`tech/backend/backend-dev-notes.md` | 实现记录、路径清单和有效注意事项原位维护；涉及数据变更时同步原 SQL 执行计划，不重复粘贴日志。 |
+| 前后端联调 | `$pd-sync` | `sync/integration-plan.md`、`sync/integration-report.md`、`sync/api-mismatch.md`、`sync/plan-revision.md` | 维护当前计划与报告；只有契约差异或任务修订需要时才生成 / 更新相应差异和修订文档。 |
+| 测试验证 | `$pd-test` | `test/test-plan.md`、`test/test-cases.md`、`test/test-report.md`、`test/regression-notes.md` | 维护本范围计划、用例、当前结果及回归索引，不为每次重跑复制整套报告。 |
+| Code Review | `$pd-review` | `test/code-review.md` | 维护当前审查范围、未解决 finding 与复查证据；机器分析输出不替代审查结论。 |
+| Git 提交准备 | `$pd-git` | `release/commit-summary.md`、`release/pr-description.md` | 仅进入提交准备时维护；实际提交 / 推送仍须原授权，不复制源码或全部证据作提交记录。 |
+| 上线文档 | `$pd-release` | `release/release-plan.md`、`release/release-checklist.md`、`release/rollback-plan.md`、`release/release-notes.md` | 同一发布版本维护当前计划、检查、回滚和说明；正式版本历史按需保留，不循环复制整个项目。 |
+
+阶段产物表是目录与职责的唯一清单；只有进入或修订相应阶段才维护对应文件。局部修复不补造未进入阶段的材料；条件性产物按对应 skill 产生，不以模板数量衡量完成度。所有阶段的规模、证据和续作处理统一见 [产物生命周期与上下文恢复](artifact-lifecycle.md)。
 
 ## 2. 默认工作目录
 
@@ -34,6 +38,7 @@ $pd-vet -> $pd-prd -> $pd-blueprint -> $pd-figma -> $pd-ui-review -> $pd-plan ->
 
 ```text
 pd-work/<name>/
+  README.md  # 仅在没有既定续作入口时维护简短导航，不复制任务状态
   product/
   ui/
     ui-design-system.md
@@ -56,6 +61,7 @@ pd-work/<name>/
 ## 3. Skill 执行规范
 
 - 每个 `$pd-*` skill 只读取本阶段需要的公共模板和上游产物，避免一次性加载无关模板。
+- 开始工作及恢复上下文时先按 [产物生命周期规则](artifact-lifecycle.md) 确定当前入口、相关产物和文档规模；当前文档原位更新、证据留必要增量，禁止以反复生成整套快照代替维护。
 - 触发描述必须说明 “做什么” 和 “什么时候使用”，不要只罗列命令名。
 - 产物必须可复用：写清输入来源、关键判断、未验证假设、验证证据和下一步。
 - 缺少关键输入时先核对已有资料与决定；仍缺且须用户提供或决策时，列出具体缺口定向提问，不生成看似完整但依据不足的文件。工程漏项按 [共享分类规则](technical-design-rules.md#工程漏项与业务决策分类) 处理，不把每个缺字段都变成业务选择。
@@ -120,165 +126,90 @@ pd-work/<name>/
 - 默认不执行 destructive、push、deploy、publish、sync-to-external 等高影响动作，除非用户明确要求并且对应 skill 允许。
 - 读取外部或远程规则时记录来源；规则版本可能变化时，不把旧规则当作当前事实。
 
-## 5. 外部 SKILL.md 内容模式
+## 5. 规则来源
 
-本仓库补充规则参考以下具体 `SKILL.md` 内容模式，而不只是参考仓库目录结构：
-
-- Anthropic `skill-creator/SKILL.md`：触发描述要“偏主动”，正文用渐进式披露；长规则放 references / common，脚本可作为黑盒执行；改 skill 时用测试提示和反馈迭代。
-- Anthropic `frontend-design/SKILL.md`：设计前先钉住主体、受众和页面任务；先写颜色、字体、布局、标志性元素的短计划，再自检是否模板化。
-- Anthropic `webapp-testing/SKILL.md`：浏览器验证采用决策树，先确认静态 / 动态、服务是否运行，再侦察渲染态，最后执行交互；动态页面检查前等待稳定加载。
-- Vercel `react-best-practices/SKILL.md` 和 `composition-patterns/SKILL.md`：把规则按优先级分组，先处理 waterfalls、bundle、server/client 数据、重渲染、组件架构等高影响问题。
-- Vercel `vercel-optimize/SKILL.md`：先收集信号，再用确定性 gate 收窄调查范围；建议必须绑定证据、文件和版本，不做泛泛扫描。
-- Vercel `web-design-guidelines/SKILL.md`：外部规则源可能变化时，先读取最新规则，再按指定文件 / 范围输出定位清晰的 findings。
+外部来源与借鉴方式见 [References](../../docs/references.md)，运行当前阶段无需加载来源历史。
 
 ## 6. 外部生命周期边界
 
-这些 Skill 不做以下事情：
-
-- 不创建外部变更目录。
-- 不修改 `.state.yaml`。
-- 不设置外部 artifact 状态。
-- 不改变外部 change 生命周期状态。
-- 不要求外部方案、任务拆分或实现流程作为前置或后置。
-- 不把交付产物同步到 Apifox / Lark，除非用户单独明确要求。
+默认不创建或流转外部 change / artifact 状态，不修改 `.state.yaml`，不要求外部研发流程作前后置。同步到 Apifox / Lark 等外部系统须有单独明确授权。
 
 ## 7. 设计与工程 Gate
 
-- 技术设计的关键链路依据、需求到改动的必要性及未决项交接，统一见 [技术设计依据与范围规则](technical-design-rules.md)。只读影响核查不代表授权扩大本期改动；设计是否明确与真实依赖是否 ready 分开判断。
-- `$pd-plan` 完成前，不允许进入 `$pd-fe` 或 `$pd-be`；完成与复核、分期范围及旧结论失效统一按 [共享交接规则](technical-design-rules.md#3-交付应足以让实现者执行) 判断，不以文件齐全或任务状态替代。只要求检查设计时，不转入开发。
-- `$pd-fe` 和 `$pd-be` 必须基于同一份 `tech/task-slices.md`、`tech/api-contract.md` 和 `tech/integration-map.md`。
-- `$pd-fe` 必须基于同一份 `ui/ui-design-system.md`、`ui/figma-handoff.md` 和 `tech/frontend/frontend-design.md`；设计系统缺失、冲突或未转成前端约束时，先回到 `$pd-figma` 或 `$pd-plan`。
-- `$pd-plan` 前建议先执行 `$pd-ui-review`；如果尚未执行，`$pd-plan` 必须把 Figma 截图 QA 和 UI Review 缺失记为设计证据缺口，不得假装视觉质量已验收。
-- 如果存在 `ui/ui-review-report.md` 且包含未解决 P0/P1，后续 `$pd-plan`、`$pd-fe`、`$pd-review` 必须阻断受影响范围的交付；P2/P3 必须作为残余风险读取。用户已授权的修复按 [UI finding 修复交接](ui-review-rules.md#6-ui-finding-修复交接) 执行，视觉问题不能靠代码提交流程绕过。
-- `$pd-plan` 必须产出 `tech/backend/sql-execution-plan.md`：涉及 DDL、DML、数据修复、初始化数据、权限 / 配置数据、索引、迁移或回填时逐条列出；不涉及时也必须明确写“无 SQL 执行项 / 不涉及”。
-- `$pd-plan` 必须产出 `tech/dependency-readiness.md`：JDK、Node、包管理器、数据库、缓存 / 队列、下游 HTTP 服务、SDK / 开源框架、环境变量 / 凭证、SQL / migration 等开发必需依赖都必须标明状态。
-- 真实依赖 Gate：按目标 slice 实际必需的依赖判断，只有 `ready` / `not-required` 允许其进入 `$pd-fe` / `$pd-be`；必需依赖为 `unknown` / `blocked` / `mock-only` 时阻断该 slice 及受影响的验证，不将其他消费者或后续阶段的依赖状态扩为全局开发阻断。
-- 本地真实服务、官方本地容器或测试环境真实服务可算 `ready`；mock server、stub client、fake adapter、contract simulator 必须标为 `mock-only` 并阻断，不算 `ready`。
-- 技术实现禁止使用任何 mock：不得规划、实现、提交或验收 mock client、mock server、stub adapter、fake repository、fake downstream、fixture-only 数据流或 contract simulator；发现只能使用 mock 时，必须记录为阻断或实现缺陷，不得继续交付。
-- `$pd-fe` 和 `$pd-be` 每个实现迭代只处理一个 task slice；未授权连续执行时默认完成一个 slice，已授权连续执行时按下述业务推进规则逐片验证和记录，不重复询问已明确的下一项。单个明确实现缺陷仍按对应实现 skill 的修复模式处理；独立 UI finding 交给 `$pd-fe` 时统一遵循 [UI finding 修复交接](ui-review-rules.md#6-ui-finding-修复交接)。
-- 并行执行时，`$pd-fe` 和 `$pd-be` 只能更新自己负责的 slice 状态。
-- `contract` 类型任务只能由 `$pd-plan` 处理，不能由 `$pd-fe` 或 `$pd-be` 单方面修改。
-- `$pd-plan` 交付给 `$pd-fe` / `$pd-be` 前，必须把本轮交接范围内的 `contract` slice 处理到 `done`，或停止交付并说明缺少的产品 / 设计 / 契约输入；不得把 `pending` / `blocked` 的 `contract` slice 作为实现阶段前置条件交给 `$pd-fe` / `$pd-be`。交接范围遵循共享交接规则，不自行缩小。
-- 所有本次相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 完成前，不进入 `$pd-sync` 之后的阶段；缺失实现只允许回到 `$pd-fe` / `$pd-be`。
-- `$pd-fe` / `$pd-be` 完成后，下一步只能是继续实现剩余 slice，或在前后端相关 slice 都完成后进入 `$pd-sync`；不得建议直接 `$pd-git`、提交或 PR。
-- 开发进度不得依赖联调任务：任何 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 都不得 `blocked-by SYNC-*`；`SYNC-*` 也不得 `blocks` 任何开发任务。联调后发现的问题只能通过 `$pd-sync` 的 `implementation-defect` / `slice-missing` 路由回实现或计划阶段。
-- `$pd-fe` / `$pd-be` 开始任何 slice 前必须检查 `tech/dependency-readiness.md` 中适用该 slice 的依赖；任一必需依赖不是 `ready` / `not-required` 时，必须停止、记录阻断原因，不得把 slice 标为 `done`。
-- 前后端编码的独立性、共享工程产物准备及跨端真实验收的阶段归属，统一按 [Frontend / Backend 并行开发规则](#frontend--backend-并行开发规则) 判断；不将对端实现未完成误记为本端依赖未 ready。
-- `$pd-fe` / `$pd-be` 不得把任何技术实现路径做成 mock client、stub adapter、fake repository、fake downstream、fixture-only 数据流、demo 数据路径或 contract simulator；需要模拟时只能作为阻断原因记录，不能落到代码或验证证据。
-- `$pd-sync` 必须对每个阻断问题输出修复路由：`contract-mismatch` 回 `$pd-plan`，`implementation-defect` 回 `$pd-fe` / `$pd-be` 的缺陷修复模式，`slice-missing` 回 `$pd-plan` 补齐或修正 task slice，`environment-blocked` 留在 `$pd-sync` / 环境准备。
-- `$pd-sync` 必须读取 `tech/dependency-readiness.md` 并执行 Mock 禁用检查；发现 `mock-only`、mock/stub/fake/fixture/simulator 或真实依赖未接入时，不得写“联调通过”，不得建议进入 `$pd-test`。
-- `$pd-sync` 发现契约不一致时，不得直接修代码，必须生成 `sync/api-mismatch.md` 和 `sync/plan-revision.md` 并回到 `$pd-plan`。
-- `$pd-sync` 发现契约正确但实现缺失或运行结果错误时，不得生成方案修订来掩盖实现缺陷；必须在 `sync/integration-report.md` 写明契约证据、实现证据、归属 slice 和下一步 `$pd-fe` / `$pd-be`。
-- `$pd-sync` 发现契约正确但 `tech/task-slices.md` 没有任何前端 / 后端 slice 覆盖该实现时，视为 `slice-missing`，必须回 `$pd-plan` 修正切片；不得直接要求 `$pd-fe` / `$pd-be` 新造未计划任务。
-- `$pd-sync` 没有明确通过，或未明确标记“不适用并说明原因”时，不进入 `$pd-test` 之后的阶段。
-- `$pd-test` 必须读取 `$pd-sync` 的 `sync/integration-report.md`；联调未通过或缺失时，不得把测试结论写成“通过”，不得进入 `$pd-review` 或 `$pd-git`。
-- `$pd-test` 必须读取 `tech/dependency-readiness.md` 和 `sync/integration-report.md` 的真实依赖验证；发现 `mock-only`、真实依赖未 ready 或 Mock 禁用检查未通过时，不得把测试结论写成通过。
-- `$pd-test` 必须读取 `tech/backend/sql-execution-plan.md`；存在 SQL 执行项时，必须在 `test/test-report.md` 记录测试环境执行状态、验证证据和未执行风险。
-- `$pd-test` 未执行验证、验证失败或存在未解释高风险缺口时，不得进入 `$pd-review` 或 `$pd-git`；只能写“未执行 / 失败 / 需人工验证 / 有残余风险”并回到对应修复阶段。
-- `$pd-review` 必须在 `$pd-sync` 和 `$pd-test` 之后执行；发现 P0/P1、联调未通过、测试未通过或证据缺失时，不进入 `$pd-git`，先回到对应实现、联调、测试或方案 skill。
-- `$pd-git` 只能在 commit readiness gate 全部通过后准备提交：相关实现 slice 已完成、`sync/integration-report.md` 明确通过或明确不适用、`test/test-report.md` 明确通过、`test/code-review.md` 无 P0/P1、提交范围检查无未解决漏提 / 多提风险。
-- `$pd-release` 必须读取 `sync/integration-report.md`、`test/test-report.md`、`test/code-review.md` 和 `tech/backend/sql-execution-plan.md`；SQL 执行项未验证、执行顺序不清或回滚方案缺失时不得声称可以上线。
+### 适用范围与产物
+
+- 先根据本轮确认范围判断 UI、前端、后端、跨端联调及 SQL 是否适用，在 `tech/tech-plan.md` 记录依据。阶段产物表是适用时的目录，不是每次全量生成清单；不涉及的端或 UI 不要求补造设计系统、Figma 或空任务。不得以“不适用”掩盖实际受影响的页面、调用、数据变更或必要验证。
+- `tech/dependency-readiness.md` 记录实际使用的工具链、外部依赖及编码 / 验证用途；不要求无关的 JDK、Node、数据库或 HTTP 服务。SQL / migration 涉及时维护 `tech/backend/sql-execution-plan.md` 的文件、顺序、环境、验证、回滚与风险；不涉及时在技术方案说明依据，已有执行计划须同步为“不涉及”，不为无 SQL 的范围新建空清单。
+- 涉及 UI 时沿用 UI 设计系统与质量 Gate、必要 handoff 及独立 UI finding；UI Review 未执行或截图缺失须记证据缺口，不假称验收。无 UI 的范围不因缺 Figma 而阻断。真实接入允许项目已有相对路径 / 同源路由，不强加绝对 base URL。
+
+### 开发交接与依赖
+
+- 技术依据、范围分类和交接完成统一按 [技术设计规则](technical-design-rules.md) 判断。`$pd-plan` 未达到本轮交接条件不进入开发；只要求检查时不启动实现。文件齐全或任务标 done 不替代契约可落地依据。
+- 设计前确认修改仓库、开发分支及修改二方包的开发版本；前后端实施均核对同一份记录，执行 [仓库、分支与二方包版本规则](technical-design-rules.md#仓库分支与二方包版本)，不在各端另定口径。
+- 前后端使用同一份已确认契约与 integration-map；任务来源、状态与各端顺序按下方任务清单规则读取。契约可落地且本轮设计交接结论成立才进入实现；不以独立契约任务的状态替代交接核查，实现者不单方面修改共享契约。
+- 真实依赖 Gate 按当前动作判断：编码必需输入只有 `ready` / `not-required` 可执行，`unknown` / `blocked` / `mock-only` 停止受影响动作。只影响验证的限制按业务推进规则记录，不扩为全局停工，也不降低原完成标准。
+- 本地真实服务、官方本地容器或测试环境真实服务可提供 ready 证据。技术实现与测试通过证据禁止 mock client / server、stub adapter、fake repository / downstream、fixture-only 数据流、测试替身或 contract simulator；不能接入真实必需依赖时记录具体阻断，不用替身冒充。
+- 任务一次迭代处理一片，连续授权时逐片循环；仅更新自己负责的权威条目。前后端并行、共享产物准备、blocked 恢复及停止条件按下方相应规则执行，不因对端未完成而等待，不绕过真正的输入缺口。
+- 合法实现缺陷可按下方联调与验收交接规则重开已有 slice；UI finding 沿用 [修复交接](ui-review-rules.md#6-ui-finding-修复交接)。范围或契约改变回 `$pd-plan`，不扩成未授权改造。
+
+### 验证与审查
+
+- 允许在开发期间执行输入齐备且获准的测试及只读 Code Review，不要求等待全部联调完成；缺少上游报告或环境只限制依赖它的验证和总体通过结论。单项通过、静态检查通过或“未发现问题”不等于联调 / 整体测试通过或可提交。
+- `$pd-sync` 正式联调遵循下方联调与验收交接规则：相关实现完成、实际必需依赖就绪、生产路径无模拟替代。报告须记录真实依赖验证、Mock 禁用检查、范围和证据；无跨端交互的静态内容可注明联调不适用及依据，不能把应动态获取的数据写死后称为静态页。
+- 联调修复路由：契约不清 / 冲突为 `contract-mismatch` 回 `$pd-plan`；契约明确但实现不符为 `implementation-defect` 回归属端；确认的权威任务源无覆盖为 `slice-missing` 回 `$pd-plan`（先排除视图滞后）；任务归属 / 顺序不可执行为 `slice-model-invalid` 回 `$pd-plan`；环境问题为 `environment-blocked`。联调只记录不改代码；只在契约 / 任务需修订时更新差异和修订文档。
+- `$pd-test` 按用例实际依赖执行可运行测试；报告分别列单项结果、未执行项和整体结论。适用联调未通过 / 未确认不适用、真实依赖未验证或必要 SQL 未执行时，不能报告整体通过。无外部依赖的代码可执行真实单元测试，不要求引入数据库或远程服务。
+- `$pd-review` 可提前输出带证据的 findings，缺少联调 / 测试证据不阻止继续读代码；仍须记录未覆盖范围，不能输出“可提交”。P0/P1、失败测试、契约差异及必要证据缺口分别回相应修复阶段。
+
+### 正式提交与上线
+
+- Commit readiness gate 是正式提交的共同条件：相关实现完成；`sync/integration-report.md` 明确通过或有依据的不适用；`test/test-report.md` 明确通过且无未解释高风险缺口；`test/code-review.md` 无未解决 P0/P1 并覆盖当前改动；提交范围无未解决漏提 / 多提风险。不得以提前测试 / 审查或任务 done 代替这些条件。
+- `$pd-git` 可先整理文案及缺口，未满足共同条件不得执行提交。实际 add / commit / push 权限及文件范围按 Git 与发布边界执行，不因门禁通过自动获权。
+- `$pd-release` 可编制草案；正式上线结论须核对联调、测试、审查和适用 SQL 证据。SQL 未验证、生产顺序 / 必需备份 / 回滚不明确时不得称可上线；生成命令不代表执行授权。
 
 ## 8. Task Slice 规则
 
-`tech/task-slices.md` 的任务优先级：
+任务按前端、后端分别列出顺序，状态使用 `pending`、`in_progress`、`done`、`blocked`。必要工程准备排入实际负责端的清单；契约完成在技术设计交接中确认，联调 / 测试按验收范围衔接。不另设任务类型枚举、并行标记或双向依赖列。
 
-```text
-P0: 阻断主流程，必须先做
-P1: 核心功能，必须做
-P2: 增强或补充，可后做
-```
+### 任务清单与开发顺序
 
-任务类型：
-
-```text
-frontend
-backend
-contract
-shared-frontend
-shared-backend
-sync
-test
-```
-
-任务状态：
-
-```text
-pending
-in_progress
-done
-blocked
-```
-
-并行标记只表达任务调度属性，不表达任务依赖：
-
-```text
-parallel-safe
-serial
-stage-gate
-```
-
-- `parallel-safe`：可与没有直接依赖关系的同阶段任务并行。
-- `serial`：必须按 `blocked-by` / `blocks` 依赖顺序串行推进。
-- `stage-gate`：阶段门或验收门，通常用于 `sync` / `test` / `review` 等门禁任务。
-- “并行标记”列禁止出现任务 ID，禁止写入 `blocked-by XXX`、`blocks XXX`、`blocked-by SYNC-001` 等依赖内容。
-
-依赖列是独立列，不属于并行标记：
-
-```text
-blocked-by
-blocks
-```
-
-- 所有任务 ID 依赖只能写入 `blocked-by` 或 `blocks` 列。
-- `-` 表示无依赖，不得和任务 ID 混用。
-- 如果 `A.blocked-by` 包含 `B`，则 `B.blocks` 必须包含 `A`。
-- 如果 `B.blocks` 包含 `A`，则 `A.blocked-by` 必须包含 `B`。
-- 不允许只在 `blocks` 单边声明、但对方 `blocked-by` 缺失；也不允许只在 `blocked-by` 单边声明、但对方 `blocks` 缺失。
-- 生成 `tech/task-slices.md` 后必须做依赖闭环自检，先修正单边依赖和错误列内容，再输出最终结果。
-
-`contract` 表示同时影响前后端的契约类任务，例如 API 字段、错误码、权限、状态枚举、数据模型、分页结构和真实依赖边界；不得把 mock 数据结构作为契约交付。
+- `$pd-plan` 必须实际交付 `tech/task-slices.md`，不能只在聊天里列步骤。每个项目只确定一份任务权威源：没有机器消费需求时默认 Markdown，不强制新增 JSON；已有工具依赖 JSON 时先核对实际读写方和原约定，可保留 JSON 为权威源，并在 Markdown 开头注明来源、派生方式及用途。两种格式共存时，所有阶段从同一权威源读取任务 ID、归属、顺序、状态、完成标准与证据，另一份只作为派生视图，不各自修改；不强制迁移既有 JSON schema 或更换工具。
+- 更新任务前重读权威源，仅修改自己负责的条目，保留其他执行者的更新和已有证据，再从该源刷新派生视图。若两份现存记录冲突，先核对来源约定、实际消费者、实现与验证记录；不能按修改时间、较乐观状态或文件格式猜谁正确。来源明确而视图滞后时只刷新视图；来源或目标任务状态确实无法确认时暂停受影响调度 / 完成判断，按原任务归属校正，不整表重置或机械覆盖。权威源已写入但视图刷新失败时保留成功更新、注明视图滞后，不回滚成旧状态或用旧视图汇报；真正依赖该视图的消费须先修复或明确改读已确认的权威源，其他独立工作不全局停工。
+- 任务清单覆盖本轮确认的前端、后端、必要准备与联调 / 测试。实现 slice 围绕一个可独立核验的业务动作或能力增量：写清输入 / 契约引用、实现归属、可观察结果、必要异常 / 安全边界及验证证据，可引用技术设计而不重复全文。不要将多个独立业务结果合成长期无法验收的大项，也不按每个类 / helper 机械拆碎；必要工程准备可以单独成项，但要说明真实产物、消费者及完成信号。不用固定工时、文件数或任务数量限制粒度。某端不涉及写明依据，不补造空任务；任务无覆盖的确认需求属于漏项。
+- 前后端各自按业务实施顺序列任务，顺序与状态都来自同一权威源；JSON 权威源沿用其已约定的数组顺序或排序字段，Markdown 只展示，不另编一套顺序。先安排必要准备与当前可验收的业务结果，不以全部最高优先级代替顺序。每端从首个未完成项核查并推进；遇到真实局部阻断，记录原因后可转向后续输入齐备的独立任务，不使用缺失的前序产物。代码交付与后续环境验证必要时可明确分开，原验收仍保留，不能靠拆任务掩盖未验证。
+- 新产物不生成旧依赖列或并行标记。已有 JSON / 工具仍消费旧字段时，不擅自删字段或迁移文件；核对实际消费者，只在已授权范围内调整。旧字段不能代替当前设计与实际输入检查，也不能单凭对端任务未完成阻断本端开发。旧记录与当前交接相冲突时，按原修订权限校正受影响条目；只读检查只指出冲突。
+- 每项完成标准同时包含交付内容、本端必要接线、适用异常 / 权限 / 一致性要求和原定最小验证。`done` 须有相应证据；代码已完成但原验证受限时明确注明，状态按业务推进规则保留，不伪装成未写代码或已验收。既有任务拆分 / 合并时先核对代码与历史证据，保留稳定 ID 或替代映射和原完成要求，只调整受影响范围；不自动重写已有实现，也不将旧大项未完成部分标为 done。
+- `$pd-fe` / `$pd-be` 开工读取权威任务及本端顺序，缺失 / 漏项 / 顺序矛盾按原 `$pd-plan` 路由校正。每片有结果后更新权威条目、刷新视图并引用实现 / 验证记录，再选下一项；汇总直接从权威源按端列已完成与剩余 ID，日志仅保留证据 / 历史记录，不在独立顺序说明或日志中维护第二套当前状态。进度与汇报不要求反复全量重读无变化的长记录；定向读取当前任务、相关变更及阻断依据，既有完成结论受新证据影响时再复核。
 
 ### Frontend / Backend 并行开发规则
 
-- 本轮技术设计可交接后，前端和后端基于同一份 `tech/api-contract.md`、`tech/integration-map.md` 与各自设计并行实现；任务调度不因一端未完成而串行。`FE-* blocked-by BE-*` 和 `BE-* blocked-by FE-*` 均不用于两端业务实现之间的依赖；按任务实际类型和内容判断，不只看编号。
-- 动作码、请求 / 返回字段、权限、状态、错误及分页等本期必要契约由 `$pd-plan` 定义并核对一致；缺失或冲突是设计交接问题，不是“等另一端写完就有了”。可定向读取既有可信契约 / 源码核实，不能用另一端尚未完成的实现推测应有契约；需修订时回 `$pd-plan`，遵循既有交接范围规则。
-- generated client、SDK、共享 schema / type 等确为编码前置时，先判断能否从已确认契约独立生成 / 复用；确需准备工作则单列最小工程准备 slice，按实际归属使用既有 `shared-frontend` / `shared-backend` 类型，写明产物、消费者、负责方和验证方式，只阻塞真正消费该产物的任务。不能将整块前端 / 后端业务实现改名为 shared 来保留相互等待，也不为普通手写 client 强加代码生成或共享包。
-- 依赖就绪按拟执行 slice 的实际输入判断：消费者因产物未生成而 blocked，不阻断输入与工具链已 ready 的生成任务，也不阻断其他独立任务；不能把待生成产物同时列为生成任务自身的必需输入。若准备任务还间接依赖对端业务实现或形成循环等待，须回 `$pd-plan` 纠正，不能靠 shared 名称放行。设计契约是否可交接仍按共享交接规则判断，不将准备任务可执行扩大成设计缺口可豁免。
-- “后端真实 API 可用性”和“前端真实页面可用性”属于相应 `SYNC-*` / `test` 的前置；把跨端真实验收拆到这些阶段，不借开发 slice 的验收名称将其变成对端编码前置。生产地址等仅用于后续联调的配置待填不自动阻塞本地编码；编译或最小验证真正必需的工具链、外部 SDK、数据库、真实下游等仍按适用 slice 的依赖 gate 处理，不能统统标为 not-required。
-- 部署地址等配置仅在后续阶段消费时，真实 client 的生产调用路径和必要配置 / 失败处理已实现、本端约定的最小验证通过，可将该 slice 标为 done，并记录对应联调 / 部署配置待补；不伪报真实链路通过。若该值实际是当前构建或最小验证的必要输入，仍阻断当前 slice，不用虚构地址或模拟成功返回绕过。相对路径 / 同源路由等已有接入方式无需强加另一个绝对 base URL。
-- 每端保留本端任务的真实先后关系及必要工程准备依赖；并行不等于所有任务无依赖。前端可验证真实 client、适用的失败 / 空态和本地 UI / 构建；后端可验证 service / repository、权限、数据库和真实下游等本端行为。两端相关实现完成后才进入 `$pd-sync` 验证完整真实链路，不用 mock / fake / fixture-only 成功结果冒充通过。
-- 若现有切片让一端业务实现等待另一端，记录 `over-constrained-slice` 并回 `$pd-plan` 修正依赖；同时检查 `blocked-by` / `blocks`、依赖准备清单及验证要求，不能只删除任务边而保留同一错误阻塞。只读检查不直接改任务；获准修订后再同步产物。并行许可不代表可以跳过未完成的设计或擅自扩范围。
+- 技术设计达到本轮交接条件后，前后端基于同一份已确认 `tech/api-contract.md`、`tech/integration-map.md` 和各自设计，按各自清单顺序并行开发。不等待对端业务代码完成或先通过联调；并行不要求两端始终有人同时执行，也不授权修改对端代码或任务状态。
+- 动作码、请求 / 返回字段、权限、状态、错误及分页等必要契约在 `$pd-plan` 交接时确定，不再拆成等待开发确认的契约任务。缺失 / 冲突是设计交接问题：定向核查可信契约 / 源码并回 `$pd-plan` 补证，不从另一端未完成的代码猜契约。
+- generated client、SDK、共享 schema / type 等确为当前编码输入时，先判断能否按已确认契约独立生成 / 复用。必要准备排在实际负责端的顺序中，说明产物、真正消费者及验证方式；就绪证据沿用 `tech/dependency-readiness.md`，不另维护任务关系图。产物未生成只影响真正消费者，不阻断输入与工具链已齐备的准备任务；待产出的文件不能又作为其自身必需输入。不强加代码生成或共享包，不把对端整块业务实现包装成“准备工作”。
+- 对端真实服务 / 页面可用性通常属于联调或相应验收条件，不自动阻塞基于契约的本端编码。生产地址等仅后续使用的配置待填时，可完成真实调用路径、配置及失败处理，并在本端原定最小验证通过后标 done，保留待联调项；实际构建 / 当前最小验证必需的输入缺失时仍不可标 done。沿用已有相对路径 / 同源路由，不强加绝对 base URL；不虚构地址、类型或成功结果绕过限制。
+- 本端原定最小验证仍须执行，不能将必要权限、幂等、事务、资金安全或数据一致性推迟到“等对端”。相关实现完成后按下方联调与验收规则验证真实链路；本端完成不等于完整链路通过。
+- 现有顺序若要求等待对端业务进度、先联调再编码，或准备任务自身缺乏可执行顺序，回 `$pd-plan` 校正受影响的清单、设计或输入说明，不能只改任务状态。其他输入齐备且已授权的独立任务继续；不绕过真正契约缺口，也不擅自扩大范围。
 
 ### 业务推进、阻断恢复与进度汇报
 
+- 先确定当前授权范围和停止条件。“全部开发完成”“继续完成剩余后端 / 前端”或已明确的连续实现要求，表示在该范围内逐片循环，不是只做一个 slice；后续进度询问不取消原实现授权，简短答复后继续。用户限定单项、只检查、要求暂停或缩小范围时遵从新要求；未有批量授权时不扩成整项目开发。连续授权不包含未获准的提交、推送、发布协议包、SQL 或真实账号 / 订单 / 资金操作。
 - `$pd-plan` 按本期确认需求与验收，在 `tech/tech-plan.md` 的实施顺序中组织可验收的业务里程碑：说明入口、关键状态变化、预期业务结果、必要契约 / 依赖及验证信号。沿用已有名称或段落引用，不强加新编号、额外状态文件或固定里程碑数量；局部修复只关联原验收，无需重做全项目规划。金额口径、实际费用来源等决定可行性 / 验收的未知项在设计交接前解决，未解决仍按共享交接规则阻断，不靠先写大量代码掩盖。
-- 每个里程碑可拆成多个小的前端、后端及必要准备 slice，任务说明引用同一里程碑 / 验收。前后端基于已确认契约并行实现，各自保留必要前置；不把整条大链路合成一个巨型任务，也不将某个里程碑自行解释为获准局部交接未完成的 plan。
-- 在已有授权、任务优先级和依赖 gate 内，优先完成当前里程碑仍缺的真实调用接线、状态衔接和持久化，或解除它们所需的工程准备；必要的权限、幂等、事务、资金安全与高风险缺陷随相关链路处理，不能为先跑成功路径而跳过。已有本轮未完成的 slice 先核实能否继续，不反复新开同优先级的零散组件 / 加固任务。已约定并行的独立工作可继续，不因当前里程碑暂受阻而全局停工；无法判定下一项才询问，不机械要求用户在已有明确顺序中重选。
-- 未实现 / 未接线如实列为剩余实现；已定义字段的实现漏项、契约本身缺失与需用户决定的业务取舍，按 [共享分类规则](technical-design-rules.md#工程漏项与业务决策分类) 补查和分流，不把内部契约修订自动转成用户审批。环境 / 凭证 / 协议产物不可用写出依赖 ID、受影响 slice 或验证、证据及解除动作。SQL 未执行、协议未发布只阻断真正依赖它的工作；当前实现或最小验证确需该资源时仍停止该 slice，不以“推进主链路”为由绕过。验证未执行不等于代码未写，也不能将本端测试数量当作真实业务闭环证据。
-- 恢复自己负责的 `blocked` slice 前，读取原阻断记录和当前产物，核实所有原阻断均已解除：必要依赖 / 工程产物有真实 ready 证据、`blocked-by` 已满足，当前设计与契约仍可交接，且无新增范围或未解决问题。依赖恢复无需重做 plan：回填本 slice 的依赖证据、保留原阻断历史及解除依据，再将其恢复为 `pending` 按正常流程进入 `in_progress`，不能直接标 done。契约 / 范围 / 依赖建模问题须先有相应上游修订及重新交接的依据，不能仅因某个依赖 ready 就自行解除；原因不明或仍有一项未解除则继续 blocked。不修改对端状态，不接管其他执行者的在途任务。
-- 每个迭代结束回填对应实现记录，并按 [共享业务进度摘要](engineering-contracts.md#业务进度摘要) 汇报：本轮目标与实际推进、已实现及调用接线、已验证 / 未验证、剩余实现 / 缺口 / 阻断及下一步。`done` 仍依据原 slice 最小验证，不能直接推导里程碑真实闭环、联调通过或可上线；完整真实链路按既有 `$pd-sync` / `$pd-test` gate 验证。
-- 不默认报告整体完成百分比，也不凭文件数、代码行或测试数估算。用户明确要求数字时，只报告有依据的统计并写明范围、分子 / 分母、计算口径和未覆盖部分；`1 / 29 个 slice done` 仅是切片验收计数，不是代码完成度或整体进度，大小不等的切片不直接折算业务完成百分比。没有可靠依据时明确无法估算，同时给出上述业务进度摘要。
+- 每个里程碑可拆成多个小的前端、后端及必要准备 slice，任务说明引用同一里程碑 / 验收。前后端基于已确认契约并行实现，各自按本端顺序准备实际必需输入；不把整条大链路合成一个巨型任务，也不将某个里程碑自行解释为获准局部交接未完成的 plan。
+- 在已有授权、本端顺序和实际输入 gate 内，优先完成当前里程碑仍缺的真实调用接线、状态衔接和持久化，或解除它们所需的工程准备；必要的权限、幂等、事务、资金安全与高风险缺陷随相关链路处理，不能为先跑成功路径而跳过。已有本轮未完成的 slice 先核实能否继续，不反复新开同优先级的零散组件 / 加固任务。已约定并行的独立工作可继续，不因当前里程碑暂受阻而全局停工；无法判定下一项才询问，不机械要求用户在已有明确顺序中重选。
+- 未实现 / 未接线如实列为剩余实现；已定义字段的实现漏项、契约本身缺失与需用户决定的业务取舍，按 [共享分类规则](technical-design-rules.md#工程漏项与业务决策分类) 补查和分流，不把内部契约修订自动转成用户审批。环境 / 凭证 / 协议产物不可用写出依赖 ID、受影响动作与证据：先区分编码缺输入、只影响验证、外部操作未获准，不把未写代码称为外部受阻。
+- 仅因 SQL 禁止执行、协议包禁止发布或真实环境不可操作而验证受限，但当前设计可交接、编码必需的契约 / 类型 / 工具链等输入齐备时，可继续本 slice 已授权的真实实现和允许的本地检查，不执行被限制的动作。验证依赖仍保留 blocked / unknown 等真实状态，不改成 not-required；原最小验证未通过的 slice 不标 done，也不把未完成的实际产物当作后续输入；后续任务是否可执行按其真实输入与原验证要求判断，不机械等待前项状态。已有 slice 仅因验证受限而 blocked 时，核实上述条件后可补其尚未完成的独立编码，保留 blocked 与原验证缺口；这不等于解除阻断。若原阻断还包含编码输入缺失、决定性契约 / 安全缺口或实际必需产物未就绪，不能借此继续受影响编码。实际编译必需的协议产物缺失也不能用本地替身、虚构类或隔离构建的成功冒充当前目标构建通过。
+- 正式解除自己负责的 `blocked` 状态前，读取原阻断记录和当前产物，核实所有原阻断均已解除：实际必需输入 / 工程产物有真实 ready 证据，当前设计与契约仍可交接，且无新增范围或未解决问题。依赖恢复无需重做 plan：回填本 slice 的依赖证据、保留原阻断历史及解除依据，再将其恢复为 `pending` 按正常流程进入 `in_progress`，不能直接标 done。契约 / 范围 / 顺序问题须先有相应上游修订及重新交接的依据，不能仅因某个依赖 ready 就自行解除；原因不明或仍有一项未解除则继续 blocked。上方仅验证受限时的续作始终保留 blocked，不属于解除状态；不修改对端状态，不接管其他执行者的在途任务。
+- 每个迭代结束按上方任务清单规则更新自己负责的权威任务条目及 Markdown 视图，回填实现记录中的变更、检查结果与阻断依据；按 [共享业务进度摘要](engineering-contracts.md#业务进度摘要) 汇报实际推进。`done` 不直接推导里程碑真实闭环、联调通过或可上线；验证受限的代码进展如实注明。计数与 ID 从权威源按端读取，不把另一端完成情况混入本端计数。
+- 连续执行时，单片完成、遇到局部阻断或写完进度摘要后，都重新扫描授权范围的任务表，继续下一项具备条件的编码或允许的验证；摘要作为过程中更新，不以“下一步可以继续”替代执行。仅验证受限且已无剩余可写代码 / 可做检查的 slice 不重复选取；记录后转其他独立任务，不忙等同一环境，也不接管他人任务。任务缺失、范围覆盖不全或顺序不可执行先按原 `$pd-plan` 路由处理，不能把空列表当成全部完成。
+- 结束前核对原授权范围：仅在范围已完成、用户要求停止 / 达到其限定范围，或逐项核对剩余任务后确实没有获准可执行动作时结束。最后一种情况须列剩余任务 ID、已完成代码与未写部分、阻止下一步的具体依据、需要谁做什么及恢复入口；只阻断相关任务，不以笼统“受阻”结束仍有可写代码的整轮工作。若执行被中断而未完成，保存当前任务和下一项据实交接，不把中断写成完成或环境阻断。
+- 不默认报告整体完成百分比，也不凭文件数、代码行或测试数估算。用户明确要求数字时，只报告有依据的统计并写明范围、分子 / 分母、计算口径和未覆盖部分；已验收任务数占比仅是任务验收计数，大小不等的切片不直接折算业务完成百分比。没有可靠依据时明确无法估算，同时给出上述业务进度摘要。
 
-### SYNC Slice 建模规则
+### 联调与验收交接
 
-- `SYNC-*` 只能表示前后端真实联调阶段门，必须等待相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 全部 `done` 后执行。
-- 开发任务不得依赖 SYNC-*：`frontend` / `backend` / `shared-*` slice 的 `blocked-by` 禁止包含 `SYNC-*`。
-- `SYNC-*` 不得阻塞开发任务；`SYNC-*` 的 `blocks` 禁止包含 `FE-*`、`BE-*` 或 `shared-*`，只允许指向 `test` 或后续非开发门禁任务，或写 `-`。
-- 联调发现的实现问题不预建为 `blocked-by SYNC-*` 的开发任务；由 `$pd-sync` 写成 `implementation-defect`，回 `$pd-fe` / `$pd-be` 缺陷修复模式。若没有已有实现 slice 覆盖，则写成 `slice-missing` 回 `$pd-plan`。
-- `SYNC-*` 的 `blocked-by` 应包含它要联调的所有前后端实现任务。
-- `SYNC-*` 不应替代具体技术依赖；本端前置任务或工程准备产物按 [并行开发规则](#frontend--backend-并行开发规则) 建模，不借联调或对端整块业务实现充当前置。
-- `SYNC-*` 的验证列必须说明联调范围和通过条件。
-
-### Contract Slice 交付规则
-
-- `contract` slice 是 `$pd-plan` 的设计 / 契约确认项，不是代码实现项。它的验证证据应指向 `tech/api-contract.md`、`tech/backend/data-model.md`、`tech/integration-map.md`、`tech/frontend/frontend-state-api.md`、`tech/tech-plan.md` 等技术设计产物。
-- `$pd-plan` 输出本轮范围完成时，该交接范围内不得存在 `pending`、`in_progress` 或 `blocked` 状态的 `contract` slice。若契约无法完成，必须保留待补结论、停止该范围交接并说明补证方式。仅已约定分期的独立范围可按共享交接规则交付，不能据此声称全方案完成。
-- 不要把工程初始化、目录创建、依赖安装、Spring Boot / Vite 脚手架、`.env.example`、数据库迁移文件、真实 API client 等需要改代码或文件的实现动作写成 `contract` slice。按实际归属拆成 `frontend`、`backend`、`shared-frontend` 或 `shared-backend`；mock server / mock client / stub / fake / simulator 只能作为阻断原因记录，不得成为实现动作。
-- 如果某个实现动作依赖共享契约，使用“两段式”切片：一个 `contract` slice 标记为 `done` 以确认契约，一个或多个实现 slice 保持 `pending` 由 `$pd-fe` / `$pd-be` 执行。
-- `$pd-fe` / `$pd-be` 选择 slice 时，只能执行自身类型且所有 `blocked-by` 已为 `done` 的 slice；若发现唯一阻塞是未完成 `contract` slice，应报告 `$pd-plan` handoff 问题，而不是自行修改契约。
-- 缺陷修复例外：按对应实现 skill 核对原 finding 的 `implementation-defect` 分类、契约 / UI 设计证据、实现证据及已有实现 slice 后，可临时重开该 slice 或记录同 slice 修复，不需要先回 `$pd-plan` 新增 pending slice。独立 UI finding 到 `$pd-fe` 的交接沿用 [共享规则](ui-review-rules.md#6-ui-finding-修复交接)，不另枚举报告来源。
-- 如果 finding 没有归属 slice、归属为 `slice-missing`，或需要新增 / 修改 API 契约、数据模型、状态枚举、权限规则、页面路由或任务范围，必须回 `$pd-plan`；实现 skill 不得自行扩展范围。
+- 在任务清单中明确联调 / 测试要验证的业务结果、关联实现 ID、真实输入与通过条件，引用原验收，不复制一套开发状态。正式联调前从权威源核对范围内相关前后端实现及必要准备均已完成，并核实实际输入就绪；不等待无关任务，不靠遗漏相关实现或临时缩小范围绕过验收。完整交付仍保留所有原验收与必要安全 / 资金验证。
+- 联调 / 测试是相关实现完成后的验收衔接，不是开发的前置任务。开发期间输入齐备的测试和只读检查仍可先执行，其结果不替代正式联调或总体通过结论。
+- 契约完成依据在 `tech/tech-plan.md` 的交接结论及关联设计维护，不强制创建独立契约任务或“契约确认 + 实现”两段任务。工程初始化、依赖准备、迁移文件及真实 client 等实现动作归实际负责端；不能用契约确认记录替代实现与验证。
+- 联调 / 测试或 UI 审查发现契约明确的实现偏差时，核对 `implementation-defect` 分类、原契约 / 设计、实现证据及已有本端任务，可重开该任务并保留历史，不先造新的待办或等整轮联调通过再修。UI finding 按 [修复交接](ui-review-rules.md#6-ui-finding-修复交接) 处理。
+- 确认权威任务源无覆盖、需改共享契约 / 数据模型 / 权限 / 页面路由或范围时回 `$pd-plan`；先排除派生视图滞后，不单方面扩任务。原定验证失败或真实输入缺失仍记录具体缺口，不能靠删除依赖列放行。
 
 ## 9. Review 严重级别
 

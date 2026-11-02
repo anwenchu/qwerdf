@@ -19,6 +19,7 @@ def module(name, path):
     return result
 
 
+module("benchmark_contracts", ROOT / "scripts/benchmark_contracts.py")
 checker = module("ui_review_benchmark", ROOT / "evals/checks/ui_review.py")
 runner = module("skill_benchmark_runner", ROOT / "scripts/run_skill_benchmark.py")
 

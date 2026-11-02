@@ -1,14 +1,16 @@
 ---
 name: pd-vet
 description: >-
-  产品想法验证工作流，把一句话 idea、竞品 URL、截图、市场观察或粗略产品想法拆成用户问题、竞品参考、MVP 假设和验证问题，并给出进入 PRD、继续调研或暂停建议；不接入外部变更生命周期。Use when the user mentions $pd-vet、pd-vet、想法验证、idea验证、产品想法验证、创业想法验证、从想法开始、验证产品机会。
+  产品想法验证工作流，把一句话 idea、竞品 URL、截图、市场观察或粗略产品想法拆成用户问题、竞品参考、MVP 假设和验证问题，并给出进入 PRD、继续调研或暂停建议。Use when the user mentions $pd-vet、pd-vet、想法验证、idea验证、产品想法验证、创业想法验证、从想法开始、验证产品机会。
 ---
 
 # $pd-vet — 想法验证
 
-Codex Product Delivery Skill：把早期 idea 转成可判断是否值得写 PRD 的产品机会判断。
+把早期 idea 转成可判断是否值得写 PRD 的产品机会判断。
 
 ## 读取
+
+通用产物维护与恢复按 [生命周期规则](../qwerdf-common/artifact-lifecycle.md) 执行；下列上下文工具已提取其工作规则，手动回退时也须读取该部分。
 
 1. 先定位当前 `SKILL.md` 的目录作为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage vet`。仅加载 [共享规则](../qwerdf-common/product-delivery-flow.md) 的产品相关章节及 [产物模板](../qwerdf-common/artifact-contracts.md) 的本阶段片段；不通读工程、测试、SQL 和发布内容。
 2. 读取 [产品机会判断](references/opportunity-review.md)。工具需要 Python 3.10+ 且无第三方依赖；不可运行时手动读取共享规则的默认工作目录、执行规范正文、产品事实 Gate、安全与意外最小化、外部生命周期边界及五个本阶段模板，做等价人工核对并记录未执行机械检查。

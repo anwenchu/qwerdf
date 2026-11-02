@@ -6,67 +6,34 @@ description: >-
 
 # $pd-sync — 前后端联调
 
-Codex Product Delivery Skill：验证前后端实现是否符合统一契约。
+验证前后端实现是否符合统一契约。
 
 ## 读取
 
-1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
-2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `sync/integration-plan.md`、`sync/integration-report.md`、`sync/api-mismatch.md`、`sync/plan-revision.md` 的模板。
+下列项目材料只读取本轮适用的当前段落；缺少实际必需输入保留缺口，无关端、UI 或 SQL 不要求补造文件。
+
+1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage sync`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
+2. 上述输出已包含 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `sync/integration-plan.md`、`sync/integration-report.md`、`sync/api-mismatch.md`、`sync/plan-revision.md` 的模板；只采用本轮适用项。
 3. 读取 `tech/task-slices.md`、`tech/api-contract.md`、`tech/dependency-readiness.md`、`tech/integration-map.md`、`tech/frontend/frontend-state-api.md`、`tech/frontend/frontend-implementation-log.md`、`tech/backend/backend-implementation-log.md`。
+   任务覆盖、归属、顺序及状态从 [共享规则](../qwerdf-common/product-delivery-flow.md#任务清单与开发顺序) 确认的权威源读取；先处理来源冲突或滞后视图，不能仅因 Markdown 缺行就判 `slice-missing`。
 4. 识别本地前端、后端启动方式和环境配置。
 5. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
 
 ## 边界
 
-- 不直接修前端代码。
-- 不直接修后端代码。
-- 不修改 API 契约或数据模型。
-- 发现契约不一致时，必须生成 `sync/plan-revision.md` 并回到 `$pd-plan`。
-- 发现契约正确但实现缺失、路径未注册、字段错误、错误码错误或运行结果不符合契约时，归类为 `implementation-defect`，在 `sync/integration-report.md` 写明契约证据、实现证据、归属 slice 和下一步 `$pd-fe` / `$pd-be`；不要生成 `sync/plan-revision.md` 来掩盖实现缺陷。
-- 发现契约正确但 `tech/task-slices.md` 没有任何前端 / 后端实现 slice 覆盖该契约时，归类为 `slice-missing`，写入 `sync/plan-revision.md` 并回到 `$pd-plan` 补齐切片；不得直接要求 `$pd-fe` / `$pd-be` 新造未计划任务。
-- 只有当问题能映射到已有 `frontend`、`backend`、`shared-frontend` 或 `shared-backend` slice 时，才把下一步指向 `$pd-fe` / `$pd-be` 的缺陷修复模式。
-- 必须检查 `tech/dependency-readiness.md` 和 Mock 禁用；存在 `unknown` / `blocked` / `mock-only` 必需依赖、mock client、mock server、stub adapter、fake repository、fake downstream、fixture-only 数据流或 simulator 时，不得写“联调通过”，不得建议进入 `$pd-test`。
-- `sync/integration-report.md` 必须记录“真实依赖验证”和“Mock 禁用检查”；没有真实 HTTP client、真实 DB、真实下游调用或真实 API base URL 证据时，联调结论只能是阻断或有残余风险。
-- 无法启动或连接环境时，仍需写入 `sync/integration-report.md`，说明未执行项、原因和后续验证方式。
-- 未明确通过联调时，不得建议进入 `$pd-test`、`$pd-review`、`$pd-git` 或提交 / PR。
-- 相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 未全部为 `done` 时，不得执行联调；必须在 `sync/integration-report.md` 记录缺失实现并提示回到 `$pd-fe` / `$pd-be`。
-- 开发任务不得依赖联调任务。若发现任何 `frontend` / `backend` / `shared-*` slice 的 `blocked-by` 包含 `SYNC-*`，或任何 `SYNC-*` 的 `blocks` 包含 `FE-*`、`BE-*`、`shared-*` 开发任务，必须归类为 `slice-model-invalid`，写入 `sync/plan-revision.md` 并回 `$pd-plan` 修正；不得执行联调。
-- `SYNC-*` 自身必须 `blocked-by` 它要联调的所有前后端实现 slice；缺失时视为 `slice-model-invalid`，先回 `$pd-plan` 修正任务切片。
-
-## 联调决策树
-
-```text
-目标页面 / API
-├─ 发现静态页面、纯前端 mock 或 fixture-only 数据流？
-│  ├─ 是：记录为 Mock 禁用阻断，不得写真实联调通过
-│  └─ 否：进入动态应用验证
-└─ 动态应用验证
-   ├─ 前后端服务已运行？
-   │  ├─ 否：按项目脚本启动或记录无法启动原因
-   │  └─ 是：打开页面，等待应用稳定，再检查 DOM、网络、日志和截图
-   └─ 先侦察后操作：确认 selector / API / 状态，再执行交互断言
-```
+- 本阶段不改代码、契约或数据模型；执行条件、真实依赖要求、修复分类与回退统一按 [共享验证规则](../qwerdf-common/product-delivery-flow.md#验证与审查) 和 [联调与验收交接规则](../qwerdf-common/product-delivery-flow.md#联调与验收交接)。
+- 真实证据按当前场景实际依赖核对：需要数据库 / 下游时不可缺少真实调用，项目无此依赖不强加；相对路径 / 同源路由须有真实请求目标与运行证据，不要求额外绝对 base URL。
+- 静态公开内容且无跨端交互可说明联调不适用及依据；应动态查询却写死的数据、mock client / server、stub、fake、fixture-only 或 simulator 仍阻断真实联调通过。
+- 只启动或连接本次获准环境，账号 / 订单 / 资金 / SQL 操作不因联调自动获权。不能执行时记录具体影响，允许后续独立测试或只读审查，不宣称完整联调通过或可提交。
 
 ## 流程
 
-1. 先检查 `tech/task-slices.md` 的联调依赖模型：开发任务不得 `blocked-by SYNC-*`，`SYNC-*` 不得 `blocks` 开发任务，目标 `SYNC-*` 必须 `blocked-by` 它要联调的所有前后端实现 slice。
-2. 如果发现依赖模型错误，写入 `sync/integration-report.md` 的实现前置状态和“修复路由”，分类为 `slice-model-invalid`；必要时写入 `sync/plan-revision.md`，停止联调，不启动环境，不进入 `$pd-test`。
-3. 再检查本次相关 `frontend`、`backend`、`shared-frontend`、`shared-backend` slice 必须全部为 `done`，并且前端 / 后端实现记录必须存在。
-4. 如果存在未完成实现 slice，写入 `sync/integration-report.md` 的实现前置状态，列出缺失 slice、当前状态和应回到的 `$pd-fe` / `$pd-be`；停止联调，不启动环境，不进入 `$pd-test`。
-5. 检查 `tech/dependency-readiness.md`：本次联调涉及的依赖必须为 `ready` / `not-required`；`unknown` / `blocked` / `mock-only` 写入“真实依赖验证”并阻断联调通过。
-6. 生成 `sync/integration-plan.md`，列出联调场景、前端入口、API、数据准备、真实依赖和预期。
-7. 启动或连接可用的前后端环境。
-8. 检查 path、method、request、response、状态码、错误结构、权限、分页、状态页和真实接口接入。
-9. 执行 Mock 禁用检查：检查前端 API client、后端 client/repository、配置开关、日志、请求目标和运行证据是否仍指向 mock/stub/fake/fixture/simulator；发现即归类为 `implementation-defect` 或依赖阻断。
-10. 对每个场景记录证据：命令输出、请求 / 响应摘要、真实资源 / 地址、截图、日志位置或未执行原因。
-11. 写入 `sync/integration-report.md`，必须包含“真实依赖验证”和“Mock 禁用检查”。
-12. 对每个阻断问题做修复路由分类，并写入 `sync/integration-report.md` 的“修复路由”表：
-   - `contract-mismatch`: `tech/api-contract.md`、`tech/integration-map.md`、数据模型、权限或状态枚举本身缺失 / 冲突 / 模糊；写入 `sync/api-mismatch.md` 和 `sync/plan-revision.md`，下一步 `$pd-plan`。
-   - `implementation-defect`: 契约存在且清楚，已有实现 slice 覆盖该契约，但真实代码 / 运行结果不符合契约；下一步 `$pd-fe` 或 `$pd-be` 缺陷修复模式，并写明归属 slice。
-   - `slice-missing`: 契约存在且清楚，但 `tech/task-slices.md` 没有任何实现 slice 覆盖该契约；写入 `sync/plan-revision.md`，下一步 `$pd-plan` 补齐切片。
-   - `slice-model-invalid`: `tech/task-slices.md` 把开发任务建模为依赖 `SYNC-*`，或让 `SYNC-*` 反向阻塞开发任务，或目标 `SYNC-*` 没有等待所有相关实现 slice；写入 `sync/plan-revision.md`，下一步 `$pd-plan` 修正依赖。
-   - `environment-blocked`: 环境、数据、账号、依赖服务或配置导致无法判断；下一步继续 `$pd-sync` 环境准备或补充数据。
-13. 若同一个问题无法确定是 `implementation-defect` 还是 `slice-missing`，默认先回 `$pd-plan` 修正任务归属；不得让 `$pd-fe` / `$pd-be` 在无归属 slice 的情况下扩展范围。
+1. 从已确认的权威任务源及联调 / 测试范围核对业务结果、相关实现与必要准备；视图缺行先核对来源。任务归属 / 顺序不可执行记 slice-model-invalid 回 `$pd-plan`；相关实现未完成则记录 ID 与归属，停止该正式联调场景，不扩大为无关任务等待，也不因没有独立 SYNC 任务或依赖列而拒绝联调。
+2. 按场景核对 `tech/dependency-readiness.md`：实际必需输入须 ready / not-required 且有依据，unknown / blocked / mock-only 不可放行；无跨端交互的范围记录不适用，不启动无用环境。
+3. 维护 `sync/integration-plan.md` 的场景、入口、API、真实资源、数据准备及预期；连接可用环境，先侦察渲染态 / API 再执行交互断言。
+4. 检查 path、method、request / response、状态码、错误结构、权限、分页、状态页与真实调用。核查 client、repository、配置、日志及请求目标，确认生产路径无模拟替代；名称只作线索，不能因普通静态内容就判 mock。
+5. 在 `sync/integration-report.md` 记录实现前置、真实依赖验证、Mock 禁用检查、单场景结果、未执行范围与证据。实现 done 不等于真实链路通过，连接成功也不等于接口验收。
+6. 按共享分类给每个阻断写修复路由、证据和归属：contract-mismatch / slice-missing / slice-model-invalid 回 `$pd-plan` 并按需维护差异和修订；implementation-defect 回已有端 slice；environment-blocked 记录具体恢复入口。契约正确的实现错误不靠改方案掩盖；归属不明先核实，不让开发凭空造任务。
 
 ## 输出摘要
 
@@ -78,6 +45,6 @@ Codex Product Delivery Skill：验证前后端实现是否符合统一契约。
   - sync/integration-report.md
   - sync/api-mismatch.md
   - sync/plan-revision.md
-结论: <通过 / implementation-defect / contract-mismatch / slice-missing / slice-model-invalid / environment-blocked>
+结论: <通过 / 不适用及依据 / implementation-defect / contract-mismatch / slice-missing / slice-model-invalid / environment-blocked>
 下一步: <通过则用 $pd-test；实现缺陷回 $pd-fe / $pd-be 并注明归属 slice；契约或切片问题回 $pd-plan；环境问题继续 $pd-sync>
 ```

@@ -1,4 +1,4 @@
 interface:
   display_name: "pd-be"
   short_description: "按任务切片实现后端"
-  default_prompt: "用 $pd-be 基于技术设计实现一个后端任务切片并验证。"
+  default_prompt: "用 $pd-be 按当前已授权范围和权威源中的本端顺序推进后端实现，逐片验证并回填状态。"

@@ -22,20 +22,43 @@ ARTIFACTS = {
                   "ui/ui-pages.md", "ui/ui-screens.md", "ui/ui-components.md"),
     "ui-review": ("ui/ui-review-report.md",),
 }
+# Context stages are distinct from product-artifact validation stages.
+CONTEXT_ARTIFACTS = {
+    **ARTIFACTS,
+    "figma": ("ui/ui-design-system.md", "ui/ui-directions.md", "ui/figma-handoff.md"),
+    "plan": ("tech/tech-plan.md", "tech/dependency-readiness.md",
+             "tech/frontend/frontend-design.md", "tech/frontend/frontend-component-map.md",
+             "tech/frontend/frontend-route-map.md", "tech/frontend/frontend-state-api.md",
+             "tech/backend/backend-design.md", "tech/api-contract.md", "tech/backend/data-model.md",
+             "tech/backend/sql-execution-plan.md", "tech/integration-map.md", "tech/task-slices.md", "tech/risk-plan.md"),
+    "fe": ("tech/frontend/frontend-implementation-log.md", "tech/frontend/frontend-changed-files.md",
+           "tech/frontend/frontend-dev-notes.md", "tech/frontend/frontend-acceptance.md"),
+    "be": ("tech/backend/backend-implementation-log.md", "tech/backend/backend-changed-files.md",
+           "tech/backend/backend-dev-notes.md"),
+    "sync": ("sync/integration-plan.md", "sync/integration-report.md", "sync/api-mismatch.md", "sync/plan-revision.md"),
+    "test": ("test/test-plan.md", "test/test-cases.md", "test/test-report.md", "test/regression-notes.md"),
+    "review": ("test/code-review.md",),
+    "git": ("release/commit-summary.md", "release/pr-description.md"),
+    "release": ("release/release-plan.md", "release/release-checklist.md", "release/rollback-plan.md", "release/release-notes.md"),
+}
+
 LIMITATION = "仅检查材料完整性与引用一致性；来源真实性、需求合理性和业务语义仍需审阅。"
 
 
-def visible_lines(text: str) -> list[tuple[int, str]]:
-    """Ignore fenced examples and HTML comments; retain original line numbers."""
+def visible_lines(text: str, *, include_code: bool = False) -> list[tuple[int, str]]:
+    """Ignore comments and, by default, code examples; retain line numbers."""
     lines = []
     fence = None
     comment = False
     for number, raw in enumerate(text.splitlines(), 1):
         line = raw
-        marker = re.match(r"^\s{0,3}(`{3,}|~{3,})", line)
+        marker = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
         if fence is not None:
-            if marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence):
+            if (marker and marker[1][0] == fence[0] and len(marker[1]) >= len(fence)
+                    and not marker[2].strip(" \t")):
                 fence = None
+            elif include_code:
+                lines.append((number, raw))
             continue
         if comment:
             if "-->" not in line:
@@ -48,47 +71,98 @@ def visible_lines(text: str) -> list[tuple[int, str]]:
                 line, comment = before, True
                 break
             line = before + after.split("-->", 1)[1]
-        match = re.match(r"^\s{0,3}(`{3,}|~{3,})", line)
-        if match:
+        match = re.match(r"^ {0,3}(`{3,}|~{3,})(.*)$", line)
+        if match and (match[1][0] == "~" or "`" not in match[2]):
             fence = match[1]
             continue
-        if not line.startswith(("    ", "\t")):
+        if include_code or not line.startswith(("    ", "\t")):
             lines.append((number, line))
     return lines
 
 
-def section(text: str, title: str, *, children: bool = True) -> str:
-    """Select a real Markdown section, never a heading inside a fenced example."""
-    level = len(title) - len(title.lstrip("#"))
-    start = None
-    end = len(text.splitlines())
+def section_spans(text: str, *, children: bool = True) -> list[tuple[str, int, int]]:
+    """Return each heading's own [start, end) lines, preserving duplicates."""
+    headings = []
     for number, line in visible_lines(text):
-        if start is None:
-            if line.strip() == title:
-                start = number - 1
-        elif re.match(r"^#{1,6} ", line):
-            next_level = len(line) - len(line.lstrip("#"))
+        match = re.match(r"^ {0,3}(#{1,6})(?:[ \t]+.*)?$", line)
+        if match:
+            headings.append((number - 1, len(match[1]), line.strip()))
+    spans = []
+    for index, (start, level, title) in enumerate(headings):
+        end = len(text.splitlines())
+        for next_start, next_level, _ in headings[index + 1:]:
             if not children or next_level <= level:
-                end = number - 1
+                end = next_start
                 break
-    if start is None:
-        raise ValueError(f"缺少章节 {title}")
-    return "\n".join(text.splitlines()[start:end]).strip()
+        spans.append((title, start, end))
+    return spans
 
 
-def stage_context(stage: str) -> str:
+def section(text: str, title: str, *, children: bool = True) -> str:
+    """Select the first matching section using the shared heading boundaries."""
+    for heading, start, end in section_spans(text, children=children):
+        if heading == title.strip():
+            return "\n".join(text.splitlines()[start:end]).strip()
+    raise ValueError(f"缺少章节 {title}")
+
+
+def stage_context(stage: str, *, area: str = "all") -> str:
+    if stage not in CONTEXT_ARTIFACTS:
+        raise ValueError(f"未知阶段 {stage}")
+    if area not in {"all", "frontend", "backend"} or (stage != "plan" and area != "all"):
+        raise ValueError("--area frontend/backend 只适用于 plan 上下文")
     flow = (COMMON / "product-delivery-flow.md").read_text(encoding="utf-8")
-    templates = (COMMON / "artifact-contracts.md").read_text(encoding="utf-8")
+    lifecycle = (COMMON / "artifact-lifecycle.md").read_text(encoding="utf-8")
+    rule_sources = "product-delivery-flow.md、artifact-lifecycle.md"
+    template_source = "artifact-contracts.md" if stage in {*ARTIFACTS, "figma"} else "engineering-contracts.md"
+    templates = (COMMON / template_source).read_text(encoding="utf-8")
     selected = [section(flow, "## 2. 默认工作目录", children=False),
                 section(flow, "## 3. Skill 执行规范", children=False),
-                section(flow, "### 产品事实与参考使用 Gate"),
+                section(lifecycle, "## 工作规则"),
                 section(flow, "## 4. 安全与意外最小化"),
                 section(flow, "## 6. 外部生命周期边界")]
-    if stage == "blueprint":
-        selected.append(section(flow, "### UI 设计系统与质量 Gate"))
-        selected.append(section(flow, "### UI 职责边界"))
-    selected.extend(section(templates, f"## `{path}`") for path in ARTIFACTS[stage])
-    return "\n\n".join([f"# {stage} 阶段上下文\n\n规则源：product-delivery-flow.md；模板源：artifact-contracts.md。",
+    if stage in {*ARTIFACTS, "figma", "plan", "review"}:
+        selected.append(section(flow, "### 产品事实与参考使用 Gate"))
+    if stage in {"blueprint", "figma", "fe"} or (stage == "plan" and area != "backend"):
+        selected.extend([section(flow, "### UI 设计系统与质量 Gate"), section(flow, "### UI 职责边界")])
+    if stage == "figma":
+        selected.append(section(flow, "### Figma 连接与会话复用"))
+    if stage in {"plan", "fe", "be", "sync", "test", "review", "git", "release"}:
+        selected.append(section(flow, "### 适用范围与产物"))
+        if stage in {"plan", "fe", "be"}:
+            selected.append(section(flow, "### 开发交接与依赖"))
+            technical = (COMMON / "technical-design-rules.md").read_text(encoding="utf-8")
+            selected.append(section(technical, "### 仓库、分支与二方包版本"))
+            rule_sources += "、technical-design-rules.md"
+        if stage in {"sync", "test", "review"}:
+            selected.append(section(flow, "### 验证与审查"))
+        if stage in {"test", "review", "git", "release"}:
+            selected.append(section(flow, "### 正式提交与上线"))
+        if stage in {"git", "release"}:
+            selected.append(section(flow, "## 10. Git 与发布边界"))
+    if stage in {"plan", "fe", "be"}:
+        selected.append(section(flow, "## 8. Task Slice 规则"))
+    elif stage in {"sync", "test", "review", "git"}:
+        selected.append(section(flow, "### 任务清单与开发顺序"))
+        if stage == "sync":
+            selected.append(section(flow, "### 联调与验收交接"))
+    if stage == "review":
+        selected.append(section(flow, "## 9. Review 严重级别"))
+    if stage in {"fe", "be"}:
+        selected.append(section(templates, "## 业务进度摘要"))
+    # Check actual rule bodies, including nested gates inside selected sections.
+    # Templates are intentionally excluded: empty fields are valid scaffolding.
+    for rule in selected:
+        lines = rule.splitlines()
+        for title, start, end in section_spans(rule):
+            if not has_content("\n".join(lines[start + 1:end]), include_code=True):
+                raise ValueError(f"规则章节正文为空：{title}（片段第 {start + 1} 行）")
+    paths = CONTEXT_ARTIFACTS[stage]
+    if stage == "plan" and area != "all":
+        excluded = "tech/frontend/" if area == "backend" else "tech/backend/"
+        paths = tuple(path for path in paths if not path.startswith(excluded))
+    selected.extend(section(templates, f"## `{path}`") for path in paths)
+    return "\n\n".join([f"# {stage} 阶段上下文\n\n规则源：{rule_sources}；模板源：{template_source}。只使用本次适用模板；专项规则沿入口链接按需读取。",
                            *selected]) + "\n"
 
 
@@ -114,8 +188,14 @@ def has_table_data(text: str) -> bool:
     return False
 
 
-def has_content(text: str) -> bool:
-    prose = [line for _, line in visible_lines(text)
+def has_content(text: str, *, include_code: bool = False) -> bool:
+    lines = visible_lines(text)
+    if include_code:
+        normal_lines = {number for number, _ in lines}
+        if any(line.strip() for number, line in visible_lines(text, include_code=True)
+               if number not in normal_lines):
+            return True
+    prose = [line for _, line in lines
              if line.strip() and not re.match(r"^\s*(#|\|)", line)]
     return has_table_data(text) or any(
         substantive(line) and not re.fullmatch(r"[-* ]*[^:：]+[:：]\s*", line)
@@ -395,7 +475,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, epilog="退出码：0 无已识别阻断（须同时查看 PASS/REVIEW）；1 明确冲突或业务阻断；2 参数或读取失败。")
     commands = parser.add_subparsers(dest="command", required=True)
     context = commands.add_parser("context", help="只输出本阶段规则和模板，不加载脚本源码。")
-    context.add_argument("--stage", choices=ARTIFACTS, required=True)
+    context.add_argument("--stage", choices=CONTEXT_ARTIFACTS, required=True)
+    context.add_argument("--area", choices=("all", "frontend", "backend"), default="all",
+                         help="plan 可仅加载本端模板与规则；默认含两端，适用性仍按本轮范围判断。")
     check = commands.add_parser("validate", help="只读检查想法/PRD 产物；不会改写文件。")
     check.add_argument("--stage", choices=("vet", "prd"), required=True)
     check.add_argument("--root", type=Path, required=True, help="产物根目录，例如 pd-work/ad-alert")
@@ -403,7 +485,7 @@ def main() -> int:
     args = parser.parse_args()
     try:
         if args.command == "context":
-            print(stage_context(args.stage), end="")
+            print(stage_context(args.stage, area=args.area), end="")
             return 0
         if not args.root.is_dir():
             parser.error(f"产物根目录不存在或不是目录：{args.root}")

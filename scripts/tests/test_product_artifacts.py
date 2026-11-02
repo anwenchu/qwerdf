@@ -231,6 +231,14 @@ class ProductArtifactTests(unittest.TestCase):
             self.assertNotIn("真实依赖 Gate", product.stage_context(stage))
             self.assertNotIn("Commit readiness", product.stage_context(stage))
 
+    def test_context_includes_shared_lifecycle_rules_without_full_reference(self):
+        lifecycle = (product.COMMON / "artifact-lifecycle.md").read_text()
+        rules = product.section(lifecycle, "## 工作规则")
+        for stage in product.ARTIFACTS:
+            context = product.stage_context(stage)
+            self.assertEqual(1, context.count(rules), stage)
+            self.assertNotIn("## 简短续作入口", context, stage)
+
     def test_missing_template_fails_instead_of_silently_omitting(self):
         with self.assertRaises(ValueError):
             product.section("# templates\n", "## `product/prd.md`")

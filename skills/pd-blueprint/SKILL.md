@@ -1,14 +1,16 @@
 ---
 name: pd-blueprint
 description: >-
-   PRD 到产品设计输入和 UI 页面蓝图工作流，把 PRD、竞品 URL、截图、产品想法或已有 spec 拆成 product-brief、UI 设计系统、用户流程、页面地图、页面规格和组件清单；不接入外部变更生命周期。Use when the user mentions $pd-blueprint、pd-blueprint、产品蓝图、产品设计输入、PRD转UI、页面蓝图、UI蓝图、UI设计系统、从 PRD 生成页面设计输入、从竞品参考整理页面结构。
+   PRD 到产品设计输入和 UI 页面蓝图工作流，把 PRD、竞品 URL、截图、产品想法或已有 spec 拆成 product-brief、UI 设计系统、用户流程、页面地图、页面规格和组件清单。Use when the user mentions $pd-blueprint、pd-blueprint、产品蓝图、产品设计输入、PRD转UI、页面蓝图、UI蓝图、UI设计系统、从 PRD 生成页面设计输入、从竞品参考整理页面结构。
 ---
 
 # $pd-blueprint — 产品设计输入与页面蓝图
 
-Codex Product Delivery Skill：把 PRD、竞品参考或产品想法转成可进入 UI 方向探索、Figma 设计和前端实现的设计输入。
+把 PRD、竞品参考或产品想法转成可进入 UI 方向探索、Figma 设计和前端实现的设计输入。
 
 ## 读取
+
+通用产物维护与恢复按 [生命周期规则](../qwerdf-common/artifact-lifecycle.md) 执行；下列上下文工具已提取其工作规则，手动回退时也须读取该部分。
 
 1. 定位当前 `SKILL.md` 的目录作为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage blueprint`，按需提取 [共享规则](../qwerdf-common/product-delivery-flow.md) 和 [产物模板](../qwerdf-common/artifact-contracts.md)，不通读工程、SQL 和提交规则。工具需要 Python 3.10+ 且无第三方依赖；不可运行时手动读取默认工作目录、执行规范正文、产品事实 Gate、安全与意外最小化、外部生命周期边界、UI gate / 职责边界及本阶段六个模板。
 2. 上游存在稳定需求 / 验收编号时沿用（包括 R1 等旧编号），在流程、页面和状态说明中保留关联。发现未解决阻断问题先回 `$pd-prd` 澄清受影响范围；旧版或自定义格式可按已有人工核对结论交接，不强制重编号、补表或依赖 Python，不替用户补出已确认规则，也不伪报机械通过。
@@ -19,9 +21,6 @@ Codex Product Delivery Skill：把 PRD、竞品参考或产品想法转成可进
 
 ## 边界
 
-- 不要求先执行外部探索或变更初始化流程。
-- 不创建外部变更目录。
-- 不修改 `.state.yaml`。
 - 不进 Figma。
 - 不写代码。
 - 不生成技术方案。

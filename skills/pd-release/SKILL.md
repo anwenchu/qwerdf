@@ -6,13 +6,15 @@ description: >-
 
 # $pd-release — 上线文档
 
-Codex Product Delivery Skill：生成上线前材料，不执行真实部署。
+生成上线前材料，不执行真实部署。
 
 ## 读取
 
-1. 读取 [Codex Product Delivery 规则](../qwerdf-common/product-delivery-flow.md)。
-2. 读取 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `release/release-plan.md`、`release/release-checklist.md`、`release/rollback-plan.md`、`release/release-notes.md` 的模板。
-3. 必须读取 `sync/integration-report.md`、`test/test-report.md`、`test/code-review.md` 和 `tech/backend/sql-execution-plan.md`。
+下列项目材料只读取本轮适用的当前段落；缺少实际必需输入保留缺口，无关端、UI 或 SQL 不要求补造文件。
+
+1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage release`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
+2. 上述输出已包含 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `release/release-plan.md`、`release/release-checklist.md`、`release/rollback-plan.md`、`release/release-notes.md` 的模板；只采用本轮适用项。
+3. 必须读取 `sync/integration-report.md`、`test/test-report.md`、`test/code-review.md` 及适用的 `tech/backend/sql-execution-plan.md`。
 4. 读取 PRD、技术方案、实现记录和提交说明。
 5. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
 
@@ -21,10 +23,10 @@ Codex Product Delivery Skill：生成上线前材料，不执行真实部署。
 - 不接 GitHub Release、GitLab、GitOps、Lark 或其他平台。
 - 不执行部署。
 - 不 push。
-- 缺少 `sync/integration-report.md`、`test/test-report.md`、`test/code-review.md` 或 `tech/backend/sql-execution-plan.md` 时，不得声称可以上线。
+- 缺少 `sync/integration-report.md`、`test/test-report.md`、`test/code-review.md` 或适用 SQL 的执行计划时，不得声称可以上线。
 - 存在 P0/P1、失败测试、未解释的契约差异或缺少回滚路径时，结论必须写成有阻断风险。
-- `tech/backend/sql-execution-plan.md` 存在 SQL 执行项但缺少测试环境执行证据、生产执行顺序、前置备份、执行后验证或回滚方案时，结论必须写成有阻断风险。
-- 不生成平台专属发布命令，除非用户另行要求设计新的部署 skill。
+- `tech/backend/sql-execution-plan.md` 存在 SQL 执行项但缺少测试环境执行证据、生产执行顺序、必要备份、执行后验证或回滚方案时，结论必须写成有阻断风险。
+- 用户要求时可依据项目实际配置编写平台命令草案，未知参数明确待补；本阶段不执行命令、不部署，不要求另建 skill。
 
 ## 发布状态采集
 
@@ -33,13 +35,13 @@ Codex Product Delivery Skill：生成上线前材料，不执行真实部署。
 1. 目标环境、发布范围和是否用户可见。
 2. 关联 commit / PR / MR 是否明确；如不明确，写成待确认。
 3. 测试报告、联调报告、Code Review 是否有阻断项。
-4. `tech/backend/sql-execution-plan.md` 是否明确无 SQL，或列出所有 SQL / migration 的执行顺序、环境、验证和回滚。
+4. 技术方案是否有可信的无 SQL 依据；涉及 SQL 时，执行计划是否列出全部 SQL / migration 的顺序、环境、验证和回滚。
 5. 回滚路径是否真实可执行，是否涉及数据迁移或不可逆操作。
 6. 监控、日志、告警、人工验收点和上线窗口是否明确。
 
 ## 流程
 
-1. 采集发布状态，检查测试报告、联调报告、Code Review 和 SQL 执行计划是否存在，确认无 P0/P1、失败测试、契约阻断和未关闭 SQL 风险。
+1. 采集发布状态，按共享正式上线规则检查测试、联调通过 / 有依据不适用、Code Review 和适用 SQL 执行计划，确认无 P0/P1、失败测试、契约阻断和未关闭 SQL 风险。
 2. 生成 `release/release-plan.md`，包含 SQL / 数据变更执行计划；无 SQL 时明确写“不涉及”。
 3. 生成 `release/release-checklist.md`，包含 SQL 执行计划确认、测试环境执行证据、生产执行顺序、备份、验证和回滚确认项。
 4. 生成 `release/rollback-plan.md`，包含 SQL / 数据回滚；不可回滚时必须标为高风险并写明人工处理方案。
