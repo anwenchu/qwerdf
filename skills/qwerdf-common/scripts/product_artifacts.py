@@ -24,22 +24,36 @@ ARTIFACTS = {
 }
 # Context stages are distinct from product-artifact validation stages.
 CONTEXT_ARTIFACTS = {
-    **ARTIFACTS,
-    "figma": ("ui/ui-design-system.md", "ui/ui-directions.md", "ui/figma-handoff.md"),
-    "plan": ("tech/tech-plan.md", "tech/dependency-readiness.md",
-             "tech/frontend/frontend-design.md", "tech/frontend/frontend-component-map.md",
-             "tech/frontend/frontend-route-map.md", "tech/frontend/frontend-state-api.md",
-             "tech/backend/backend-design.md", "tech/api-contract.md", "tech/backend/data-model.md",
-             "tech/backend/sql-execution-plan.md", "tech/integration-map.md", "tech/task-slices.md", "tech/risk-plan.md"),
-    "fe": ("tech/frontend/frontend-implementation-log.md", "tech/frontend/frontend-changed-files.md",
-           "tech/frontend/frontend-dev-notes.md", "tech/frontend/frontend-acceptance.md"),
-    "be": ("tech/backend/backend-implementation-log.md", "tech/backend/backend-changed-files.md",
-           "tech/backend/backend-dev-notes.md"),
-    "sync": ("sync/integration-plan.md", "sync/integration-report.md", "sync/api-mismatch.md", "sync/plan-revision.md"),
-    "test": ("test/test-plan.md", "test/test-cases.md", "test/test-report.md", "test/regression-notes.md"),
+    "vet": ("product/idea-brief.md",),
+    "prd": ("product/prd.md",),
+    "blueprint": ("ui/ui-design-system.md", "ui/ui-screens.md"),
+    "ui-review": ("ui/ui-review-report.md",),
+    "figma": ("ui/ui-design-system.md", "ui/figma-handoff.md"),
+    "plan": ("tech/tech-plan.md", "tech/task-slices.md"),
+    "fe": ("tech/task-slices.md",),
+    "be": ("tech/task-slices.md",),
+    "sync": ("sync/integration-report.md",),
+    "test": ("test/test-report.md",),
     "review": ("test/code-review.md",),
-    "git": ("release/commit-summary.md", "release/pr-description.md"),
-    "release": ("release/release-plan.md", "release/release-checklist.md", "release/rollback-plan.md", "release/release-notes.md"),
+    "git": (),  # Commit/PR text is returned in the reply unless a file was requested.
+    "release": ("release/release-notes.md",),
+}
+# Old split artifacts remain readable. New product documents keep these facts inline.
+INLINE_ARTIFACTS = {
+    "product/user-problem.md": ("product/idea-brief.md", None),
+    "product/competitor-notes.md": ("product/idea-brief.md", "## 竞品与参考边界"),
+    "product/mvp-hypothesis.md": ("product/idea-brief.md", "## MVP 假设"),
+    "product/validation-questions.md": ("product/idea-brief.md", "## 验证问题"),
+    "product/requirements.md": ("product/prd.md", None),
+    "product/user-stories.md": ("product/prd.md", None),
+    "product/acceptance-criteria.md": ("product/prd.md", None),
+    "product/open-questions.md": ("product/prd.md", "## 开放问题"),
+}
+INLINE_COLUMNS = {
+    "product/requirements.md": ("ID", "需求"),
+    "product/user-stories.md": ("用户角色", "我想要", "以便于"),
+    "product/acceptance-criteria.md": ("ID", "关联需求", "预期结果"),
+    "product/open-questions.md": ("问题", "是否阻断", "状态"),
 }
 
 LIMITATION = "仅检查材料完整性与引用一致性；来源真实性、需求合理性和业务语义仍需审阅。"
@@ -162,7 +176,7 @@ def stage_context(stage: str, *, area: str = "all") -> str:
         excluded = "tech/frontend/" if area == "backend" else "tech/backend/"
         paths = tuple(path for path in paths if not path.startswith(excluded))
     selected.extend(section(templates, f"## `{path}`") for path in paths)
-    return "\n\n".join([f"# {stage} 阶段上下文\n\n规则源：{rule_sources}；模板源：{template_source}。只使用本次适用模板；专项规则沿入口链接按需读取。",
+    return "\n\n".join([f"# {stage} 阶段上下文\n\n规则源：{rule_sources}；模板源：{template_source}。只使用本次适用模板；专项规则沿入口链接按需读取。以上只加载默认主文档模板；独立契约、UI、SQL 或既有分文件模板，确需独立消费时再从对应模板源定向读取。",
                            *selected]) + "\n"
 
 
@@ -240,29 +254,75 @@ def validate(root: Path, stage: str) -> dict:
     documents = {}
     paths = {}
     legacy = []
+    offsets = {}
 
     def issue(path: str, line: int, code: str, message: str) -> None:
-        issues.append({"file": str(paths.get(path, root / path)), "line": line,
+        issues.append({"file": str(paths.get(path, root / path)), "line": line + offsets.get(path, 0),
                        "code": code, "message": message})
 
     def warn(path: str, line: int, code: str, message: str, *, review: bool = True) -> None:
-        warnings.append({"file": str(paths.get(path, root / path)), "line": line,
+        warnings.append({"file": str(paths.get(path, root / path)), "line": line + offsets.get(path, 0),
                          "code": code, "message": message, "requires_review": review})
 
-    for relative in ARTIFACTS[stage]:
+    def existing_path(relative: str) -> Path:
         path = root / relative
-        if not path.exists() and (root / Path(relative).name).is_file():
-            path = root / Path(relative).name
-            legacy.append(str(path))
-        paths[relative] = path
+        flat = root / Path(relative).name
+        if not path.exists() and flat.is_file():
+            if str(flat) not in legacy:
+                legacy.append(str(flat))
+            return flat
+        return path
+
+    def inline_text(relative: str, *, report_ambiguity: bool):
+        binding = INLINE_ARTIFACTS.get(relative)
+        if binding is None:
+            return None
+        primary, title = binding
+        path = existing_path(primary)
         if not path.is_file():
-            warn(relative, 1, "missing-file", "未找到此产物；结合本次范围人工核对，不强制补齐无关历史材料。")
-            documents[relative] = ""
-            continue
+            return None
         text = path.read_text(encoding="utf-8")
+        if title is None:
+            return path, text, 0
+        matches = [(start, end) for heading, start, end in section_spans(text) if heading == title]
+        if len(matches) > 1:
+            if report_ambiguity:
+                warn(primary, matches[0][0] + 1, "ambiguous-inline-section",
+                     "主文档有多个同名章节；须人工核对当前来源，不自动选择第一处或最后一处。")
+            # Inspect all structured blockers rather than hiding later sections.
+            # Extra prose keeps the result in REVIEW until source ambiguity is resolved.
+            return path, text, 0
+        if matches:
+            start, end = matches[0]
+            return path, "\n".join(text.splitlines()[start:end]), start
+        return path, "", 0
+
+    for relative in ARTIFACTS[stage]:
+        path = existing_path(relative)
+        inline = inline_text(relative, report_ambiguity=not path.is_file())
+        if path.is_file():
+            text = path.read_text(encoding="utf-8")
+            # A legacy split source wins only with explicit ambiguity disclosed;
+            # never silently discard new facts from a consolidated document.
+            columns = INLINE_COLUMNS.get(relative)
+            if inline is not None and columns:
+                primary_rows = [row for _, row in rows(inline[1], columns)]
+                split_rows = [row for _, row in rows(text, columns)]
+                if primary_rows and primary_rows != split_rows:
+                    warn(relative, 1, "ambiguous-artifact-source",
+                         "主文档和既有分文件都有此类内容且不一致；须核对有效来源，不能择较乐观版本或重复维护。")
+        elif inline is not None:
+            path, text, offsets[relative] = inline
+        else:
+            text = ""
+            warn(relative, 1, "missing-file", "未找到主文档或既有事实源；结合本轮范围人工核对，不强制补建分文件。")
+        paths[relative] = path
         documents[relative] = text
         if not has_content(text):
-            warn(relative, 1, "empty-artifact", "未识别到正文，不能据此报告材料完整。")
+            # User stories need not be another table if the requirement already
+            # identifies its user, action and result. Other missing facts need review.
+            if relative != "product/user-stories.md" or existing_path(relative).is_file():
+                warn(relative, 1, "empty-artifact", "未识别到相关正文，不能据此报告材料完整。")
 
     if stage == "vet":
         idea = documents["product/idea-brief.md"]

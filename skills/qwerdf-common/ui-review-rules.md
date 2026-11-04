@@ -5,7 +5,7 @@
 ## 1. 审查范围与适用性
 
 - 先明确本轮页面 / frame / 组件、版本、视口、状态和目标。局部审查可给局部结论；不能推及未覆盖页面。用户要求全稿时逐页记录覆盖，未审查部分不得算通过。
-- 按对象读取已有产品事实、`ui/ui-design-system.md`、页面规格、组件清单及相关 handoff / frontend-acceptance。截图审查不强制补齐技术设计文件；缺失材料只限制依赖它的判断。
+- 按对象读取已有产品事实、`ui/ui-design-system.md`、页面规格、组件清单及相关 handoff / 任务中的 UI 验证记录（已有独立验收源则引用）。截图审查不强制补齐技术设计文件；缺失材料只限制依赖它的判断。
 - 产品能力、权限与业务规则来自 PRD / 用户确认；视觉目标来自 `MASTER` 和有理由的 `Page Overrides`。外部参考只贡献适用的设计模式，不能扩大产品范围。
 - 默认只审查。用户授权修复后由 `$pd-figma` / `$pd-fe` 处理，事实源问题回 `$pd-blueprint` / `$pd-plan`。本报告不授权提交或部署。
 
@@ -52,6 +52,6 @@
 ## 6. UI finding 修复交接
 
 - `ui/ui-review-report.md` 保留 finding、视觉证据与复查入口；不要求设计阶段的报告预填工程分类或 slice。用户授权实现修复后，`$pd-fe` 直接引用原报告与 finding ID / 区域，不另复制一份到联调或 Code Review 报告。
-- `$pd-fe` 核对现有 UI 设计事实源、当前实现 / 截图证据和 `tech/task-slices.md`：设计要求明确、实现确有偏差且已有前端清单任务覆盖时，记录为 `implementation-defect`，可按同 slice 修复模式重开 `done` slice。分类、映射与修复结果只在前端实现记录维护，原报告保留引用与复查结果。
+- `$pd-fe` 核对现有 UI 设计事实源、当前实现 / 截图证据和 `tech/task-slices.md`：设计要求明确、实现确有偏差且已有前端清单任务覆盖时，记录为 `implementation-defect`，可按同 slice 修复模式重开 `done` slice。分类、映射与修复结果写回本端任务；已有专用实现记录则引用其唯一来源，原报告保留引用与复查结果。
 - 无法映射已有 slice 时，记录 `slice-missing` 回 `$pd-plan`；需要改变页面范围、契约或 UI 设计事实源时，回 `$pd-plan` / `$pd-figma` / `$pd-blueprint`。证据不足或归属不明先补证或人工核对，不猜成实现缺陷，也不新造 slice。
 - P0/P1 阻断受影响范围的交付，不阻断用户已授权的该 finding 修复。修复仍检查真实依赖、保持单 slice 边界，按原 finding 路径验证并获取可比证据，再回本报告复查；未复查关闭前不声称该 finding 已解决。

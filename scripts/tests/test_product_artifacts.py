@@ -57,6 +57,25 @@ def valid_prd():
     }
 
 
+def consolidated_prd():
+    """Same source facts and acceptance as the legacy fixture, in one document."""
+    docs = valid_prd()
+    text = docs['product/prd.md']
+    for title, path in (('功能范围', 'product/requirements.md'),
+                        ('验收标准', 'product/acceptance-criteria.md'),
+                        ('开放问题', 'product/open-questions.md')):
+        body = '\n'.join(docs[path].splitlines()[1:])
+        body = '\n'.join('#' + line if line.startswith('## ') else line
+                         for line in body.splitlines())
+        lines = text.splitlines()
+        for heading, start, end in product.section_spans(text):
+            if heading == f'## {title}':
+                lines[start:end] = [heading, body, '']
+                text = '\n'.join(lines)
+                break
+    return {'product/prd.md': text}
+
+
 class ProductArtifactTests(unittest.TestCase):
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="qwerdf-product-test-")
@@ -87,9 +106,115 @@ class ProductArtifactTests(unittest.TestCase):
     def test_complete_traceable_prd_passes(self):
         self.assertTrue(self.check()["passed"])
 
+    def test_consolidated_prd_passes_without_creating_companion_files(self):
+        report = self.check(consolidated_prd())
+        self.assertEqual('PASS', report['status'], report)
+        self.assertEqual(['product/prd.md'],
+                         [str(path.relative_to(self.root)) for path in self.root.rglob('*.md')])
+
+    def test_consolidated_prd_preserves_blockers_and_actual_locations(self):
+        for code, old, new in (
+            ('unknown-reference', '| P0 | SRC-001 |', '| P0 | SRC-999 |'),
+            ('unconfirmed-source', '| 已确认 |', '| 待确认 |'),
+            ('duplicate-id', '| AC-002 |', '| AC-001 |'),
+        ):
+            with self.subTest(code=code):
+                docs = consolidated_prd()
+                docs['product/prd.md'] = docs['product/prd.md'].replace(old, new, 1)
+                report = self.check(docs)
+                self.assertEqual('BLOCKED', report['status'])
+                issue = next(item for item in report['issues'] if item['code'] == code)
+                self.assertEqual(str(self.root / 'product/prd.md'), issue['file'])
+                marker = 'REQ-001' if code == 'unconfirmed-source' else new.strip().strip('|').split('|')[0].strip()
+                self.assertIn(marker,
+                              docs['product/prd.md'].splitlines()[issue['line'] - 1])
+
+    def test_inline_open_blocker_points_to_its_actual_prd_line(self):
+        docs = consolidated_prd()
+        question = '| Q-001 | 权限归属待定 | 本期 | 是 | 未解决 | 用户 |'
+        docs['product/prd.md'] = docs['product/prd.md'].replace('## 开放问题\n\n无。',
+            '## 开放问题\n| ID | 问题 | 影响范围 | 是否阻断 | 状态 | 需要谁确认 |\n'
+            '| --- | --- | --- | --- | --- | --- |\n' + question)
+        report = self.check(docs)
+        issue = next(item for item in report['issues'] if item['code'] == 'open-blocker')
+        self.assertEqual('BLOCKED', report['status'])
+        self.assertEqual(str(self.root / 'product/prd.md'), issue['file'])
+        self.assertEqual(question, docs['product/prd.md'].splitlines()[issue['line'] - 1])
+
+    def test_consolidated_and_split_sources_cannot_silently_disagree(self):
+        docs = valid_prd()
+        docs['product/prd.md'] = consolidated_prd()['product/prd.md'].replace(
+            '| AC-001 | REQ-001 |', '| AC-001 | REQ-002 |', 1)
+        report = self.check(docs)
+        self.assertEqual('REVIEW', report['status'])
+        self.assertIn('ambiguous-artifact-source', {item['code'] for item in report['warnings']})
+
+    def test_duplicate_inline_questions_cannot_hide_a_later_blocker(self):
+        docs = consolidated_prd()
+        docs['product/prd.md'] += ('\n## 开放问题\n'
+            '| ID | 问题 | 影响范围 | 是否阻断 | 状态 | 需要谁确认 |\n'
+            '| --- | --- | --- | --- | --- | --- |\n'
+            '| Q-002 | 金额口径未定 | 本期 | 是 | 未解决 | 用户 |\n')
+        report = self.check(docs)
+        self.assertEqual('BLOCKED', report['status'])
+        self.assertIn('ambiguous-inline-section', {item['code'] for item in report['warnings']})
+        issue = next(item for item in report['issues'] if item['code'] == 'open-blocker')
+        self.assertIn('Q-002', docs['product/prd.md'].splitlines()[issue['line'] - 1])
+
+    def test_duplicate_inline_no_questions_declarations_need_review(self):
+        docs = consolidated_prd()
+        docs['product/prd.md'] += '\n## 开放问题\n无。\n'
+        report = self.check(docs)
+        self.assertEqual('REVIEW', report['status'])
+        self.assertIn('ambiguous-inline-section', {item['code'] for item in report['warnings']})
+
+    def test_existing_split_question_source_does_not_require_summary_rewrite(self):
+        docs = valid_prd()
+        docs['product/prd.md'] += '\n## 开放问题\n无。\n'
+        # The existing independent question file is still the source; repeated
+        # summaries without structured conflicting facts do not require migration.
+        report = self.check(docs)
+        self.assertEqual('PASS', report['status'], report)
+
+    def test_topic_details_keep_traceability_in_the_main_index(self):
+        docs = consolidated_prd()
+        docs['product/prd.md'] = docs['product/prd.md'].replace(
+            '保留待处理状态并提供重试操作', '保持待处理，可重试；[步骤详情](retry-details.md)')
+        docs['product/retry-details.md'] = '# 重试说明\n保持既有权限边界，失败不写入已处理状态。\n'
+        self.assertEqual('PASS', self.check(docs)['status'])
+        docs['product/prd.md'] = '\n'.join(line for line in docs['product/prd.md'].splitlines()
+                                         if not line.startswith('| AC-002 |'))
+        report = self.check(docs)
+        self.assertEqual('BLOCKED', report['status'])
+        self.assertIn('unknown-reference', {item['code'] for item in report['issues']})
+
+    def test_single_vet_brief_retains_context_and_decision_checks(self):
+        text = '''# 想法简报
+## 原始想法
+帮助运营减少遗漏。
+## 用户
+租户运营。
+## 问题
+异常需要逐条确认。
+## 初步价值
+减少手工遗漏，尚无访谈证据。
+## 判断
+建议：继续调研
+理由：需要验证实际处理频次。
+## 竞品与参考边界
+未提供竞品，不能据此增加功能。
+## MVP 假设
+仅处理本租户异常。
+## 验证问题
+确认处理频次和既有替代方案。
+'''
+        report = self.check({'product/idea-brief.md': text}, stage='vet')
+        self.assertEqual('PASS', report['status'], report)
+        self.assertEqual(1, len(list(self.root.rglob('*.md'))))
+
     def test_missing_artifact_needs_review_without_forcing_history_rewrite(self):
         del self.docs["product/requirements.md"]
-        self.assert_review("missing-file")
+        self.assert_review("missing-table")
 
     def test_header_only_story_does_not_count_as_content(self):
         self.docs["product/user-stories.md"] = "# 用户故事\n| 用户角色 | 我想要 |\n| --- | --- |\n"
@@ -224,7 +349,7 @@ class ProductArtifactTests(unittest.TestCase):
             self.assertLess(len(context), len(full))
             self.assertIn("## 4. 安全与意外最小化", context)
             self.assertIn("token、cookie、密钥", context)
-            for path in product.ARTIFACTS[stage]:
+            for path in product.CONTEXT_ARTIFACTS[stage]:
                 self.assertIn(f"## `{path}`", context)
         for stage in ("vet", "prd"):
             self.assertNotIn("## `ui/", product.stage_context(stage))

@@ -12,10 +12,10 @@ description: >-
 
 通用产物维护与恢复按 [生命周期规则](../qwerdf-common/artifact-lifecycle.md) 执行；下列上下文工具已提取其工作规则，手动回退时也须读取该部分。
 
-1. 定位当前 `SKILL.md` 的目录作为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage blueprint`，按需提取 [共享规则](../qwerdf-common/product-delivery-flow.md) 和 [产物模板](../qwerdf-common/artifact-contracts.md)，不通读工程、SQL 和提交规则。工具需要 Python 3.10+ 且无第三方依赖；不可运行时手动读取默认工作目录、执行规范正文、产品事实 Gate、安全与意外最小化、外部生命周期边界、UI gate / 职责边界及本阶段六个模板。
+1. 定位当前 `SKILL.md` 的目录作为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage blueprint`，按需提取 [共享规则](../qwerdf-common/product-delivery-flow.md) 和 [产物模板](../qwerdf-common/artifact-contracts.md)，不通读工程、SQL 和提交规则。工具需要 Python 3.10+ 且无第三方依赖；不可运行时手动读取默认工作目录、执行规范正文、产品事实 Gate、安全与意外最小化、外部生命周期边界、UI gate / 职责边界及设计系统和页面规格两个模板。
 2. 上游存在稳定需求 / 验收编号时沿用（包括 R1 等旧编号），在流程、页面和状态说明中保留关联。发现未解决阻断问题先回 `$pd-prd` 澄清受影响范围；旧版或自定义格式可按已有人工核对结论交接，不强制重编号、补表或依赖 Python，不替用户补出已确认规则，也不伪报机械通过。
 3. 读取 [UI Design System Rules](../qwerdf-common/ui-design-system.md)、[UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md) 和 [UI Patterns](../qwerdf-common/ui-patterns.md)。
-4. 优先读取输出目录中的 `product/prd.md`、`product/requirements.md`、`product/user-stories.md`、`product/acceptance-criteria.md`、`product/open-questions.md`。
+4. 优先读取 `product/prd.md` 的规则、验收和未决；已有独立需求事实源时定向引用。
 5. 读取用户提供的 PRD、竞品 URL、截图、产品说明、设计偏好或已有 spec。
 6. 如果用户未指定输出目录，使用 `pd-work/<name>/`。
 
@@ -44,16 +44,12 @@ description: >-
 
 ## 流程
 
-1. 判断输入是否足够生成产品设计输入；缺少目标用户、核心场景、MVP 范围或关键约束时，先列出缺口并提问，不写半成品文件。
+1. 判断输入是否足够生成产品设计输入；先按 [共享规模与拆分规则](../qwerdf-common/artifact-lifecycle.md#规模预算与任务拆分) 评估本轮范围和产物，过大先在现有需求总览拆成可独立验收单元，再展开本阶段正文，不为每个单元复制全套阶段模板；缺少目标用户、核心场景、MVP 范围或关键约束时，先列出缺口并提问，不写半成品文件。
 2. 从 PRD、requirements、用户说明和已有 spec 中抽取产品事实锁：产品名称、目标用户、核心场景、支持的业务对象、MVP 范围、非目标范围。
 3. 对竞品、截图或设计参考做参考拆解：只保留可借鉴的视觉 / 交互模式；把产品范围外的模块、导航、资产、文案、品牌和业务前提列为不得带入。
-4. 先生成 `product/product-brief.md`，明确产品事实源、产品目标、目标用户、核心场景、MVP 范围、成功指标、UI 方向输入、约束、竞品模式、参考使用边界、风险和开放问题。
+4. 在 `ui/ui-screens.md` 开头记录产品事实源、设计输入与参考边界，引用 PRD，不再复制一份 product-brief。缺已确认产品事实时回相应需求阶段。
 5. 生成 `ui/ui-design-system.md` 草案，按共享设计系统规则记录本次 token 的值 / 别名、用途、来源与确认状态，关联组件 variant、关键状态和内容 / 交互约束；已有系统优先复用。`MASTER` 维护全局约束，`Page Overrides` 只写差异，不复制数值到页面和组件清单。不要求额外生成 CSS / JSON 或代码 API；不得用参考图扩展产品范围。
-6. 基于 `product/product-brief.md` 和 `ui/ui-design-system.md` 生成 UI 页面蓝图：
-   - `ui/ui-flows.md`
-   - `ui/ui-pages.md`
-   - `ui/ui-screens.md`
-   - `ui/ui-components.md`
+6. 在 `ui/ui-screens.md` 维护用户流程、导航、页面、状态和关键组件关系；按页面 / 稳定主题组织，不再默认生成 flows、pages、components 三份同内容索引。
 7. 按实际业务覆盖适用状态，异步、数据为空、失败恢复、权限和保存反馈不可遗漏；静态公开页不强制制造 loading / permission。共享组件状态可维护一次，页面引用并写差异；按产品实际平台 / 断点制定响应式要求。
 8. 按共享质量清单自审来源、范围、token / 组件关联和关键状态。摘要列出文件、设计建议 / 待确认项及受影响范围；本轮无关键阻断时建议 `$pd-figma`，否则先澄清，不为凑模板改写无关历史材料。
 
@@ -63,12 +59,8 @@ description: >-
 产品设计输入与 UI 页面蓝图完成: <name>
 目录: <output-dir>
 文件:
-  - product/product-brief.md
   - ui/ui-design-system.md
-  - ui/ui-flows.md
-  - ui/ui-pages.md
   - ui/ui-screens.md
-  - ui/ui-components.md
 待确认:
   - <如无则写“无”>
 

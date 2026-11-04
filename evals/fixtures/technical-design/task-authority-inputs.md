@@ -1,6 +1,19 @@
 # 合成任务来源快照
 
-用于 T5 的输入：本例已确认现有消费者读取 JSON，JSON 为权威源，各端顺序由 owner 内的 order 字段确定，Markdown 只为派生视图；证据描述也属于本例输入，不代表真实系统已经验证。评审 T6 时不沿用这些已确认条件。字段只是既有结构的一种例子，不是通用 schema 或新的状态文件要求；数组顺序已是权威约定的项目无需增加 order。
+用于 T5 的输入：本例提供下方已有 CI 消费者的代码和执行入口，已确认本轮仍在使用，因此保留 JSON 权威源；各端顺序由 owner 内的 order 字段确定，Markdown 只为派生视图；证据描述也属于本例输入，不代表真实系统已经验证。评审 T6 时不沿用这些已确认条件。字段只是既有结构的一种例子，不是通用 schema 或新的状态文件要求；数组顺序已是权威约定的项目无需增加 order。
+
+## 已有消费工具的原始材料
+
+本例已存在 `ci/check_task_progress.py`，CI 配置以 `python3 ci/check_task_progress.py` 执行，目的是读取当前权威进度输出剩余任务，不是为了同时维护 JSON / Markdown 而新建的渲染工具。以下代码是合成案例提供的既有输入，不授权待测模型为制造例外在新项目创建该脚本。
+
+```python
+from pathlib import Path
+import json
+
+tasks = json.loads(Path("tech/task-slices.json").read_text())
+unfinished = [task["id"] for task in tasks if task["status"] != "done"]
+print("Remaining:", unfinished)
+```
 
 ## 权威 JSON 输入
 

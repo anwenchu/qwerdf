@@ -1,5 +1,7 @@
 # Product Skills：来源、改动与验证
 
+当前默认产物已收敛为主文档及按需材料，见 [共享阶段表](../skills/qwerdf-common/product-delivery-flow.md#1-交付链路)。下文涉及旧分文件的历史评估记录保留原事实，不作为当前生成清单，也不要求迁移已有项目。
+
 ## 本次范围
 
 `pd-vet`、`pd-prd` 和 `pd-blueprint` 的产品输入衔接。保留技能名称、触发描述、安装方式、canonical 输出路径和 UI 规则；不重写 Figma、技术设计、实现或发布流程。旧编号与产物可继续使用，脚本不改写旧产物。

@@ -14,7 +14,7 @@ description: >-
 
 1. 定位当前 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage ui-review`，提取工作目录、执行规范、安全、产品事实边界及报告模板。工具需要 Python 3.10+；不可用时手动读取 [共享流程](../qwerdf-common/product-delivery-flow.md) 的相应章节和 [报告模板](../qwerdf-common/artifact-contracts.md) 中 `ui/ui-review-report.md`，记录人工读取即可。
 2. 读取 [UI Review Rules](../qwerdf-common/ui-review-rules.md) 和 [UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)。严重性、三层审查适用性、不能交付条件和同类问题扫描统一遵循共享规则。
-3. 按本次范围读取已有产品事实、`ui/ui-design-system.md`、页面规格、组件清单、相关 `ui/figma-handoff.md` 或 `tech/frontend/frontend-acceptance.md`。需核对设计决策时读取 [Design System Rules](../qwerdf-common/ui-design-system.md)；需选择页面模式时读取 [UI Patterns](../qwerdf-common/ui-patterns.md)，不默认通读全部上游与工程文件。
+3. 按本次范围读取已有产品事实、`ui/ui-design-system.md`、页面规格、组件清单、相关 `ui/figma-handoff.md` 以及任务中的 UI 验证记录（已有独立验收源则引用）。需核对设计决策时读取 [Design System Rules](../qwerdf-common/ui-design-system.md)；需选择页面模式时读取 [UI Patterns](../qwerdf-common/ui-patterns.md)，不默认通读全部上游与工程文件。
 4. 视觉检查读取 [Visual Defects](references/visual-defects.md)；Figma 对象另读 [Figma Review](references/figma-review.md)，截图 / 本地页面另读 [Screenshot Review](references/screenshot-review.md)。按对象选择，不全量加载专项参考。
 
 ## 流程

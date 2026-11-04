@@ -4,11 +4,7 @@
     "skill": "pd-vet",
     "prompt": "验证一个产品想法：给跨境电商卖家做广告异常提醒工具，用户是每天看广告花费和 ROI 的运营。判断是否进入 PRD。",
     "expected_files": [
-      "product/idea-brief.md",
-      "product/user-problem.md",
-      "product/competitor-notes.md",
-      "product/mvp-hypothesis.md",
-      "product/validation-questions.md"
+      "product/idea-brief.md"
     ],
     "any_contains": {
       "product/idea-brief.md": [
@@ -16,7 +12,13 @@
         "继续调研",
         "暂停"
       ]
-    }
+    },
+    "forbidden_files": [
+      "product/user-problem.md",
+      "product/competitor-notes.md",
+      "product/mvp-hypothesis.md",
+      "product/validation-questions.md"
+    ]
   },
   {
     "id": "pd-prd-from-vet-artifacts",
@@ -29,11 +31,7 @@
       "source-notes.md": "# 用户确认记录（评估用合成场景，不是真实市场证据）\n1. 产品服务跨境电商运营；本期只做把异常从待处理标记为已处理，目标是减少重复处理。\n2. 运营只可查看并处理自己租户的异常；其他租户即使直接访问也不能读取或修改记录。\n3. 成功处理后显示已处理并反馈操作结果；不新增处理人指派、审批、通知渠道或自动投放。\n4. 提交失败时保留待处理，显示失败及重试入口；失败重试成功后显示已处理。\n5. 重复提交已处理异常不重复生成处理记录；已处理不能恢复待处理；不存在的异常给出找不到的反馈。\n6. 页面有默认、加载、空列表、错误和无权限反馈；提交中避免重复操作并反馈结果。\n7. 竞品与访谈尚未提供；耗时改善没有基线和目标值，仅待试用验证，不阻断本功能规则定义。\n8. 无其他阻断业务问题；运营账号及租户已由已有产品提供，本期不设计登录注册。\n"
     },
     "expected_files": [
-      "product/prd.md",
-      "product/requirements.md",
-      "product/user-stories.md",
-      "product/acceptance-criteria.md",
-      "product/open-questions.md"
+      "product/prd.md"
     ],
     "all_contains": {
       "product/prd.md": [
@@ -50,7 +48,11 @@
     ],
     "forbidden_files": [
       "tech/api-contract.md",
-      "ui/ui-pages.md"
+      "ui/ui-pages.md",
+      "product/requirements.md",
+      "product/user-stories.md",
+      "product/acceptance-criteria.md",
+      "product/open-questions.md"
     ]
   },
   {
@@ -58,10 +60,10 @@
     "skill": "pd-prd",
     "prompt": "我们想给运营做异常处理功能，但尚未确认运营能不能看其他租户数据，也不知道已处理能否撤回。这是本期关键规则，不能先默认。请仅把需要确认的问题及其阻断原因写到 product/open-questions.md，再提出关键澄清；不要生成正式 PRD、需求清单、API 或页面蓝图，不要自行决定权限和状态流转。",
     "expected_files": [
-      "product/open-questions.md"
+      "product/prd.md"
     ],
     "all_contains": {
-      "product/open-questions.md": [
+      "product/prd.md": [
         "租户",
         "撤回"
       ]
@@ -70,7 +72,10 @@
       "product/prd.md",
       "product/requirements.md",
       "tech/api-contract.md",
-      "ui/ui-pages.md"
+      "ui/ui-pages.md",
+      "product/user-stories.md",
+      "product/acceptance-criteria.md",
+      "product/open-questions.md"
     ]
   },
   {
@@ -82,12 +87,8 @@
       "product/acceptance-criteria.md": "# 验收标准\n- [ ] default\n- [ ] loading\n- [ ] empty\n- [ ] error\n- [ ] permission\n"
     },
     "expected_files": [
-      "product/product-brief.md",
-      "ui/ui-design-system.md",
-      "ui/ui-flows.md",
-      "ui/ui-pages.md",
       "ui/ui-screens.md",
-      "ui/ui-components.md"
+      "ui/ui-design-system.md"
     ],
     "all_contains": {
       "ui/ui-design-system.md": [
@@ -102,7 +103,13 @@
         "error",
         "permission"
       ]
-    }
+    },
+    "forbidden_files": [
+      "ui/ui-flows.md",
+      "ui/ui-pages.md",
+      "ui/ui-components.md",
+      "product/product-brief.md"
+    ]
   },
   {
     "id": "pd-blueprint-reference-scope-lock",
@@ -114,60 +121,46 @@
       "reference-notes.md": "# 参考图说明\n来源：Toobit 截图。\n可借鉴：深色交易界面、行情列表密度、买卖下单区结构、风险色彩反馈。\n不得带入：USDC-M、Events、Copy Trading、Toobit 品牌导航、未支持资产和活动入口。\n"
     },
     "expected_files": [
-      "product/product-brief.md",
-      "ui/ui-design-system.md",
-      "ui/ui-flows.md",
-      "ui/ui-pages.md",
       "ui/ui-screens.md",
-      "ui/ui-components.md"
+      "ui/ui-design-system.md"
     ],
     "all_contains": {
-      "product/product-brief.md": [
+      "ui/ui-screens.md": [
         "产品事实源",
         "参考使用边界",
         "USDC-M",
         "Copy Trading",
-        "不得带入"
-      ],
-      "ui/ui-design-system.md": [
-        "MASTER",
-        "Page Overrides",
-        "不得带入"
-      ],
-      "ui/ui-pages.md": [
+        "不得带入",
         "Apex Capital",
         "自营挑战",
         "BTCUSDT",
-        "ETHUSDT"
-      ],
-      "ui/ui-screens.md": [
+        "ETHUSDT",
         "default",
         "loading",
         "empty",
         "error",
         "permission"
+      ],
+      "ui/ui-design-system.md": [
+        "MASTER",
+        "Page Overrides",
+        "不得带入"
       ]
     },
     "forbidden_contains": {
-      "ui/ui-pages.md": [
-        "USDC-M",
-        "Events",
-        "Copy Trading",
-        "Toobit"
-      ],
       "ui/ui-screens.md": [
         "USDC-M",
         "Events",
         "Copy Trading",
         "Toobit"
-      ],
-      "ui/ui-components.md": [
-        "USDC-M",
-        "Events",
-        "Copy Trading",
-        "Toobit"
       ]
-    }
+    },
+    "forbidden_files": [
+      "ui/ui-flows.md",
+      "ui/ui-pages.md",
+      "ui/ui-components.md",
+      "product/product-brief.md"
+    ]
   },
   {
     "id": "pd-figma-ui-directions-only",
@@ -409,36 +402,31 @@
     },
     "expected_files": [
       "tech/tech-plan.md",
+      "tech/api-contract.md",
+      "tech/task-slices.md"
+    ],
+    "all_contains": {
+      "tech/tech-plan.md": [
+        "交接结论"
+      ],
+      "tech/task-slices.md": [
+        "前端任务",
+        "后端任务"
+      ]
+    },
+    "forbidden_files": [
+      "tech/task-slices.json",
+      "task-slices.json",
       "tech/dependency-readiness.md",
+      "tech/integration-map.md",
+      "tech/risk-plan.md",
       "tech/frontend/frontend-design.md",
       "tech/frontend/frontend-component-map.md",
       "tech/frontend/frontend-route-map.md",
       "tech/frontend/frontend-state-api.md",
       "tech/backend/backend-design.md",
-      "tech/api-contract.md",
-      "tech/backend/data-model.md",
-      "tech/backend/sql-execution-plan.md",
-      "tech/integration-map.md",
-      "tech/task-slices.md",
-      "tech/risk-plan.md"
-    ],
-    "all_contains": {
-      "tech/dependency-readiness.md": [
-        "ready",
-        "not-required",
-        "mock-only"
-      ],
-      "tech/frontend/frontend-design.md": [
-        "UI 设计系统约束",
-        "响应式",
-        "可访问性"
-      ],
-      "tech/task-slices.md": [
-        "frontend",
-        "backend",
-        "contract"
-      ]
-    }
+      "tech/backend/data-model.md"
+    ]
   },
   {
     "id": "pd-plan-dependency-readiness-required",
@@ -455,37 +443,47 @@
     },
     "expected_files": [
       "tech/tech-plan.md",
-      "tech/dependency-readiness.md",
       "tech/backend/sql-execution-plan.md",
       "tech/task-slices.md",
-      "tech/risk-plan.md"
+      "tech/api-contract.md"
     ],
     "all_contains": {
-      "tech/dependency-readiness.md": [
+      "tech/tech-plan.md": [
         "JDK",
         "Node",
         "PostgreSQL",
         "Dify",
         "Activepieces",
-        "mock-only"
+        "mock-only",
+        "依赖"
       ],
       "tech/task-slices.md": [
         "依赖准备"
-      ],
-      "tech/risk-plan.md": [
-        "依赖"
       ]
     },
     "forbidden_contains": {
-      "tech/risk-plan.md": [
+      "tech/tech-plan.md": [
         "依赖全部 ready"
       ]
-    }
+    },
+    "forbidden_files": [
+      "tech/task-slices.json",
+      "task-slices.json",
+      "tech/dependency-readiness.md",
+      "tech/integration-map.md",
+      "tech/risk-plan.md",
+      "tech/frontend/frontend-design.md",
+      "tech/frontend/frontend-component-map.md",
+      "tech/frontend/frontend-route-map.md",
+      "tech/frontend/frontend-state-api.md",
+      "tech/backend/backend-design.md",
+      "tech/backend/data-model.md"
+    ]
   },
   {
     "id": "pd-fe-single-slice-reporting",
     "skill": "pd-fe",
-    "prompt": "执行 FE-01 前端 slice。请在 fixtures/frontend-alerts 中实现告警筛选逻辑，让 node 测试通过，并按 skill 写实现记录、变更文件、开发说明和前端验收。 工程约定见 tech/tech-plan.md。先核对目标与实际分支；仅当该临时 fixture 目录尚无 Git 仓库时，允许初始化到已确认的 evaluation 分支；已有仓库或改动先核查，不覆盖，不提交或推送。",
+    "prompt": "执行 FE-01 前端 slice。请在 fixtures/frontend-alerts 中实现告警筛选逻辑，让 node 测试通过，并按 skill 回写本端任务状态、简短实现 / 检查证据和续作。 工程约定见 tech/tech-plan.md。先核对目标与实际分支；仅当该临时 fixture 目录尚无 Git 仓库时，允许初始化到已确认的 evaluation 分支；已有仓库或改动先核查，不覆盖，不提交或推送。",
     "fixture_dirs": {
       "evals/fixtures/frontend-alerts": "fixtures/frontend-alerts"
     },
@@ -504,20 +502,12 @@
     },
     "expected_files": [
       "fixtures/frontend-alerts/src/alertFilters.mjs",
-      "tech/frontend/frontend-implementation-log.md",
-      "tech/frontend/frontend-changed-files.md",
-      "tech/frontend/frontend-dev-notes.md",
-      "tech/frontend/frontend-acceptance.md"
+      "tech/task-slices.md"
     ],
     "all_contains": {
-      "tech/frontend/frontend-implementation-log.md": [
+      "tech/task-slices.md": [
         "FE-01",
-        "验证"
-      ],
-      "tech/frontend/frontend-acceptance.md": [
-        "设计系统前置",
-        "移动端无横向溢出",
-        "UI 质量验证"
+        "done"
       ],
       "fixtures/frontend-alerts/src/alertFilters.mjs": [
         "filterCriticalAlerts",
@@ -526,12 +516,21 @@
     },
     "check_commands": [
       "node fixtures/frontend-alerts/test_alert_filters.mjs"
+    ],
+    "forbidden_files": [
+      "tech/frontend/frontend-implementation-log.md",
+      "tech/frontend/frontend-changed-files.md",
+      "tech/frontend/frontend-dev-notes.md",
+      "tech/frontend/frontend-acceptance.md",
+      "tech/backend/backend-implementation-log.md",
+      "tech/backend/backend-changed-files.md",
+      "tech/backend/backend-dev-notes.md"
     ]
   },
   {
     "id": "pd-fe-detects-overconstrained-backend-dependency",
     "skill": "pd-fe",
-    "prompt": "只读检查旧任务清单中的 FE-014 / FE-015：它们要求等后端业务任务完成才编码，但没有需要消费的生成 client、SDK 或 schema 产物。核对当前材料，给出本端应有顺序、实际必需输入与后续验收边界，以及应回 $pd-plan 校正的记录。不要重新维护依赖图，不改代码或任务状态；实际契约 / 证据缺失须保留。",
+    "prompt": "只读检查旧任务清单中的 FE-014 / FE-015：它们要求等后端业务任务完成才编码，但没有需要消费的生成 client、SDK 或 schema 产物。核对当前材料，给出本端应有顺序、实际必需输入与后续验收边界，以及应回 $pd-plan 校正的记录。不要重新维护依赖图，不改代码或任务状态；实际契约 / 证据缺失须保留。 本评估明确要求将只读检查结果写入 tech/frontend/frontend-dev-notes.md；这是指定报告，不要求生成其他过程文档。",
     "setup_files": {
       "tech/frontend/frontend-design.md": "# 前端技术设计\n页面：任务列表、知识库面板。\n前端可基于 API 契约和 UI 设计系统实现真实 API client、loading / empty / error / permission / service-unavailable 状态。\n",
       "tech/frontend/frontend-component-map.md": "# 前端组件映射\n任务列表 -> TaskList。\n知识库面板 -> KnowledgePanel。\n",
@@ -568,7 +567,7 @@
   {
     "id": "pd-be-single-slice-reporting",
     "skill": "pd-be",
-    "prompt": "执行 BE-01 后端 slice。请在 fixtures/backend-alerts 中实现后端告警查询逻辑，让 Python 测试通过，并按 skill 写实现记录、变更文件和后端开发说明。 工程约定见 tech/tech-plan.md。先核对目标与实际分支；仅当该临时 fixture 目录尚无 Git 仓库时，允许初始化到已确认的 evaluation 分支；已有仓库或改动先核查，不覆盖，不提交或推送。",
+    "prompt": "执行 BE-01 后端 slice。请在 fixtures/backend-alerts 中实现后端告警查询逻辑，让 Python 测试通过，并按 skill 回写本端任务状态、简短实现 / 检查证据和续作。 工程约定见 tech/tech-plan.md。先核对目标与实际分支；仅当该临时 fixture 目录尚无 Git 仓库时，允许初始化到已确认的 evaluation 分支；已有仓库或改动先核查，不覆盖，不提交或推送。",
     "fixture_dirs": {
       "evals/fixtures/backend-alerts": "fixtures/backend-alerts"
     },
@@ -584,14 +583,12 @@
     },
     "expected_files": [
       "fixtures/backend-alerts/app/alerts.py",
-      "tech/backend/backend-implementation-log.md",
-      "tech/backend/backend-changed-files.md",
-      "tech/backend/backend-dev-notes.md"
+      "tech/task-slices.md"
     ],
     "all_contains": {
-      "tech/backend/backend-implementation-log.md": [
+      "tech/task-slices.md": [
         "BE-01",
-        "验证"
+        "done"
       ],
       "fixtures/backend-alerts/app/alerts.py": [
         "list_open_alerts",
@@ -600,12 +597,21 @@
     },
     "check_commands": [
       "python3 fixtures/backend-alerts/test_alerts.py"
+    ],
+    "forbidden_files": [
+      "tech/frontend/frontend-implementation-log.md",
+      "tech/frontend/frontend-changed-files.md",
+      "tech/frontend/frontend-dev-notes.md",
+      "tech/frontend/frontend-acceptance.md",
+      "tech/backend/backend-implementation-log.md",
+      "tech/backend/backend-changed-files.md",
+      "tech/backend/backend-dev-notes.md"
     ]
   },
   {
     "id": "pd-be-detects-overconstrained-frontend-dependency",
     "skill": "pd-be",
-    "prompt": "只读检查旧任务清单中的 BE-014 / BE-015：它们要求等前端业务任务完成才编码，但没有需要消费的 schema、type 包或生成产物。核对当前材料，给出本端应有顺序、实际必需输入与后续验收边界，以及应回 $pd-plan 校正的记录。不要重新维护依赖图，不改代码或任务状态；实际契约 / 证据缺失须保留。",
+    "prompt": "只读检查旧任务清单中的 BE-014 / BE-015：它们要求等前端业务任务完成才编码，但没有需要消费的 schema、type 包或生成产物。核对当前材料，给出本端应有顺序、实际必需输入与后续验收边界，以及应回 $pd-plan 校正的记录。不要重新维护依赖图，不改代码或任务状态；实际契约 / 证据缺失须保留。 本评估明确要求将只读检查结果写入 tech/backend/backend-dev-notes.md；这是指定报告，不要求生成其他过程文档。",
     "setup_files": {
       "tech/backend/backend-design.md": "# 后端技术设计\n接口：任务列表、任务状态更新、知识库查询。\n后端可基于 API 契约、数据模型和真实依赖准备实现 controller / service / repository、权限、错误码和后端测试。\n",
       "tech/api-contract.md": "# API 契约\nGET /api/tasks\nPATCH /api/tasks/{id}/status\nGET /api/knowledge\n",
@@ -652,25 +658,28 @@
       "tech/tech-plan.md": "# 技术方案的工程范围（合成评估输入）\n其余契约、验证及任务以本用例提供的各设计文件为准。\n## 仓库、分支与二方包版本\n本轮仅修改 repositories/backend；开发分支由评估用户确认为 evaluation；无二方包源码或开发版本改动。这是范围与分支约定，不代表当前工作区 / 依赖已就绪。\n"
     },
     "expected_files": [
-      "tech/backend/backend-implementation-log.md",
-      "tech/backend/backend-dev-notes.md"
+      "tech/task-slices.md"
     ],
     "all_contains": {
-      "tech/backend/backend-implementation-log.md": [
+      "tech/task-slices.md": [
         "BE-020",
         "blocked",
         "mock-only",
         "DEP-DIFY",
         "DEP-ACTIVEPIECES"
-      ],
-      "tech/backend/backend-dev-notes.md": [
-        "RestClient",
-        "WebClient",
-        "真实"
       ]
     },
     "review_notes": [
       "本用例修改仓库 / 分支约定见 tech/tech-plan.md；没有实际检出证据不允许写代码，但仍应完成只读任务依赖或真实依赖检查，不用工作区缺口掩盖本用例的目标问题。"
+    ],
+    "forbidden_files": [
+      "tech/frontend/frontend-implementation-log.md",
+      "tech/frontend/frontend-changed-files.md",
+      "tech/frontend/frontend-dev-notes.md",
+      "tech/frontend/frontend-acceptance.md",
+      "tech/backend/backend-implementation-log.md",
+      "tech/backend/backend-changed-files.md",
+      "tech/backend/backend-dev-notes.md"
     ]
   },
   {
@@ -686,7 +695,6 @@
       "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-01 done。\n"
     },
     "expected_files": [
-      "sync/integration-plan.md",
       "sync/integration-report.md"
     ],
     "all_contains": {
@@ -697,12 +705,17 @@
         "环境",
         "未执行"
       ]
-    }
+    },
+    "forbidden_files": [
+      "sync/integration-plan.md",
+      "sync/api-mismatch.md",
+      "sync/plan-revision.md"
+    ]
   },
   {
     "id": "pd-sync-rejects-development-depending-on-sync",
     "skill": "pd-sync",
-    "prompt": "检查任务列表联调。当前 task-slices 错误地把 FE-014 blocked-by SYNC-014，同时 SYNC-014 blocks FE-014。请不要执行联调，判断这是切片依赖建模问题，并输出应回 $pd-plan 修正的 integration-report / plan-revision。 输出当前前后端顺序清单的修订建议和联调验收边界，不再维护旧列或并行标记。",
+    "prompt": "检查任务列表联调。当前 task-slices 错误地把 FE-014 blocked-by SYNC-014，同时 SYNC-014 blocks FE-014。请不要执行联调，判断这是切片依赖建模问题，并输出应回 $pd-plan 修正的 同一 integration-report 中的结论和方案修订建议。 输出当前前后端顺序清单的修订建议和联调验收边界，不再维护旧列或并行标记。",
     "setup_files": {
       "tech/api-contract.md": "# API 契约\nGET /api/tasks\n",
       "tech/dependency-readiness.md": "# 真实依赖准备清单\n## 依赖清单\n| 依赖 ID | 类别 | 名称 | 适用 slice | 真实资源 / 地址 | 验证命令 | 状态 | 证据 | 阻断原因 | 下一步 |\n| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |\n| DEP-API | http | Tasks API | SYNC-014 | local app | curl /api/tasks | ready | 本地真实 API | - | - |\n",
@@ -711,16 +724,13 @@
       "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-014 done。\n"
     },
     "expected_files": [
-      "sync/integration-report.md",
-      "sync/plan-revision.md"
+      "sync/integration-report.md"
     ],
     "all_contains": {
       "sync/integration-report.md": [
         "实现前置状态",
         "slice-model-invalid",
-        "$pd-plan"
-      ],
-      "sync/plan-revision.md": [
+        "$pd-plan",
         "FE-014"
       ]
     },
@@ -732,6 +742,11 @@
     },
     "review_notes": [
       "人工语义复核：停止当前正式联调的依据是相关前端实现未完成与错误顺序，不能只凭旧列名称拒绝联调；建议先完成本端实现再联调，不恢复旧依赖图。"
+    ],
+    "forbidden_files": [
+      "sync/integration-plan.md",
+      "sync/api-mismatch.md",
+      "sync/plan-revision.md"
     ]
   },
   {
@@ -748,11 +763,12 @@
       "runtime-evidence.md": "# 运行证据\nPOST /api/v1/confirmations/123/approve -> 500 INTERNAL_SERVER_ERROR\n后端日志：NoResourceFoundException\nConfirmationController 当前只有 GET /api/v1/confirmations。\n"
     },
     "expected_files": [
-      "sync/integration-plan.md",
       "sync/integration-report.md"
     ],
     "forbidden_files": [
-      "sync/plan-revision.md"
+      "sync/plan-revision.md",
+      "sync/integration-plan.md",
+      "sync/api-mismatch.md"
     ],
     "all_contains": {
       "sync/integration-report.md": [
@@ -785,7 +801,6 @@
       "runtime-evidence.md": "# 运行证据\nPOST /api/tasks -> 200\n日志：using MockDifyClient, using MockActivepiecesClient\n未发现真实 Dify / Activepieces HTTP request。\n"
     },
     "expected_files": [
-      "sync/integration-plan.md",
       "sync/integration-report.md"
     ],
     "all_contains": {
@@ -803,7 +818,12 @@
         "可进入 $pd-test",
         "联调通过"
       ]
-    }
+    },
+    "forbidden_files": [
+      "sync/integration-plan.md",
+      "sync/api-mismatch.md",
+      "sync/plan-revision.md"
+    ]
   },
   {
     "id": "pd-test-risk-report",
@@ -819,10 +839,7 @@
       ".gitignore": "node_modules/\ndist/\ncoverage/\n*.log\n"
     },
     "expected_files": [
-      "test/test-plan.md",
-      "test/test-cases.md",
-      "test/test-report.md",
-      "test/regression-notes.md"
+      "test/test-report.md"
     ],
     "all_contains": {
       "test/test-report.md": [
@@ -836,7 +853,12 @@
         "可能漏提交",
         "可能多提交"
       ]
-    }
+    },
+    "forbidden_files": [
+      "test/test-plan.md",
+      "test/test-cases.md",
+      "test/regression-notes.md"
+    ]
   },
   {
     "id": "pd-review-structured-findings",
@@ -868,7 +890,7 @@
   {
     "id": "pd-git-docs-only",
     "skill": "pd-git",
-    "prompt": "准备 commit-summary 和 PR 描述。不要真的 git add、commit 或 push。",
+    "prompt": "准备 commit-summary 和 PR 描述。不要真的 git add、commit 或 push。 本评估明确要求把提交摘要与 PR 文案保存到 expected_files 指定的两个文件；这是落文件请求，常规使用仍只在回复给文案。",
     "setup_files": {
       "tech/frontend/frontend-implementation-log.md": "# 前端实现记录\nFE-01 done。\n",
       "tech/backend/backend-implementation-log.md": "# 后端实现记录\nBE-01 done。\n",
@@ -912,20 +934,20 @@
       "release/commit-summary.md": "# Commit Summary\ncommit message: feat: add alert workflow\n"
     },
     "expected_files": [
-      "release/release-plan.md",
-      "release/release-checklist.md",
-      "release/rollback-plan.md",
       "release/release-notes.md"
     ],
     "all_contains": {
-      "release/release-plan.md": [
-        "SQL / 数据变更执行计划"
-      ],
-      "release/rollback-plan.md": [
+      "release/release-notes.md": [
+        "SQL / 数据变更执行计划",
         "回滚触发条件",
         "回滚步骤"
       ]
-    }
+    },
+    "forbidden_files": [
+      "release/release-plan.md",
+      "release/release-checklist.md",
+      "release/rollback-plan.md"
+    ]
   },
   {
     "id": "pd-plan-backend-no-sql",
@@ -936,17 +958,22 @@
     },
     "expected_files": [
       "tech/tech-plan.md",
-      "tech/dependency-readiness.md",
-      "tech/backend/backend-design.md",
-      "tech/api-contract.md",
-      "tech/integration-map.md",
-      "tech/task-slices.md",
-      "tech/risk-plan.md"
+      "tech/task-slices.md"
     ],
     "forbidden_files": [
       "tech/backend/sql-execution-plan.md",
       "tech/frontend/frontend-design.md",
-      "ui/figma-handoff.md"
+      "ui/figma-handoff.md",
+      "tech/task-slices.json",
+      "task-slices.json",
+      "tech/dependency-readiness.md",
+      "tech/integration-map.md",
+      "tech/risk-plan.md",
+      "tech/frontend/frontend-component-map.md",
+      "tech/frontend/frontend-route-map.md",
+      "tech/frontend/frontend-state-api.md",
+      "tech/backend/backend-design.md",
+      "tech/backend/data-model.md"
     ],
     "review_notes": [
       "检查适用性是否有需求依据、接口是否标为拟新增、非法输入和最小验证是否进入设计与任务。文件存在检查不能证明设计可落地；不得要求补空 SQL 文件或声称运行已验证。"
@@ -965,13 +992,13 @@
       "release/commit-summary.md": "# 提交说明\n本轮为无状态计算接口应用变更；关联提交未提供时列为待确认，不编造 SHA 或发布成功。\n"
     },
     "expected_files": [
-      "release/release-plan.md",
-      "release/release-checklist.md",
-      "release/rollback-plan.md",
       "release/release-notes.md"
     ],
     "forbidden_files": [
-      "tech/backend/sql-execution-plan.md"
+      "tech/backend/sql-execution-plan.md",
+      "release/release-plan.md",
+      "release/release-checklist.md",
+      "release/rollback-plan.md"
     ],
     "review_notes": [
       "按技术方案保留无 SQL 依据与联调不适用，不为文件齐全补空文件；关联提交或环境未确认要如实保留。合成报告不是本次真实服务测试或上线授权。"

@@ -11,9 +11,9 @@ description: >-
 ## 读取
 
 1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage figma`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
-2. 上述输出已包含 [Product Delivery Artifact Contracts](../qwerdf-common/artifact-contracts.md) 中 `ui/ui-design-system.md`、`ui/ui-directions.md` 和 `ui/figma-handoff.md` 的模板；只采用本轮适用项。
+2. 上述输出包含设计系统和 Figma handoff 模板；确需候选比较时再定向读取 `ui/ui-directions.md` 模板，不因模板存在强制做方向探索。
 3. 读取 [UI Design System Rules](../qwerdf-common/ui-design-system.md)、[UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)、[UI Patterns](../qwerdf-common/ui-patterns.md) 和 [UI Review Rules](../qwerdf-common/ui-review-rules.md)。
-4. 读取输出目录中的 `product/product-brief.md`、`ui/ui-design-system.md`、`ui/ui-flows.md`、`ui/ui-pages.md`、`ui/ui-screens.md`、`ui/ui-components.md`；如已有 `ui/ui-directions.md` / `ui/figma-handoff.md`，复用其中的有效候选、已定方向及文件 / frame 链接，续作只补未完成部分。
+4. 读取当前需求事实、`ui/ui-design-system.md` 和 `ui/ui-screens.md` 的设计输入、流程 / 页面与组件关系；旧分文件有实际事实时定向引用，不为缺文件补造副本；如已有 `ui/ui-directions.md` / `ui/figma-handoff.md`，复用其中的有效候选、已定方向及文件 / frame 链接，续作只补未完成部分。
 5. 如果用户未指定目录，默认查找 `pd-work/<name>/`。
 6. 如需要调用 Product Design，先按 Product Design 的 `get-context` 规则确认设计 brief。
 7. 如需要调用 Figma，必须先加载 Figma 对应技能：`figma-use`；创建或更新页面时同时遵守 `figma-generate-design`；用户要求或授权新建文件时加载 `figma-create-new-file`。

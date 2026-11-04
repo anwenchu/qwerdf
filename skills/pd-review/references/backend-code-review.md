@@ -2,7 +2,7 @@
 
 当 diff 涉及 Java、Spring Boot、Controller / Service / Repository、SQL、迁移、数据模型、权限或后端 API 时读取。
 
-Java 语言与框架细节按 [共享 Java 编码规则](../../qwerdf-common/java-coding-rules.md) 的适用章节核对，命名 / 格式服从当前仓库配置；不重复维护另一份阿里手册规则，不把风格建议升级为业务阻断。
+Java 审查必读公共规范的 [结构与可维护性](../../qwerdf-common/java-coding-rules.md#结构与可维护性) 和 [任务完成前自查](../../qwerdf-common/java-coding-rules.md#任务完成前自查)，其余语言与框架章节按改动核对。沿实际代码与调用路径独立核查，不因任务条目写了“已自查”或测试通过就放行；命名 / 格式服从当前仓库配置，不重复维护另一份规则，也不把风格建议升级为业务阻断。
 
 ## Java / Spring Boot
 

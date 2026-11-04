@@ -72,8 +72,10 @@ class SkillStructureTests(unittest.TestCase):
 
     def test_backend_plan_omits_frontend_templates_and_ui_gate(self):
         result = context.stage_context('plan', area='backend')
-        self.assertIn('## `tech/backend/backend-design.md`', result)
-        self.assertIn('## `tech/api-contract.md`', result)
+        self.assertIn('## `tech/tech-plan.md`', result)
+        self.assertNotIn('## `tech/backend/backend-design.md`', result)
+        self.assertIn('## `tech/task-slices.md`', result)
+        self.assertNotIn('## `tech/api-contract.md`', result)
         self.assertNotIn('## `tech/frontend/', result)
         self.assertNotIn('### UI 设计系统与质量 Gate', result)
         self.assertNotIn('### Figma 连接与会话复用', result)
@@ -81,7 +83,8 @@ class SkillStructureTests(unittest.TestCase):
     def test_frontend_plan_omits_backend_templates_without_losing_contract(self):
         result = context.stage_context('plan', area='frontend')
         self.assertIn('### UI 设计系统与质量 Gate', result)
-        self.assertIn('## `tech/api-contract.md`', result)
+        self.assertIn('## `tech/task-slices.md`', result)
+        self.assertNotIn('## `tech/api-contract.md`', result)
         self.assertNotIn('## `tech/backend/', result)
 
     def test_ordered_task_template_and_handoff_rules_reach_their_consumers(self):
@@ -98,7 +101,9 @@ class SkillStructureTests(unittest.TestCase):
                 result = context.stage_context(stage)
                 for title in ('### 任务清单与开发顺序', '### Frontend / Backend 并行开发规则',
                               '### 业务推进、阻断恢复与进度汇报', '### 联调与验收交接'):
-                    self.assertIn(context.section(flow, title), result)
+                    self.assertEqual(1, result.count(context.section(flow, title)))
+                if stage in ('fe', 'be'):
+                    self.assertEqual(1, result.count(context.section(templates, '## 业务进度摘要')))
         result = context.stage_context('sync')
         self.assertIn(context.section(flow, '### 联调与验收交接'), result)
         # Scheduling is not a new requirement for read-only review or an early unit test.
@@ -148,6 +153,36 @@ class SkillStructureTests(unittest.TestCase):
             if item['owner'] == 'backend':
                 self.assertNotEqual(item['order'], stale_by_id[item['id']]['order'])
                 self.assertNotEqual(item['status'], stale_by_id[item['id']]['status'])
+
+    def test_default_plan_rejects_duplicate_task_store_but_allows_other_json(self):
+        cases = json.loads((ROOT / 'evals/cases/benchmark-cases.json').read_text())
+        defaults = {'pd-plan-from-design', 'pd-plan-dependency-readiness-required',
+                    'pd-plan-backend-no-sql'}
+        selected = [case for case in cases if case['id'] in defaults]
+        self.assertEqual(defaults, {case['id'] for case in selected})
+        for source in selected:
+            with self.subTest(case=source['id']), tempfile.TemporaryDirectory() as directory:
+                output = Path(directory)
+                (output / 'tech').mkdir()
+                (output / 'tech/task-slices.md').write_text('# Tasks\nCurrent task authority.\n')
+                # Ordinary API examples may still be JSON; only duplicate task stores are forbidden.
+                (output / 'tech/response-example.json').write_text('{"items": []}')
+                case = {'expected_files': ['tech/task-slices.md'],
+                        'forbidden_files': source.get('forbidden_files', [])}
+                self.assertTrue(runner.grade_output(case, output, 0, False, [])[0])
+                for relative in ('tech/task-slices.json', 'task-slices.json'):
+                    duplicate = output / relative
+                    duplicate.write_text('[]')
+                    self.assertFalse(runner.grade_output(case, output, 0, False, [])[0], relative)
+                    duplicate.unlink()
+
+    def test_all_stages_load_shared_scope_rules_once(self):
+        rules = context.section((context.COMMON / 'artifact-lifecycle.md').read_text(), '## 工作规则')
+        for stage in context.CONTEXT_ARTIFACTS:
+            with self.subTest(stage=stage):
+                self.assertEqual(1, context.stage_context(stage).count(rules))
+        for area in ('frontend', 'backend'):
+            self.assertEqual(1, context.stage_context('plan', area=area).count(rules))
 
     def test_invalid_stage_or_scope_does_not_silently_fall_back(self):
         for stage, area in [('unknown', 'all'), ('test', 'backend'), ('plan', 'other')]:
@@ -467,7 +502,7 @@ class SkillStructureTests(unittest.TestCase):
                 unexpected.write_text('Unnecessary empty-scope SQL plan')
                 self.assertFalse(runner.grade_output(selected[case_id], output, 0, False, [])[0])
         # Exercise declared-file grading, independently of prose-based checks.
-        expected = selected['pd-plan-from-design']['expected_files']
+        expected = selected['pd-plan-dependency-readiness-required']['expected_files']
         self.assertIn(sql_path, expected)
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

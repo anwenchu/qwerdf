@@ -63,74 +63,20 @@ Java implementation and backend review directly read the [shared Java coding con
 By default, skills write artifacts under `pd-work/<name>/`. New artifacts must use canonical subdirectories. Legacy flat files may be read as a legacy fallback, but new outputs should not be written flat.
 
 ```text
-pd-work/<name>/
-  product/
-    idea-brief.md
-    user-problem.md
-    competitor-notes.md
-    mvp-hypothesis.md
-    validation-questions.md
-    prd.md
-    requirements.md
-    user-stories.md
-    acceptance-criteria.md
-    open-questions.md
-    product-brief.md
-  ui/
-    ui-design-system.md
-    ui-flows.md
-    ui-pages.md
-    ui-screens.md
-    ui-components.md
-    ui-directions.md
-    figma-handoff.md
-    ui-review-report.md
-  tech/
-    tech-plan.md
-    dependency-readiness.md
-    api-contract.md
-    integration-map.md
-    task-slices.md
-    risk-plan.md
-    frontend/
-      frontend-design.md
-      frontend-component-map.md
-      frontend-route-map.md
-      frontend-state-api.md
-      frontend-implementation-log.md
-      frontend-changed-files.md
-      frontend-dev-notes.md
-      frontend-acceptance.md
-    backend/
-      backend-design.md
-      data-model.md
-      sql-execution-plan.md
-      backend-implementation-log.md
-      backend-changed-files.md
-      backend-dev-notes.md
-  sync/
-    integration-plan.md
-    integration-report.md
-    api-mismatch.md
-    plan-revision.md
-  test/
-    test-plan.md
-    test-cases.md
-    test-report.md
-    regression-notes.md
-    code-review.md
-  release/
-    commit-summary.md
-    pr-description.md
-    release-plan.md
-    release-checklist.md
-    rollback-plan.md
-    release-notes.md
+pd-work/<bounded-requirement>/
+  product/prd.md             # 需求、规则、验收、开放问题
+  tech/tech-plan.md          # 两端设计、数据、真实输入、接线、风险
+  tech/task-slices.md        # 顺序、状态、简短结果与续作
 ```
+
+Only maintain the stage currently requested. Discovery may use one `product/idea-brief.md`; UI adds a shared design system and page specification, with Figma handoff when delivered. Contracts shared by endpoints/external consumers and SQL execution/rollback plans remain independent when needed. Integration, test and review each maintain one formal report; release notes include the deployment plan/checks/rollback. Git text stays in the reply unless explicitly requested as files.
+
+Do not create every available template or duplicate stage trees per task. Existing split sources are read and referenced without automatic migration/deletion. Requirement/acceptance IDs and their compact mapping remain in the main index; long explanations may link to unique topic details.
+
 
 ## Key Gates
 
 - `ui/ui-design-system.md` is the UI system source of truth. `MASTER` defines global rules; `Page Overrides` records only necessary page-level differences.
-- `tech/backend/sql-execution-plan.md` must exist. If no SQL is needed, it must explicitly say so.
-- `tech/dependency-readiness.md` must classify real dependencies before `$pd-fe` or `$pd-be`.
+- SQL execution plans are required for applicable execution/rollback work. With no SQL impact, record the basis in the technical plan; do not create an empty file.
+- The technical plan’s real-input section (or an existing independent readiness source) classifies actual coding and validation dependencies before execution. No standalone file is required solely for its name.
 - `$pd-sync`, `$pd-test`, and `$pd-review` must pass before `$pd-git` prepares a commit.

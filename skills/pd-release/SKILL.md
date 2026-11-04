@@ -1,7 +1,7 @@
 ---
 name: pd-release
 description: >-
-  上线文档工作流，基于 PRD、技术方案、SQL 执行计划、实现记录、联调报告、测试报告、Code Review 和提交说明生成通用 Markdown 上线计划、上线检查清单、回滚方案和 release notes；不接平台、不执行部署。Use when the user mentions $pd-release、pd-release、上线文档、发布计划、上线计划、回滚方案、release notes、上线SQL、数据库变更上线。
+  上线文档工作流，基于 PRD、技术方案、SQL 执行计划、实现记录、联调报告、测试报告、Code Review 和提交说明在一份 release notes 中维护上线计划、检查、回滚和风险；不接平台、不执行部署。Use when the user mentions $pd-release、pd-release、上线文档、发布计划、上线计划、回滚方案、release notes、上线SQL、数据库变更上线。
 ---
 
 # $pd-release — 上线文档
@@ -10,10 +10,10 @@ description: >-
 
 ## 读取
 
-下列项目材料只读取本轮适用的当前段落；缺少实际必需输入保留缺口，无关端、UI 或 SQL 不要求补造文件。
+默认从需求、方案、任务三份主文档的相关章节恢复上下文。下列旧分文件仅在已存在且是有效事实源、或确需独立消费时读取；同样内容已在主文档时不补建文件、不复制正文。真正缺失的契约 / 输入 / 证据仍保留缺口。
 
 1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage release`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
-2. 上述输出已包含 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `release/release-plan.md`、`release/release-checklist.md`、`release/rollback-plan.md`、`release/release-notes.md` 的模板；只采用本轮适用项。
+2. 上述输出只含 `release/release-notes.md`；发布计划、检查和回滚在同一文件维护。既有运维消费者确需独立材料时才按需读取相应旧模板。
 3. 必须读取 `sync/integration-report.md`、`test/test-report.md`、`test/code-review.md` 及适用的 `tech/backend/sql-execution-plan.md`。
 4. 读取 PRD、技术方案、实现记录和提交说明。
 5. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
@@ -42,11 +42,9 @@ description: >-
 ## 流程
 
 1. 采集发布状态，按共享正式上线规则检查测试、联调通过 / 有依据不适用、Code Review 和适用 SQL 执行计划，确认无 P0/P1、失败测试、契约阻断和未关闭 SQL 风险。
-2. 生成 `release/release-plan.md`，包含 SQL / 数据变更执行计划；无 SQL 时明确写“不涉及”。
-3. 生成 `release/release-checklist.md`，包含 SQL 执行计划确认、测试环境执行证据、生产执行顺序、备份、验证和回滚确认项。
-4. 生成 `release/rollback-plan.md`，包含 SQL / 数据回滚；不可回滚时必须标为高风险并写明人工处理方案。
-5. 生成 `release/release-notes.md`。
-6. 输出上线风险、回滚触发条件和人工确认项。
+2. 在 `release/release-notes.md` 维护变更说明、发布范围 / 版本 / 环境、执行顺序、检查与监控、适用 SQL / 数据变更和必要备份。
+3. 在同一文件写明回滚触发条件、可执行路径、数据影响、风险及人工确认；不可逆操作明确标风险，不用摘要替代必要执行细节。实际运维已有独立计划 / 回滚消费者时引用其唯一材料，不重复维护。
+4. 输出上线风险和未决项；不执行部署或其他未获准操作。
 
 ## 输出摘要
 
@@ -54,9 +52,6 @@ description: >-
 上线文档完成: <name>
 目录: <output-dir>
 文件:
-  - release/release-plan.md
-  - release/release-checklist.md
-  - release/rollback-plan.md
   - release/release-notes.md
 结论: <可进入上线审批 / 缺少验证 / 有阻断风险>
 ```
