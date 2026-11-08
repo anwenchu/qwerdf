@@ -16,14 +16,14 @@ description: >-
 2. 上述输出已包含 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `test/code-review.md` 的模板；只采用本轮适用项。
    方案依据与范围核对读取 [技术设计依据与范围规则](../qwerdf-common/technical-design-rules.md)，分别检查引用是否支持结论、任务是否属于本期。
 3. 读取 `product/prd.md`、`product/requirements.md`、`product/acceptance-criteria.md`、`ui/ui-design-system.md`、`ui/ui-screens.md`、`ui/ui-components.md`、`ui/figma-handoff.md`、`ui/ui-review-report.md`（如存在）、`tech/tech-plan.md`、`tech/api-contract.md`、`tech/integration-map.md`、`tech/task-slices.md`、`sync/integration-report.md`、`test/test-report.md`、前后端实现记录、changed files、dev notes、当前 git diff 和 git status。
-4. 如果当前目录是 git 仓库且存在 diff，先运行本 skill 自带脚本 `scripts/diff_triage.py`，将目标仓库的 `git diff --no-ext-diff --unified=80` 通过 stdin 传入；用输出决定审查顺序、风险标签和需要加载的 references。
+4. 对每个目标 Git 仓库先用 `git status --short --untracked-files=all` 核对本轮范围，纳入相关已暂存、未暂存和未跟踪文件。将已跟踪文件的完整变更（如 `git diff --no-ext-diff --unified=80 HEAD -- <范围>`）及相关未跟踪文件的新增差异（逐文件用 `git diff --no-ext-diff --no-index --unified=80 -- /dev/null <文件>`，有差异时返回 1）送入 `scripts/diff_triage.py`；已暂存内容与工作区不同且属于提交范围时另核已暂存差异。不要为审查暂存文件。用分流结果决定审查顺序和 references，并与范围清单核对。分流缺失的文件直接审查并在报告注明，不能当作无改动。
 5. 根据 diff 技术栈渐进式加载 references：
    - 任意代码级 review：读取 [Universal Code Quality](references/universal-code-quality.md)。
    - 涉及 TypeScript / React / 前端状态 / API client / CSS 布局：读取 [Frontend Code Review](references/frontend-code-review.md)。
-   - 涉及 UI、样式、组件、页面、Figma handoff、任务中的 UI 验证记录或已有独立验收源 或响应式：读取 [UI Review Rules](../qwerdf-common/ui-review-rules.md) 和 [UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)。
+   - 涉及 UI、样式、组件、页面、Figma handoff、任务中的 UI 验证记录或已有独立验收源 或响应式：读取 [UI Review Rules](../qwerdf-common/ui-review-rules.md) 和 [UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)。如确需补读实时 Figma，先加载对应操作技能和 [共享连接规则](../qwerdf-common/product-delivery-flow.md#figma-连接与会话复用)，按当前 schema 补齐连接参数并恢复已选连接；不因只读审查重新遍历账号。
    - 涉及 Java / Spring Boot / SQL / 数据模型 / 后端 API：读取 [Backend Code Review](references/backend-code-review.md)。
    - 涉及权限、输入、外部调用、日志、敏感字段、数据写入或性能敏感路径：读取 [Security & Performance Review](references/security-performance-review.md)。
-6. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
+6. 按 [共享目录规则](../qwerdf-common/product-delivery-flow.md#2-默认工作目录) 先确定本次独立任务根目录，以下阶段路径相对于该目录。
 
 ## 边界
 

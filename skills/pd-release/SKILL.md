@@ -16,7 +16,7 @@ description: >-
 2. 上述输出只含 `release/release-notes.md`；发布计划、检查和回滚在同一文件维护。既有运维消费者确需独立材料时才按需读取相应旧模板。
 3. 必须读取 `sync/integration-report.md`、`test/test-report.md`、`test/code-review.md` 及适用的 `tech/backend/sql-execution-plan.md`。
 4. 读取 PRD、技术方案、实现记录和提交说明。
-5. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
+5. 按 [共享目录规则](../qwerdf-common/product-delivery-flow.md#2-默认工作目录) 先确定本次独立任务根目录，以下阶段路径相对于该目录。
 
 ## 边界
 

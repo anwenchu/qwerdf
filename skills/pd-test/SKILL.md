@@ -15,9 +15,10 @@ description: >-
 1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage test`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
 2. 上述输出只含 `test/test-report.md`；计划、用例、结果和回归是同一报告的章节。
 3. 读取 PRD 验收、技术方案、任务中的实现 / UI 检查证据和适用联调报告；SQL 需要独立执行清单时引用它，既有独立事实源按需读取。
+   如本轮确需补读实时 Figma，先加载对应操作技能和 [共享连接规则](../qwerdf-common/product-delivery-flow.md#figma-连接与会话复用)，再补齐当前工具的连接参数、恢复已选连接及本任务会话；仅本地页面 / 截图验证不主动连接 Figma。
 4. 识别项目已有测试框架和 `package.json` / 构建工具 / 测试命令。
 5. 如当前目录是 git 仓库，读取 `.gitignore`、`git status --short` 和必要时的 ignored / untracked 状态。
-6. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
+6. 按 [共享目录规则](../qwerdf-common/product-delivery-flow.md#2-默认工作目录) 先确定本次独立任务根目录，以下阶段路径相对于该目录。
 
 ## 边界
 
@@ -53,7 +54,7 @@ description: >-
 3. 按技术方案判断 SQL 适用性；有 SQL 时读取执行计划，把相关 SQL ID 纳入计划 / 报告，无 SQL 引用不涉及依据。
 4. 在 `test/test-report.md` 的计划章节，按风险选择 unit、integration、e2e、visual/UI regression、regression、manual acceptance，并包含真实依赖验证、Mock 禁用检查和 SQL 执行验证。
 5. 在同一报告记录必要验收用例、预期与验证方式，引用现有自动化用例，不复制全部测试代码。
-6. 执行项目可用的最小测试、构建、已获准的 SQL / migration 测试环境执行或浏览器验证；integration / e2e / acceptance 必须连接真实依赖或真实本地容器。
+6. 按 [共享验证规则](../qwerdf-common/product-delivery-flow.md#验证与审查) 确定最小有效检查、重跑依据及超时与退出条件，再执行获准的测试、构建、SQL / migration 验证或浏览器验证。integration / e2e / acceptance 必须连接真实依赖或真实本地容器。
 7. 执行测试前后采集 `git status --short`；如测试、构建或浏览器验证产生新文件，判断它们是应提交产物、应忽略产物还是无关噪声。
 8. 对照 `.gitignore` 和 `git ls-files --others --exclude-standard` 检查未跟踪但未忽略的构建产物、缓存、截图、日志、报告或临时文件；发现应忽略但未忽略的文件时写入风险，不把它们算作测试通过证据。
 9. 写入 `test/test-report.md`，记录命令、结果、证据、联调前置状态、真实依赖验证、Mock 禁用检查、SQL 执行验证和 Git / ignore 检查：新增或变化文件、应提交候选、应排除候选、可能漏提交和可能多提交。

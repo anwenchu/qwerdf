@@ -17,7 +17,7 @@ description: >-
 3. 读取 [UI Design System Rules](../qwerdf-common/ui-design-system.md)、[UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md) 和 [UI Patterns](../qwerdf-common/ui-patterns.md)。
 4. 优先读取 `product/prd.md` 的规则、验收和未决；已有独立需求事实源时定向引用。
 5. 读取用户提供的 PRD、竞品 URL、截图、产品说明、设计偏好或已有 spec。
-6. 如果用户未指定输出目录，使用 `pd-work/<name>/`。
+6. 按 [共享目录规则](../qwerdf-common/product-delivery-flow.md#2-默认工作目录) 先确定本次独立任务根目录，以下阶段路径相对于该目录。
 
 ## 边界
 

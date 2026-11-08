@@ -14,7 +14,7 @@ description: >-
 2. 上述输出包含设计系统和 Figma handoff 模板；确需候选比较时再定向读取 `ui/ui-directions.md` 模板，不因模板存在强制做方向探索。
 3. 读取 [UI Design System Rules](../qwerdf-common/ui-design-system.md)、[UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)、[UI Patterns](../qwerdf-common/ui-patterns.md) 和 [UI Review Rules](../qwerdf-common/ui-review-rules.md)。
 4. 读取当前需求事实、`ui/ui-design-system.md` 和 `ui/ui-screens.md` 的设计输入、流程 / 页面与组件关系；旧分文件有实际事实时定向引用，不为缺文件补造副本；如已有 `ui/ui-directions.md` / `ui/figma-handoff.md`，复用其中的有效候选、已定方向及文件 / frame 链接，续作只补未完成部分。
-5. 如果用户未指定目录，默认查找 `pd-work/<name>/`。
+5. 按 [共享目录规则](../qwerdf-common/product-delivery-flow.md#2-默认工作目录) 先确定本次独立任务根目录，以下阶段路径相对于该目录。
 6. 如需要调用 Product Design，先按 Product Design 的 `get-context` 规则确认设计 brief。
 7. 如需要调用 Figma，必须先加载 Figma 对应技能：`figma-use`；创建或更新页面时同时遵守 `figma-generate-design`；用户要求或授权新建文件时加载 `figma-create-new-file`。
    连接选择、session 复用和失败后的停止条件统一按 [共享连接规则](../qwerdf-common/product-delivery-flow.md#figma-连接与会话复用) 执行；不能因加载另一 Figma 技能、续作或切换文件而重新检查全部账号。

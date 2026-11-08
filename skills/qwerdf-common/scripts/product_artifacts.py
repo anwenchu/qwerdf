@@ -100,7 +100,9 @@ def section_spans(text: str, *, children: bool = True) -> list[tuple[str, int, i
     for number, line in visible_lines(text):
         match = re.match(r"^ {0,3}(#{1,6})(?:[ \t]+.*)?$", line)
         if match:
-            headings.append((number - 1, len(match[1]), line.strip()))
+            # An optional closing ATX sequence requires preceding whitespace.
+            title = re.sub(r"[ \t]+#+[ \t]*$", "", line.strip())
+            headings.append((number - 1, len(match[1]), title))
     spans = []
     for index, (start, level, title) in enumerate(headings):
         end = len(text.splitlines())
@@ -131,6 +133,7 @@ def stage_context(stage: str, *, area: str = "all") -> str:
     template_source = "artifact-contracts.md" if stage in {*ARTIFACTS, "figma"} else "engineering-contracts.md"
     templates = (COMMON / template_source).read_text(encoding="utf-8")
     selected = [section(flow, "## 2. 默认工作目录", children=False),
+                section(flow, "### 项目待办视图"),
                 section(flow, "## 3. Skill 执行规范", children=False),
                 section(lifecycle, "## 工作规则"),
                 section(flow, "## 4. 安全与意外最小化"),
@@ -139,7 +142,7 @@ def stage_context(stage: str, *, area: str = "all") -> str:
         selected.append(section(flow, "### 产品事实与参考使用 Gate"))
     if stage in {"blueprint", "figma", "fe"} or (stage == "plan" and area != "backend"):
         selected.extend([section(flow, "### UI 设计系统与质量 Gate"), section(flow, "### UI 职责边界")])
-    if stage == "figma":
+    if stage in {"figma", "ui-review", "fe"} or (stage == "plan" and area != "backend"):
         selected.append(section(flow, "### Figma 连接与会话复用"))
     if stage in {"plan", "fe", "be", "sync", "test", "review", "git", "release"}:
         selected.append(section(flow, "### 适用范围与产物"))
@@ -148,7 +151,7 @@ def stage_context(stage: str, *, area: str = "all") -> str:
             technical = (COMMON / "technical-design-rules.md").read_text(encoding="utf-8")
             selected.append(section(technical, "### 仓库、分支与二方包版本"))
             rule_sources += "、technical-design-rules.md"
-        if stage in {"sync", "test", "review"}:
+        if stage in {"fe", "be", "sync", "test", "review"}:
             selected.append(section(flow, "### 验证与审查"))
         if stage in {"test", "review", "git", "release"}:
             selected.append(section(flow, "### 正式提交与上线"))

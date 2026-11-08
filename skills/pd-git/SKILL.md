@@ -15,7 +15,7 @@ description: >-
 1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage git`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
 2. 默认直接在回复中整理提交范围、验证结果及 commit / PR 文案；用户指定文件或平台确需时，才定向读取并写相应提交说明模板。
 3. 读取实现记录、联调报告、测试报告、Code Review、`.gitignore`、当前 git diff 和 git status。
-4. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
+4. 按 [共享目录规则](../qwerdf-common/product-delivery-flow.md#2-默认工作目录) 先确定本次独立任务根目录，以下阶段路径相对于该目录。
 
 ## 边界
 
@@ -40,7 +40,7 @@ description: >-
 4. staged / unstaged / untracked 文件分组。
 5. `.gitignore`、`.git/info/exclude` 和必要时 `git check-ignore -v <path>` 的结果。
 6. `git ls-files --others --exclude-standard` 中未被 ignore 的未跟踪文件。
-7. 与本次 `pd-work/<name>`、实现记录、测试报告相关的文件。
+7. 与本次已确定的独立任务目录、实现记录、测试报告及实际变更的共用事实源相关的文件。
 8. 可能包含 secret、环境配置、构建产物、缓存、日志、截图、报告或无关改动的文件。
 
 ## 提交范围门禁

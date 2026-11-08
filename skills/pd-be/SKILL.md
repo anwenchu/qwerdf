@@ -12,14 +12,14 @@ description: >-
 
 先按 [生命周期规则](../qwerdf-common/artifact-lifecycle.md) 读取续作入口并核对权威任务；以下材料按当前任务 / finding 读取相关有效段落与必要证据，引用失效或有新冲突再扩查，不重复通读全部历史；仅适用时读取数据模型、SQL 或 UI 材料，不要求无关文件。
 
-1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage be`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
-2. 上述输出只含任务清单模板及共享业务进度摘要。默认把实现结果、检查与续作回写本端任务；任务选择、blocked 恢复和汇报按已加载共享规则执行。
+1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage be`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取，开工前读完 [验证与审查](../qwerdf-common/product-delivery-flow.md#验证与审查)；不通读无关阶段。
+2. 开工时读取上述输出中的完整验证与审查规则。模板仅包含任务清单和共享业务进度摘要。默认把实现结果、检查与续作回写本端任务；任务选择、blocked 恢复和汇报按已加载共享规则执行。
    关键接入与范围按 [技术设计依据与范围规则](../qwerdf-common/technical-design-rules.md) 核对；需要猜服务、方法、参数来源或字段语义时回 `$pd-plan` 补证，不静默发明契约或新增范围。
 3. 读取 `tech/tech-plan.md` 的本端设计、契约、真实输入、接线与风险，以及 `tech/task-slices.md` 的本端任务及当前续作；涉及 UI / SQL 时补读其实际独立事实源及相关未决项，不因缺少旧分文件而补建整套材料。
 4. 如存在，读取 `sync/integration-report.md`、`sync/api-mismatch.md`、`test/test-report.md`、`test/code-review.md` 中归属 `$pd-be` 的 findings。
 5. 识别后端项目结构：服务入口、路由 / controller、service、repository、数据模型、权限、错误码、测试命令。
    涉及 Java 实现时必读公共规范的 [结构与可维护性](../qwerdf-common/java-coding-rules.md#结构与可维护性) 和 [任务完成前自查](../qwerdf-common/java-coding-rules.md#任务完成前自查)，其余章节按改动读取；不将规范建议扩成新任务或另一套阶段门。
-6. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
+6. 按 [共享目录规则](../qwerdf-common/product-delivery-flow.md#2-默认工作目录) 先确定本次独立任务根目录，以下阶段路径相对于该目录。
 
 ## 边界
 
@@ -33,11 +33,11 @@ description: >-
 
 1. 读取续作入口、任务清单及本端顺序（默认只用 task-slices.md；JSON 例外先按共享规则核实实际工具消费），按 [共享仓库、分支与版本规则](../qwerdf-common/technical-design-rules.md#仓库分支与二方包版本) 核对实际目标及版本记录，再核对当前授权、设计交接与关联 finding。来源 / 状态冲突先按共享规则校正，视图滞后不能冒充任务缺失。
 2. 按权威源中的本端顺序继续首个可执行的未完成任务，或有证据且已获准的缺陷修复。核查实际前置、全部原阻断及当前依赖用途；未 ready 只停止受影响动作。连续授权下转其他具备条件的任务，不以局部阻断全局停工。
-3. 在原任务源更新本任务为 in_progress；仅已证实兼容例外才刷新既有派生文件；blocked 的解除及仅验证受限时保留 blocked 续作严格按共享规则，不修改他人状态，不直接跳到 done。
+3. 在原任务源更新本任务为 in_progress；按共享待办规则刷新项目 TODO；格式兼容例外另沿既有单向派生；blocked 的解除及仅验证受限时保留 blocked 续作严格按共享规则，不修改他人状态，不直接跳到 done。
 4. 实现接口、服务、持久化、权限、错误码、事务、真实下游调用和必要接线；SQL / migration 文件进入原执行计划并引用 SQL ID。
 5. 扫描本片实际生产调用及测试路径，检查是否仍有 mock / stub / fake / fixture-only / simulator 或未接入真实 client；命名只是线索，按实际行为确认，发现不能以模拟结果交付。
-6. Java 实现先按公共规范的 [任务完成前自查](../qwerdf-common/java-coding-rules.md#任务完成前自查) 检查实际改动的可读性和维护性，修正本片明确问题；执行项目已有的最小高价值检查 / 构建 / 测试，修复须覆盖原 finding。受限、失败与通过分别记录，不重复跑无变化的全套检查，不跳过必要安全与依赖约束。
-7. 在原任务条目回填简短实现 / 检查结果、证据、缺口和下一动作，Java 任务包含上述自查结论及保留项依据，变更路径引用 Git diff；不自动生成实现日志、changed-files、dev-notes 或验收副本。自查及相应问题处理、代码 / 接线和原最小验证均按要求完成后才将原任务条目标 done；仅已证实例外更新既有派生文件；否则注明剩余代码与验证缺口，不用“外部受阻”掩盖未实现。
+6. Java 实现先按公共规范的 [任务完成前自查](../qwerdf-common/java-coding-rules.md#任务完成前自查) 检查实际改动，修正本片明确问题。自查范围以目标仓库的 `git status --short --untracked-files=all` 与本轮任务范围核对，覆盖相关已暂存、未暂存和未跟踪源码；未跟踪文件直接读完整内容。只有普通 `git diff` 时不能认定范围完整。按 [共享验证规则](../qwerdf-common/product-delivery-flow.md#验证与审查) 确定本片最小有效检查、再改或再跑的依据，以及长时间验证的超时与退出条件。用项目已有的检查 / 构建 / 测试覆盖本片验收和原 finding。
+7. 在原任务条目回填简短实现 / 检查结果、证据、缺口和下一动作，Java 任务包含上述自查结论及保留项依据，变更路径引用 Git diff；不自动生成实现日志、changed-files、dev-notes 或验收副本。自查及相应问题处理、代码 / 接线和原最小验证均按要求完成后才将原任务条目标 done；按共享待办规则刷新项目 TODO；格式兼容例外另沿既有单向派生；否则注明剩余代码与验证缺口，不用“外部受阻”掩盖未实现。
 8. 按共享业务进度摘要回填目标、实现 / 接线、验证、剩余与阻断；对照上次已核实结果，触发无推进自检时按共享业务推进规则纠偏并回填原任务。连续授权下回步骤 2。结束前核对原授权及所有剩余任务，只有满足共享停止条件才结束；不直接进入提交阶段。
 
 ## 输出摘要

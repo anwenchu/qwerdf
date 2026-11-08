@@ -16,7 +16,7 @@ description: >-
 2. 读取 [需求质量与交接检查](references/requirements-quality.md)。工具需要 Python 3.10+ 且无第三方依赖；不可运行时手动读取共享规则的默认工作目录、执行规范正文、产品事实 Gate、安全与意外最小化、外部生命周期边界及PRD 主模板，并做等价人工核对。记录未执行机械检查，不因环境限制阻断已完成业务核对的交接。
 3. 优先读取输出目录中的 `product/idea-brief.md`、`product/user-problem.md`、`product/competitor-notes.md`、`product/mvp-hypothesis.md`、`product/validation-questions.md`。
 4. 读取用户提供的访谈记录、竞品 URL、截图、产品背景、需求草稿或已有 spec。
-5. 如果用户未指定输出目录，使用 `pd-work/<name>/`。
+5. 按 [共享目录规则](../qwerdf-common/product-delivery-flow.md#2-默认工作目录) 先确定本次独立任务根目录，以下阶段路径相对于该目录。
 
 ## 边界
 

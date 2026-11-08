@@ -1,11 +1,13 @@
 """Behavioral checks for product traceability, missing states and selective context."""
 import importlib.util
 import json
+import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 
 ROOT = Path(__file__).resolve().parents[2]
@@ -77,6 +79,14 @@ def consolidated_prd():
 
 
 class ProductArtifactTests(unittest.TestCase):
+    def test_atx_closing_hashes_keep_section_boundaries_and_literal_hashes(self):
+        text = "## 第一节 ##\n第一节正文\n## C#\n语言名\n## 第二节 ###\n第二节正文\n"
+        self.assertEqual([("## 第一节", 0, 2), ("## C#", 2, 4), ("## 第二节", 4, 6)],
+                         product.section_spans(text))
+        self.assertEqual("## 第一节 ##\n第一节正文", product.section(text, "## 第一节"))
+        escaped = "## 标题 \\##\n正文\n"
+        self.assertEqual("## 标题 \\##", product.section_spans(escaped)[0][0])
+
     def setUp(self):
         self.temp = tempfile.TemporaryDirectory(prefix="qwerdf-product-test-")
         self.addCleanup(self.temp.cleanup)
@@ -111,6 +121,30 @@ class ProductArtifactTests(unittest.TestCase):
         self.assertEqual('PASS', report['status'], report)
         self.assertEqual(['product/prd.md'],
                          [str(path.relative_to(self.root)) for path in self.root.rglob('*.md')])
+
+    def test_independent_task_roots_keep_validation_and_issue_locations_separate(self):
+        project = self.root / 'project'
+        project.mkdir()
+        (project / 'README.md').write_text('# 项目索引\n[任务一](tasks/first/)\n[独立返工](tasks/rework/)\n')
+        first = project / 'tasks/first'
+        rework = project / 'tasks/rework'
+        for task in (first, rework):
+            path = task / 'product/prd.md'
+            path.parent.mkdir(parents=True)
+            path.write_text(consolidated_prd()['product/prd.md'])
+        self.assertEqual('PASS', product.validate(first, 'prd')['status'])
+        self.assertEqual('PASS', product.validate(rework, 'prd')['status'])
+        path = rework / 'product/prd.md'
+        path.write_text(path.read_text().replace('| P0 | SRC-001 |', '| P0 | SRC-999 |', 1))
+        before = {path: path.read_bytes() for path in project.rglob('*') if path.is_file()}
+        self.assertEqual('PASS', product.validate(first, 'prd')['status'])
+        report = product.validate(rework, 'prd')
+        self.assertEqual('BLOCKED', report['status'])
+        issue = next(item for item in report['issues'] if item['code'] == 'unknown-reference')
+        self.assertEqual(str(rework / 'product/prd.md'), issue['file'])
+        parent = product.validate(project, 'prd')
+        self.assertFalse(parent['passed'])
+        self.assertEqual(before, {path: path.read_bytes() for path in project.rglob('*') if path.is_file()})
 
     def test_consolidated_prd_preserves_blockers_and_actual_locations(self):
         for code, old, new in (
@@ -367,6 +401,36 @@ class ProductArtifactTests(unittest.TestCase):
     def test_missing_template_fails_instead_of_silently_omitting(self):
         with self.assertRaises(ValueError):
             product.section("# templates\n", "## `product/prd.md`")
+
+    def test_figma_connection_rules_reach_design_and_ui_review(self):
+        flow = (product.COMMON / "product-delivery-flow.md").read_text()
+        rules = product.section(flow, "### Figma 连接与会话复用")
+        for stage in ("figma", "ui-review", "fe", "plan"):
+            with self.subTest(stage=stage):
+                self.assertEqual(1, product.stage_context(stage).count(rules))
+        self.assertEqual(1, product.stage_context("plan", area="frontend").count(rules))
+        self.assertNotIn(rules, product.stage_context("plan", area="backend"))
+        for stage in ("vet", "prd", "be"):
+            with self.subTest(stage=stage):
+                self.assertNotIn(rules, product.stage_context(stage))
+
+    def test_missing_figma_connection_rules_fail_before_stage_context_is_returned(self):
+        with tempfile.TemporaryDirectory() as directory:
+            common = Path(directory) / "common"
+            shutil.copytree(product.COMMON, common)
+            flow_path = common / "product-delivery-flow.md"
+            flow = flow_path.read_text()
+            rules = product.section(flow, "### Figma 连接与会话复用")
+            flow_path.write_text(flow.replace(rules, "", 1))
+            with patch.object(product, "COMMON", common):
+                for stage in ("figma", "ui-review", "fe", "plan"):
+                    with self.subTest(stage=stage), self.assertRaises(ValueError):
+                        product.stage_context(stage)
+                with self.assertRaises(ValueError):
+                    product.stage_context("plan", area="frontend")
+                # Backend-only work must remain usable without Figma rules.
+                product.stage_context("plan", area="backend")
+                product.stage_context("be")
 
     def test_ui_review_context_excludes_unrelated_stages(self):
         context = product.stage_context("ui-review")

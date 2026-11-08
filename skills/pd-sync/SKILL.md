@@ -17,7 +17,7 @@ description: >-
 3. 读取技术方案的契约、接线、真实输入及任务中的实现 / 验证证据；独立 API 契约或既有分文件事实源存在时定向引用。
    任务覆盖、归属、顺序及状态从 [共享规则](../qwerdf-common/product-delivery-flow.md#任务清单与开发顺序) 确认的权威源读取；先处理来源冲突或滞后视图，不能仅因 Markdown 缺行就判 `slice-missing`。
 4. 识别本地前端、后端启动方式和环境配置。
-5. 如果用户未指定目录，默认使用 `pd-work/<name>/`。
+5. 按 [共享目录规则](../qwerdf-common/product-delivery-flow.md#2-默认工作目录) 先确定本次独立任务根目录，以下阶段路径相对于该目录。
 
 ## 边界
 

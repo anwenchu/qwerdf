@@ -103,6 +103,7 @@ class SkillStructureTests(unittest.TestCase):
                               '### 业务推进、阻断恢复与进度汇报', '### 联调与验收交接'):
                     self.assertEqual(1, result.count(context.section(flow, title)))
                 if stage in ('fe', 'be'):
+                    self.assertEqual(1, result.count(context.section(flow, '### 验证与审查')))
                     self.assertEqual(1, result.count(context.section(templates, '## 业务进度摘要')))
         result = context.stage_context('sync')
         self.assertIn(context.section(flow, '### 联调与验收交接'), result)

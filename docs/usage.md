@@ -60,7 +60,7 @@ For Figma work, the default is to show candidate directions in a separate Figma 
 
 Java implementation and backend review directly read the [shared Java coding conventions](../skills/qwerdf-common/java-coding-rules.md); no separate command is required. The [source and adaptation notes](../skills/qwerdf-common/java-coding-sources.md) explain how Alibaba's handbook is applied to current repository contracts and configuration.
 
-By default, skills write artifacts under `pd-work/<name>/`. New artifacts must use canonical subdirectories. Legacy flat files may be read as a legacy fallback, but new outputs should not be written flat.
+Resolve the current independent task root before reading or writing artifacts. A bounded requirement can use `pd-work/<name>/` directly. Large projects and explicitly independent rework use a child directory per deliverable, following the [shared directory rules](../skills/qwerdf-common/product-delivery-flow.md#2-默认工作目录).
 
 ```text
 pd-work/<bounded-requirement>/
@@ -71,7 +71,34 @@ pd-work/<bounded-requirement>/
 
 Only maintain the stage currently requested. Discovery may use one `product/idea-brief.md`; UI adds a shared design system and page specification, with Figma handoff when delivered. Contracts shared by endpoints/external consumers and SQL execution/rollback plans remain independent when needed. Integration, test and review each maintain one formal report; release notes include the deployment plan/checks/rollback. Git text stays in the reply unless explicitly requested as files.
 
-Do not create every available template or duplicate stage trees per task. Existing split sources are read and referenced without automatic migration/deletion. Requirement/acceptance IDs and their compact mapping remain in the main index; long explanations may link to unique topic details.
+For a large project, keep a short project index and shared facts at the project root. Each independent task owns its details, implementation slices, progress and resume entry.
+
+```text
+pd-work/<project>/
+  README.md
+  TODO.md                   # generated, never a second editable task source
+  product/prd.md
+  tasks/<task-name>/
+    product/prd.md
+    tech/tech-plan.md
+    tech/task-slices.md
+```
+
+These paths illustrate ownership. Create files only for the stage and scope being worked on, and reference inherited requirements or shared contracts. A small implementation-only fix can reuse the original requirements and design. The project index lists scope, acceptance references and task links. Read progress from each task's own authoritative checklist. A standalone rework task records its source task and changed scope, while ordinary corrections update their owning task in place.
+
+Generate the project-wide incomplete view after changing task sources or before a project progress report:
+
+```bash
+python3 skills/qwerdf-common/scripts/task_todo.py --root pd-work/<project>
+python3 skills/qwerdf-common/scripts/task_todo.py --root pd-work/<project> --check
+```
+
+The second command is read-only. `--index <relative-path>` selects an existing project overview instead of `README.md`. The generator reads only root tasks, direct `tasks/*` children and directories registered in the overview's `## 任务索引` table. Follow the [index template and source contract](../skills/qwerdf-common/engineering-contracts.md#项目索引与待办). Confirmed work not yet assigned stays in the overview's `## 已确认待拆解` table with its original confirmation reference; transfer it to the owning checklist when assigned. No additional backlog file is required.
+
+`done` rows leave the derived view while their evidence remains in the source. Keep outstanding verification in the same checklist's optional `## 验收任务` table, or explicitly declare `验收追踪：随实现任务` when the implementation rows include all necessary verification. Missing sources, ambiguous JSON ownership, malformed rows and unconfirmed acceptance coverage appear as gaps, never as an empty success. Exit codes are 0 for an up-to-date view without identified gaps, 1 for gaps/staleness and 2 for failure. Failed refreshes do not roll back the source; report staleness and read the authoritative checklist. The view is not proof of requirement coverage or release readiness. Existing unmarked or hand-maintained `TODO.md` files are preserved and reported as ownership conflicts, including views generated before the marker was introduced. Do not adopt them by filename alone. An explicit authority path resolving to the current Markdown is accepted; inactive legacy JSON is not read or included in freshness checks. Tool details stay in the [on-demand reference](../skills/qwerdf-common/engineering-contracts.md#待办工具用法).
+
+
+Use the selected task root for `--root` when validating its product artifacts. This validates that root's materials. Review referenced shared or cross-task constraints separately. Preserve stable requirement/acceptance IDs and links, and migrate existing centralized artifacts only within an authorized scope with their current statuses and evidence retained.
 
 
 ## Key Gates

@@ -15,7 +15,7 @@ description: >-
 1. 先定位当前 `SKILL.md` 的目录作为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage vet`。仅加载 [共享规则](../qwerdf-common/product-delivery-flow.md) 的产品相关章节及 [产物模板](../qwerdf-common/artifact-contracts.md) 的本阶段片段；不通读工程、测试、SQL 和发布内容。
 2. 读取 [产品机会判断](references/opportunity-review.md)。工具需要 Python 3.10+ 且无第三方依赖；不可运行时手动读取共享规则的默认工作目录、执行规范正文、产品事实 Gate、安全与意外最小化、外部生命周期边界及想法简报主模板，做等价人工核对并记录未执行机械检查。
 3. 读取用户提供的一句话 idea、竞品 URL、截图、市场观察、用户反馈或产品背景。
-4. 如果用户未指定输出目录，使用 `pd-work/<name>/`。
+4. 按 [共享目录规则](../qwerdf-common/product-delivery-flow.md#2-默认工作目录) 先确定本次独立任务根目录，以下阶段路径相对于该目录。
 
 ## 边界
 
