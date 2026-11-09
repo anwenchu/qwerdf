@@ -138,6 +138,9 @@ def stage_context(stage: str, *, area: str = "all") -> str:
                 section(lifecycle, "## 工作规则"),
                 section(flow, "## 4. 安全与意外最小化"),
                 section(flow, "## 6. 外部生命周期边界")]
+    if stage in {"figma", "ui-review"}:
+        # Share retry/exit limits without loading engineering gates into UI work.
+        selected.insert(0, section(flow, "#### 验证循环与退出"))
     if stage in {*ARTIFACTS, "figma", "plan", "review"}:
         selected.append(section(flow, "### 产品事实与参考使用 Gate"))
     if stage in {"blueprint", "figma", "fe"} or (stage == "plan" and area != "backend"):
@@ -151,7 +154,10 @@ def stage_context(stage: str, *, area: str = "all") -> str:
             technical = (COMMON / "technical-design-rules.md").read_text(encoding="utf-8")
             selected.append(section(technical, "### 仓库、分支与二方包版本"))
             rule_sources += "、technical-design-rules.md"
-        if stage in {"fe", "be", "sync", "test", "review"}:
+        if stage in {"fe", "be"}:
+            # Put execution limits before long directory/reference material.
+            selected.insert(0, section(flow, "### 验证与审查"))
+        elif stage in {"sync", "test", "review"}:
             selected.append(section(flow, "### 验证与审查"))
         if stage in {"test", "review", "git", "release"}:
             selected.append(section(flow, "### 正式提交与上线"))

@@ -1,4 +1,4 @@
 interface:
   display_name: "pd-fe"
   short_description: "按任务切片实现前端并完成 UI 验收"
-  default_prompt: "用 $pd-fe 按当前已授权范围和权威源中的本端顺序推进前端实现，逐片验证并回填状态。"
+  default_prompt: "用 $pd-fe 按当前已授权范围和权威源中的本端顺序推进前端实现，按业务动作集中实现与必要验证，遵守纠错循环限额并逐项回填状态。"

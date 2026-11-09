@@ -87,6 +87,140 @@ class SkillStructureTests(unittest.TestCase):
         self.assertNotIn('## `tech/api-contract.md`', result)
         self.assertNotIn('## `tech/backend/', result)
 
+    def test_execution_entries_share_business_window_rules_without_per_edit_loop(self):
+        """Check loading and entry consistency, not an agent's real execution."""
+        flow = (context.COMMON / 'product-delivery-flow.md').read_text()
+        rules = context.section(flow, '### 验证与审查')
+        for stage in ('fe', 'be'):
+            with self.subTest(stage=stage):
+                result = context.stage_context(stage)
+                self.assertEqual(1, result.count(rules))
+                self.assertLess(result.index('### 验证与审查'), result.index('## 2. 默认工作目录'))
+                first_lines = '\n'.join(result.splitlines()[:25])
+                self.assertIn('到界先复核收尾，否则退出原循环', first_lines)
+                self.assertIn('只读排查或验证也计入', first_lines)
+                self.assertIn('不因业务窗口刚耗尽就中断', first_lines)
+                skill = (ROOT / 'skills' / f'pd-{stage}' / 'SKILL.md').read_text()
+                prompt = (ROOT / 'skills' / f'pd-{stage}' / 'agents/openai.yaml').read_text()
+                self.assertIn('共享验证规则', skill)
+                self.assertIn('整个修改验证循环的剩余限额', skill)
+                self.assertNotIn('每个迭代闭合一个', skill)
+                self.assertNotIn('逐片验证并回填状态', prompt)
+                self.assertIn('按业务动作集中实现与必要验证', prompt)
+        # The rule applies to the whole retry loop and cannot disappear at resume.
+        self.assertIn('不只覆盖单条命令', rules)
+        self.assertIn('都不自动重置', rules)
+        self.assertIn('不标 done', rules)
+        self.assertIn('共享资源可用', rules)
+        self.assertIn('失败、超时或中断不返还额度', rules)
+        self.assertIn('不按工具调用数机械拆轮', rules)
+        self.assertIn('收尾不是重新发放整轮额度', rules)
+        self.assertIn('不能延长原命令超时', rules)
+        self.assertIn('或把新问题接成下一轮收尾', rules)
+        self.assertIn('有界采样作为一次整体尝试计数', rules)
+        self.assertIn('不重置外层限额', rules)
+        progress_rules = context.section(flow, '### 业务推进、阻断恢复与进度汇报')
+        self.assertIn('复核必要收尾条件', progress_rules)
+
+    def test_resume_and_progress_templates_keep_existing_window_and_business_gap(self):
+        templates = (context.COMMON / 'engineering-contracts.md').read_text()
+        lifecycle = (context.COMMON / 'artifact-lifecycle.md').read_text()
+        resume = context.section(templates, '## `tech/task-slices.md`')
+        progress = context.section(templates, '## 业务进度摘要')
+        self.assertIn('剩余验证限额或耗尽后的恢复条件', resume)
+        self.assertIn('不因恢复上下文重置', lifecycle)
+        self.assertIn('用户询问统计时再按源列本端计数', progress)
+        self.assertIn('原业务断点、已执行的分流及实际结果', progress)
+        self.assertIn('必要收尾，注明原位范围及退出条件', progress)
+        self.assertIn('不覆盖原限额', resume)
+
+    def test_migration_batch_rules_cover_production_and_tests_without_new_ledger(self):
+        """Loading/consistency check; paired cases carry the semantic review."""
+        flow = (context.COMMON / 'product-delivery-flow.md').read_text()
+        rules = context.section(flow, '### 验证与审查')
+        for stage in ('fe', 'be'):
+            with self.subTest(stage=stage):
+                loaded = context.stage_context(stage)
+                self.assertEqual(1, loaded.count(rules))
+                entry = (ROOT / 'skills' / f'pd-{stage}' / 'SKILL.md').read_text()
+                self.assertIn('共享验证规则核对批次影响面', entry)
+                self.assertIn('旧测试同步迁移', entry)
+        templates = (context.COMMON / 'engineering-contracts.md').read_text()
+        resume = context.section(templates, '## `tech/task-slices.md`')
+        self.assertIn('待接通清单的原位引用', resume)
+        self.assertIn('不全仓重查', rules)
+        self.assertIn('不恢复已作废设计', rules)
+        self.assertIn('不删掉仍适用的断言', rules)
+
+    def test_check_reuse_rule_is_loaded_once_for_every_stage(self):
+        """Exercise the real context loader; this does not prove agent compliance."""
+        flow = (context.COMMON / 'product-delivery-flow.md').read_text()
+        execution = context.section(flow, '## 3. Skill 执行规范', children=False)
+        reuse = next(line for line in execution.splitlines()
+                     if line.startswith('- 检查围绕本轮交付结果安排'))
+        for stage in context.CONTEXT_ARTIFACTS:
+            with self.subTest(stage=stage):
+                self.assertEqual(1, context.stage_context(stage).count(reuse))
+        # Product/design stages do not get the whole engineering validation section.
+        for stage in ('vet', 'prd', 'blueprint', 'figma', 'ui-review'):
+            self.assertNotIn('### 验证与审查', context.stage_context(stage))
+
+    def test_ui_and_engineering_share_one_loop_core_without_extra_ui_gates(self):
+        """Test actual loading, scope and manual fallback links, not agent behavior."""
+        flow = (context.COMMON / 'product-delivery-flow.md').read_text()
+        core = context.section(flow, '#### 验证循环与退出')
+        engineering = context.section(flow, '#### 工程验证覆盖与证据')
+        for stage in ('figma', 'ui-review', 'fe', 'be', 'sync', 'test', 'review'):
+            with self.subTest(stage=stage):
+                result = context.stage_context(stage)
+                self.assertEqual(1, result.count(core))
+                if stage in ('figma', 'ui-review'):
+                    self.assertLess(result.index(core), result.index('## 2. 默认工作目录'))
+                    self.assertNotIn(engineering, result)
+                    self.assertNotIn('### 正式提交与上线', result)
+                    self.assertNotIn('## `tech/task-slices.md`', result)
+                    entry = (ROOT / 'skills' / f'pd-{stage}' / 'SKILL.md').read_text()
+                    self.assertIn('product-delivery-flow.md#验证循环与退出', entry)
+                else:
+                    self.assertEqual(1, result.count(engineering))
+        for stage in ('vet', 'prd', 'blueprint'):
+            self.assertNotIn(core, context.stage_context(stage))
+        templates = (context.COMMON / 'artifact-contracts.md').read_text()
+        for path in ('ui/ui-directions.md', 'ui/figma-handoff.md', 'ui/ui-review-report.md'):
+            self.assertIn('验证续作（如需；已有记录则引用）',
+                          context.section(templates, f'## `{path}`'))
+
+    def test_ui_loop_core_missing_fails_instead_of_silently_dropping_limits(self):
+        with tempfile.TemporaryDirectory() as directory:
+            common = Path(directory) / 'common'
+            shutil.copytree(context.COMMON, common)
+            path = common / 'product-delivery-flow.md'
+            path.write_text(path.read_text().replace('#### 验证循环与退出',
+                                                    '#### Renamed loop rules', 1))
+            with patch.object(context, 'COMMON', common):
+                for stage in ('figma', 'ui-review'):
+                    with self.subTest(stage=stage), self.assertRaisesRegex(ValueError, '缺少章节'):
+                        context.stage_context(stage)
+
+    def test_validation_entry_provenance_reaches_all_execution_consumers(self):
+        flow = (context.COMMON / 'product-delivery-flow.md').read_text()
+        rules = context.section(flow, '### 验证与审查')
+        provenance = next(line for line in rules.splitlines()
+                          if line.startswith('- **验证入口与当前产物对应**'))
+        self.assertIn('纯编译、类型 / 静态检查', provenance)
+        self.assertIn('不强制执行测试断言；执行测试时', provenance)
+        self.assertIn('构建通过不能写成测试通过', provenance)
+        for stage in ('fe', 'be', 'sync', 'test', 'review'):
+            with self.subTest(stage=stage):
+                self.assertEqual(1, context.stage_context(stage).count(provenance))
+        for stage in ('fe', 'be'):
+            entry = (ROOT / 'skills' / f'pd-{stage}' / 'SKILL.md').read_text()
+            self.assertIn('本业务批次的检查集合', entry)
+            self.assertNotIn('确定本片最小有效检查', entry)
+        figma = (ROOT / 'skills/pd-figma/SKILL.md').read_text()
+        self.assertNotIn('每个 section 或页面完成后用 Figma 截图验证', figma)
+        self.assertIn('每个断点都要截图', figma)
+
     def test_ordered_task_template_and_handoff_rules_reach_their_consumers(self):
         flow = (context.COMMON / 'product-delivery-flow.md').read_text()
         templates = (context.COMMON / 'engineering-contracts.md').read_text()

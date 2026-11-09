@@ -15,7 +15,7 @@ description: >-
 1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage review`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
 2. 上述输出已包含 [Engineering Artifact Contracts](../qwerdf-common/engineering-contracts.md) 中 `test/code-review.md` 的模板；只采用本轮适用项。
    方案依据与范围核对读取 [技术设计依据与范围规则](../qwerdf-common/technical-design-rules.md)，分别检查引用是否支持结论、任务是否属于本期。
-3. 读取 `product/prd.md`、`product/requirements.md`、`product/acceptance-criteria.md`、`ui/ui-design-system.md`、`ui/ui-screens.md`、`ui/ui-components.md`、`ui/figma-handoff.md`、`ui/ui-review-report.md`（如存在）、`tech/tech-plan.md`、`tech/api-contract.md`、`tech/integration-map.md`、`tech/task-slices.md`、`sync/integration-report.md`、`test/test-report.md`、前后端实现记录、changed files、dev notes、当前 git diff 和 git status。
+3. 按本轮范围定向读取 PRD 验收、方案 / 契约、任务中的实现与验证证据，以及适用联调 / 测试报告；涉及 UI 时补读设计系统、页面 / handoff 与已有 UI finding。旧分文件只读有效事实源，不按文件清单补建或反复通读历史。当前 Git 范围按下一步核对。
 4. 对每个目标 Git 仓库先用 `git status --short --untracked-files=all` 核对本轮范围，纳入相关已暂存、未暂存和未跟踪文件。将已跟踪文件的完整变更（如 `git diff --no-ext-diff --unified=80 HEAD -- <范围>`）及相关未跟踪文件的新增差异（逐文件用 `git diff --no-ext-diff --no-index --unified=80 -- /dev/null <文件>`，有差异时返回 1）送入 `scripts/diff_triage.py`；已暂存内容与工作区不同且属于提交范围时另核已暂存差异。不要为审查暂存文件。用分流结果决定审查顺序和 references，并与范围清单核对。分流缺失的文件直接审查并在报告注明，不能当作无改动。
 5. 根据 diff 技术栈渐进式加载 references：
    - 任意代码级 review：读取 [Universal Code Quality](references/universal-code-quality.md)。
@@ -78,7 +78,7 @@ UI 的严重性、必要证据缺口与交接条件统一遵循 [UI Review Rules
 
 可以在开发中或联调 / 测试前执行只读审查；正式可提交判断沿用 [共享门禁](../qwerdf-common/product-delivery-flow.md#正式提交与上线)。缺证据不阻止继续静态审查，未覆盖部分不得推断通过。
 
-1. 上下文收集：读取 PRD、技术方案、API 契约、integration-map、task-slices、联调报告、测试报告、实现记录、changed files、git diff 和 git status；运行 `scripts/diff_triage.py` 生成 diff triage；识别 diff 触及的语言 / 框架并按需读取 references。
+1. 按上述读取规则核对本轮上下文与 diff triage；首次审查覆盖约定范围，修复复查定向检查变化及其影响。按共享验证规则引用仍有效的检查证据，不因开始审查自动重跑全部测试；缺少证据保持未验证，必要回归和正式门禁不省略。
 2. 前置证据检查：记录联调、测试与适用 UI 的实际状态；缺失 / 未通过记交付缺口并继续代码审查，不把资料缺失直接当作代码缺陷。正式提交条件未满足时不得输出可提交。
 3. 高层审查：判断范围是否正确、架构是否贴合方案、文件组织是否合理、契约是否一致、测试策略是否覆盖主风险。
 4. UI 设计质量审查：涉及 UI diff 时，对照 `ui/ui-design-system.md`、Figma handoff、任务中的 UI 验证记录或已有独立验收源 和浏览器 / 截图证据，检查设计系统一致性、产品类型匹配、信息层级、响应式、可访问性、状态覆盖、表单 / 表格 / 图表质量。

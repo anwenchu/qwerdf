@@ -10,7 +10,7 @@ description: >-
 
 ## 读取
 
-1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage figma`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖）。不可运行时，按 [共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板手动读取；不通读无关阶段。
+1. 定位本 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage figma`，只加载本阶段共享规则和模板（Python 3.10+，无第三方依赖），先读输出前置的完整 [验证循环与退出](../qwerdf-common/product-delivery-flow.md#验证循环与退出)。不可运行时，手动读取该节、[共享流程](../qwerdf-common/product-delivery-flow.md) 对应章节与下列模板；不通读无关工程门禁。
 2. 上述输出包含设计系统和 Figma handoff 模板；确需候选比较时再定向读取 `ui/ui-directions.md` 模板，不因模板存在强制做方向探索。
 3. 读取 [UI Design System Rules](../qwerdf-common/ui-design-system.md)、[UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)、[UI Patterns](../qwerdf-common/ui-patterns.md) 和 [UI Review Rules](../qwerdf-common/ui-review-rules.md)。
 4. 读取当前需求事实、`ui/ui-design-system.md` 和 `ui/ui-screens.md` 的设计输入、流程 / 页面与组件关系；旧分文件有实际事实时定向引用，不为缺文件补造副本；如已有 `ui/ui-directions.md` / `ui/figma-handoff.md`，复用其中的有效候选、已定方向及文件 / frame 链接，续作只补未完成部分。
@@ -76,7 +76,7 @@ description: >-
 4. 按本轮范围创建候选预览或选定方向的高保真页面，保留已有正式设计。
 5. 覆盖关键页面适用的 default、loading、empty、error、permission 等状态；共用组件可集中展示状态并由页面引用，静态公开页不强制创造异步或权限状态。
 6. 检查界面文案：按钮写动作结果；错误恢复与空态说明按 [共享质量清单](../qwerdf-common/ui-quality-checklist.md#4-适用的状态与交互) 判断，不为文案补造业务动作。
-7. 每个 section 或页面完成后用 Figma 截图验证，修复明显错位、裁切、重叠、占位文案，并检查是否误引入参考产品的导航 / tab / 业务文案。
+7. 按共享 UI 证据规则集中完成相关页面 / 组件改动后执行 Gate 3 截图 QA；中途排除具体布局风险可定向截图，不要求每完成一个 section 就重拍。修复明显错位、裁切、重叠、占位文案，并检查是否误引入参考产品的导航 / tab / 业务文案。
 8. 对同一页面族、组件族、响应式断点和相似 frame 做同类问题扫描；用户指出的问题不能只修一个 frame。
 9. 候选阶段更新 `ui/ui-directions.md` 的实际写入及 QA 结果；正式交付时更新 `ui/figma-handoff.md`，记录 Figma URL、frames、产品范围校验、设计系统、page-level override、状态页、截图 QA、同类问题扫描和前端注意事项。
 

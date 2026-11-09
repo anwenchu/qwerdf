@@ -30,7 +30,7 @@ description: >-
 
 1. 从已确认的权威任务源及联调 / 测试范围核对业务结果、相关实现与必要准备；视图缺行先核对来源。任务归属 / 顺序不可执行记 slice-model-invalid 回 `$pd-plan`；相关实现未完成则记录 ID 与归属，停止该正式联调场景，不扩大为无关任务等待，也不因没有独立 SYNC 任务或依赖列而拒绝联调。
 2. 按场景核对方案中的真实输入章节或已确认的独立事实源：实际必需输入须 ready / not-required 且有依据，unknown / blocked / mock-only 不可放行；无跨端交互的范围记录不适用，不启动无用环境。
-3. 在 `sync/integration-report.md` 的计划章节维护场景、入口、API、真实资源、数据准备及预期；连接可用环境，先侦察渲染态 / API 再执行交互断言。
+3. 在 `sync/integration-report.md` 的计划章节维护场景、入口、API、真实资源、数据准备及预期；按共享验证规则核对并引用仍有效的证据，集中补验本轮真实联调缺口，不用局部开发检查替代真实场景。连接可用环境，先侦察渲染态 / API 再执行交互断言。
 4. 检查 path、method、request / response、状态码、错误结构、权限、分页、状态页与真实调用。核查 client、repository、配置、日志及请求目标，确认生产路径无模拟替代；名称只作线索，不能因普通静态内容就判 mock。
 5. 在 `sync/integration-report.md` 记录实现前置、真实依赖验证、Mock 禁用检查、单场景结果、未执行范围与证据。实现 done 不等于真实链路通过，连接成功也不等于接口验收。
 6. 按共享分类给每个阻断写修复路由、证据和归属：contract-mismatch / slice-missing / slice-model-invalid 回 `$pd-plan` 在同一报告记录差异并交回原方案 / 契约修订；implementation-defect 回已有端 slice；environment-blocked 记录具体恢复入口。契约正确的实现错误不靠改方案掩盖；归属不明先核实，不让开发凭空造任务。

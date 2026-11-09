@@ -54,7 +54,7 @@ description: >-
 3. 按技术方案判断 SQL 适用性；有 SQL 时读取执行计划，把相关 SQL ID 纳入计划 / 报告，无 SQL 引用不涉及依据。
 4. 在 `test/test-report.md` 的计划章节，按风险选择 unit、integration、e2e、visual/UI regression、regression、manual acceptance，并包含真实依赖验证、Mock 禁用检查和 SQL 执行验证。
 5. 在同一报告记录必要验收用例、预期与验证方式，引用现有自动化用例，不复制全部测试代码。
-6. 按 [共享验证规则](../qwerdf-common/product-delivery-flow.md#验证与审查) 确定最小有效检查、重跑依据及超时与退出条件，再执行获准的测试、构建、SQL / migration 验证或浏览器验证。integration / e2e / acceptance 必须连接真实依赖或真实本地容器。
+6. 按 [共享验证规则](../qwerdf-common/product-delivery-flow.md#验证与审查) 核对已有证据的输入、产物及实际覆盖，复用仍有效结果，集中补验缺失或受变化影响的范围；核实验证入口，遵守同一循环的重跑依据及超时退出条件，不因进入测试阶段自动重跑全部开发检查。integration / e2e / acceptance 必须连接真实依赖或真实本地容器，原定回归与正式验收缺口仍须补齐。
 7. 执行测试前后采集 `git status --short`；如测试、构建或浏览器验证产生新文件，判断它们是应提交产物、应忽略产物还是无关噪声。
 8. 对照 `.gitignore` 和 `git ls-files --others --exclude-standard` 检查未跟踪但未忽略的构建产物、缓存、截图、日志、报告或临时文件；发现应忽略但未忽略的文件时写入风险，不把它们算作测试通过证据。
 9. 写入 `test/test-report.md`，记录命令、结果、证据、联调前置状态、真实依赖验证、Mock 禁用检查、SQL 执行验证和 Git / ignore 检查：新增或变化文件、应提交候选、应排除候选、可能漏提交和可能多提交。

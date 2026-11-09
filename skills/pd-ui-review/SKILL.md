@@ -12,7 +12,7 @@ description: >-
 
 通用产物维护与恢复按 [生命周期规则](../qwerdf-common/artifact-lifecycle.md) 执行；下列上下文工具已提取其工作规则，手动回退时也须读取该部分。
 
-1. 定位当前 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage ui-review`，提取工作目录、执行规范、安全、产品事实边界及报告模板。工具需要 Python 3.10+；不可用时手动读取 [共享流程](../qwerdf-common/product-delivery-flow.md) 的相应章节和 [报告模板](../qwerdf-common/artifact-contracts.md) 中 `ui/ui-review-report.md`，记录人工读取即可。
+1. 定位当前 `SKILL.md` 目录为 `<skill-dir>`，运行 `python3 "<skill-dir>/../qwerdf-common/scripts/product_artifacts.py" context --stage ui-review`，提取工作目录、执行规范、安全、产品事实边界及报告模板，先读输出前置的完整 [验证循环与退出](../qwerdf-common/product-delivery-flow.md#验证循环与退出)。工具需要 Python 3.10+；不可用时手动读取该节、[共享流程](../qwerdf-common/product-delivery-flow.md) 的相应章节和 [报告模板](../qwerdf-common/artifact-contracts.md) 中 `ui/ui-review-report.md`，记录人工读取即可。
 2. 读取 [UI Review Rules](../qwerdf-common/ui-review-rules.md) 和 [UI Quality Checklist](../qwerdf-common/ui-quality-checklist.md)。严重性、三层审查适用性、不能交付条件和同类问题扫描统一遵循共享规则。
 3. 按本次范围读取已有产品事实、`ui/ui-design-system.md`、页面规格、组件清单、相关 `ui/figma-handoff.md` 以及任务中的 UI 验证记录（已有独立验收源则引用）。需核对设计决策时读取 [Design System Rules](../qwerdf-common/ui-design-system.md)；需选择页面模式时读取 [UI Patterns](../qwerdf-common/ui-patterns.md)，不默认通读全部上游与工程文件。
 4. 视觉检查读取 [Visual Defects](references/visual-defects.md)；Figma 对象另读 [Figma Review](references/figma-review.md)，截图 / 本地页面另读 [Screenshot Review](references/screenshot-review.md)。按对象选择，不全量加载专项参考。
@@ -25,7 +25,7 @@ description: >-
 4. 对发现的问题执行有边界的同类问题扫描。用户要求全稿时按页面清单逐页记录，未覆盖部分保持未审查。
 5. 按共享规则输出 P0/P1/P2/P3 findings，保留真正影响操作、阅读、反馈、范围或设计系统一致性的约束；不因默认像素值、批准变体或风格偏好误拦。
 6. 写入 `ui/ui-review-report.md`，区分阻断、证据缺口和残余风险。设计稿归 `$pd-figma`，实现偏差归 `$pd-fe`，事实源 / 设计系统问题归 `$pd-blueprint` / `$pd-plan`；归属不明写待确认。实现修复按 [共享交接规则](../qwerdf-common/ui-review-rules.md#6-ui-finding-修复交接) 引用原 finding，不要求审查时预填工程 slice 或复制报告。未经授权不修改这些产物。
-7. 复查修复时按相同范围重新获取可比证据，逐项关闭 finding；旧结论不能覆盖当前问题。无 P0/P1 且必要证据充分时，可在本轮范围内建议继续，P2/P3 记录 owner、验证与复查入口。
+7. 复查修复按共享 UI 证据规则获取受影响范围的可比证据，覆盖原 finding 及关联布局 / 状态，逐项判断关闭；不随单个元素调整重审全部未变页面，旧结论不能覆盖当前问题。无 P0/P1 且必要证据充分时，可在本轮范围内建议继续，P2/P3 记录 owner、验证与复查入口。
 
 ## 输出摘要
 
