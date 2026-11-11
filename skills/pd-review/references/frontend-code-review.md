@@ -26,7 +26,7 @@
 ## API 契约与真实依赖
 
 - 前端状态、字段命名、分页结构、状态枚举和错误码必须与 `tech/api-contract.md`、`tech/integration-map.md`、真实 API 行为一致。
-- 技术实现禁止使用任何 mock；mock-only 分支、stub、fake、fixture-only 数据流或 simulator 一旦出现，必须作为阻断或缺陷处理，并能在 `sync/integration-report.md` 中被验证。
+- 生产路径不得用模拟 client、写死成功数据等替代真实能力；测试替身与合成 fixture 按 [共享验证分层](../../qwerdf-common/product-delivery-flow.md#验证分层与独立预期) 判断。局部契约模拟不证明真实 API / 页面联调，不能因单测使用 mock 就判实现缺陷。
 
 ## 测试
 

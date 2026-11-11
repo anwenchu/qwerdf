@@ -526,6 +526,52 @@ class SkillStructureTests(unittest.TestCase):
         for stage in ('vet', 'prd', 'blueprint', 'figma', 'ui-review'):
             self.assertNotIn(rules, context.stage_context(stage), stage)
 
+    def test_design_necessity_rules_load_for_design_implementation_and_review(self):
+        rules = context.section((context.COMMON / 'technical-design-rules.md').read_text(),
+                                '### 现有能力与新增设计必要性')
+        for stage in ('plan', 'fe', 'be', 'review'):
+            with self.subTest(stage=stage):
+                self.assertEqual(1, context.stage_context(stage).count(rules))
+        for area in ('frontend', 'backend'):
+            with self.subTest(area=area):
+                self.assertEqual(1, context.stage_context('plan', area=area).count(rules))
+        for stage in ('vet', 'prd', 'blueprint', 'figma', 'ui-review',
+                      'sync', 'test', 'git', 'release'):
+            with self.subTest(stage=stage):
+                self.assertNotIn(rules, context.stage_context(stage))
+
+    def test_validation_policy_routes_are_complete_and_stage_scoped(self):
+        """Exercise canonical selection, not whether an agent obeys prose."""
+        flow = (context.COMMON / 'product-delivery-flow.md').read_text()
+        layers = context.section(flow, '#### 验证分层与独立预期')
+        independent = context.section(flow, '#### 独立审查与缺陷闭环')
+        engineering = ('plan', 'fe', 'be', 'sync', 'test', 'review', 'git', 'release')
+        for stage in engineering:
+            with self.subTest(stage=stage):
+                output = context.stage_context(stage)
+                self.assertEqual(1, output.count(layers))
+                self.assertEqual(int(stage not in ('git', 'release')), output.count(independent))
+        for stage in ('vet', 'prd', 'blueprint', 'figma', 'ui-review'):
+            with self.subTest(stage=stage):
+                output = context.stage_context(stage)
+                self.assertNotIn(layers, output)
+                self.assertNotIn(independent, output)
+
+    def test_missing_validation_policy_cannot_silently_produce_stage_context(self):
+        with tempfile.TemporaryDirectory() as directory:
+            common = Path(directory) / 'qwerdf-common'
+            shutil.copytree(context.COMMON, common)
+            path = common / 'product-delivery-flow.md'
+            text = path.read_text()
+            # A lost canonical policy must fail the consumer rather than look ready.
+            policy = context.section(text, '#### 验证分层与独立预期')
+            path.write_text(text.replace(policy, ''))
+            with patch.object(context, 'COMMON', common):
+                for stage in ('plan', 'be', 'test', 'review', 'git', 'release'):
+                    with self.subTest(stage=stage), self.assertRaises(ValueError):
+                        context.stage_context(stage)
+                self.assertIn('# prd 阶段上下文', context.stage_context('prd'))
+
     def test_forbidden_path_presence_includes_broken_symlinks(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

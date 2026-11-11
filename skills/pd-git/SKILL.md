@@ -56,7 +56,7 @@ description: >-
 
 1. 采集 Git 状态，区分相关、无关、危险和待确认改动。
 2. 检查 `.gitignore` / ignored / untracked 状态，识别应提交、应忽略、应排除和待确认文件。
-3. 按共享定义检查 commit readiness gate，包含适用性依据及当前变更的实现、联调、测试、审查证据。
+3. 按共享定义检查 commit readiness gate，包含适用性依据及当前变更的实现、联调、测试、审查证据；追到实际命令 / 原生报告，核对验证层级、执行范围 / 计数、版本对应和独立审查实际状态，不仅看摘要 PASS。
 4. 任一 gate 未通过时，在回复中列出阻断原因和下一步，不生成“可提交”口径，不执行 `git add` / `git commit`。
 5. 默认在回复中给出提交摘要，包含 readiness gates、git state、gitignore check、planned files、excluded files、possible missing files、possible extra files、commit message、summary、tests、known risks。
 6. 在同一回复给出 PR / MR 文案，包含 what changed、why、validation、risks、rollback。
@@ -68,8 +68,7 @@ description: >-
 Git 提交准备完成: <name>
 目录: <output-dir>
 文件:
-  - release/commit-summary.md
-  - release/pr-description.md
+  - <默认在回复给出；仅用户指定或平台确需时写提交说明文件>
 提交: <未提交 / 已提交 commit sha>
 下一步: 用 $pd-release 生成上线文档
 ```

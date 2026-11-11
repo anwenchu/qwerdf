@@ -1,4 +1,4 @@
 interface:
   display_name: "pd-test"
   short_description: "生成并执行分层测试验证"
-  default_prompt: "用 $pd-test 基于实现和验收标准生成测试计划并执行验证。"
+  default_prompt: "用 $pd-test 先从确认需求和契约确定正反向预期，再核对实现并执行分层验证，说明真实参与层、替代边界及未验证范围。"

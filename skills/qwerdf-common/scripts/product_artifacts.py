@@ -151,14 +151,27 @@ def stage_context(stage: str, *, area: str = "all") -> str:
         selected.append(section(flow, "### 适用范围与产物"))
         if stage in {"plan", "fe", "be"}:
             selected.append(section(flow, "### 开发交接与依赖"))
+        if stage in {"plan", "fe", "be", "review"}:
             technical = (COMMON / "technical-design-rules.md").read_text(encoding="utf-8")
-            selected.append(section(technical, "### 仓库、分支与二方包版本"))
+            if stage in {"plan", "fe", "be"}:
+                selected.append(section(technical, "### 仓库、分支与二方包版本"))
+            selected.append(section(technical, "### 现有能力与新增设计必要性"))
             rule_sources += "、technical-design-rules.md"
-        if stage in {"fe", "be"}:
-            # Put execution limits before long directory/reference material.
-            selected.insert(0, section(flow, "### 验证与审查"))
-        elif stage in {"sync", "test", "review"}:
-            selected.append(section(flow, "### 验证与审查"))
+        if stage in {"plan", "git", "release"}:
+            selected.append(section(flow, "#### 验证分层与独立预期"))
+        if stage == "plan":
+            selected.append(section(flow, "#### 独立审查与缺陷闭环"))
+        if stage in {"fe", "be", "sync", "test", "review"}:
+            validation = section(flow, "### 验证与审查")
+            # A parent section can still exist after a required nested policy is lost.
+            for title in ("#### 验证循环与退出", "#### 验证分层与独立预期",
+                          "#### 独立审查与缺陷闭环", "#### 工程验证覆盖与证据"):
+                section(validation, title)
+            if stage in {"fe", "be"}:
+                # Put execution limits before long directory/reference material.
+                selected.insert(0, validation)
+            else:
+                selected.append(validation)
         if stage in {"test", "review", "git", "release"}:
             selected.append(section(flow, "### 正式提交与上线"))
         if stage in {"git", "release"}:

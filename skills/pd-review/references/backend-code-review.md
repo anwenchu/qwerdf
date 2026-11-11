@@ -15,14 +15,14 @@ Java 审查必读公共规范的 [结构与可维护性](../../qwerdf-common/jav
 ## 数据模型 / SQL
 
 - Java 持久化选型、业务 SQL 归属、Mapper / XML 绑定及事务边界，以及数据约束、业务唯一性与查询边界，统一按 [共享持久化规则](../../qwerdf-common/java-coding-rules.md#spring-事务与持久化涉及数据库时) 核对；本处不另设 ORM、排序、分页或唯一约束的判断标准。
-- 迁移要兼容已有数据：新增非空列要有默认或回填策略，删除 / 改名字段要有灰度和回滚说明。
+- SQL / 迁移按项目当前阶段与已确认兼容目标审查；需要迁移时核对已有数据、回填和回滚，不在明确无需旧版本兼容的开发项目强加灰度、双写或历史迁移。写文件不等于执行 SQL。
 - 并发写入要检查唯一键冲突、乐观 / 悲观锁、重复请求、幂等键和最终状态。
 
 ## API / 契约
 
 - path、method、request、response、错误结构、状态码、分页结构和状态枚举必须匹配契约。
 - 权限失败、资源不存在、参数错误和业务冲突应有可区分错误码；不要全部映射为 500 或通用错误。
-- API client、integration-map 和真实后端 DTO 字段命名必须一致；技术实现禁止使用任何 mock / stub / fake / fixture / simulator。
+- API client、integration-map 和真实后端 DTO 字段命名必须一致；生产路径不得用模拟替代应有能力；测试替身与合成 fixture 按 [共享验证分层](../../qwerdf-common/product-delivery-flow.md#验证分层与独立预期) 核对证明边界。
 
 ## 测试切片
 
@@ -30,4 +30,4 @@ Java 审查必读公共规范的 [结构与可维护性](../../qwerdf-common/jav
 
 - Controller 测试覆盖参数校验、权限、错误映射和 response contract。
 - Service 测试覆盖业务分支、事务失败、幂等、重复执行、并发或回滚路径。
-- Repository / integration 测试覆盖约束、分页、排序、迁移兼容和真实 SQL 行为。
+- Repository / integration 按实际范围检查字段投影、映射、约束与查询行为；需证明真实 SQL / 事务代理时调用实际 Repository / Mapper / Spring 代理及数据库，不能靠手工补全对象证明映射正确。迁移兼容按本项目真实要求核对。

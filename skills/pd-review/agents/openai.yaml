@@ -1,4 +1,4 @@
 interface:
   display_name: "pd-review"
   short_description: "做交付门禁、代码级 Code Review 和 UI Review"
-  default_prompt: "用 $pd-review 基于当前 git diff、UI 设计系统、技术方案、联调报告和测试报告做代码级 Code Review 和 UI Review。"
+  default_prompt: "用 $pd-review 先从确认需求和契约建立预期，再沿当前完整 diff 和调用链审查业务前提、实现必要性与测试有效性，核对分层证据；遵守独立审查及原授权边界。"
